@@ -23,9 +23,11 @@ MonoBehaviour:
   width: 2
   height: 1
   forwardOffset: 0.8
-  pushSpeed: 8
-  pushDuration: 0.15
-  pushPriority: 100
+  horizontalImpulse: 6
+  upwardImpulse: 3
+  controlReleaseMode: 1
+  controlReleaseTimeout: 1
   pushFromCasterCenter: 1
   facePushDirection: 1
+  clearTargetMovementCommands: 1
   networkEffectPrefab: {fileID: 3240045606009096287, guid: 4f3e3db9e7c5d614a85883d1b500743c, type: 3}

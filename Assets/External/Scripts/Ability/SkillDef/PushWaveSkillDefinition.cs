@@ -13,12 +13,14 @@ public class PushWaveSkillDefinition : SkillDefinition
     [SerializeField, Min(0.1f)] private float height = 1.6f;
     [SerializeField, Min(0f)] private float forwardOffset = 0.8f;
 
-    [Header("Push")]
-    [SerializeField, Min(0f)] private float pushSpeed = 8f;
-    [SerializeField, Min(0f)] private float pushDuration = 0.15f;
-    [SerializeField] private int pushPriority = 100;
+    [Header("Impulse Push")]
+    [SerializeField, Min(0f)] private float horizontalImpulse = 7f;
+    [SerializeField, Min(0f)] private float upwardImpulse = 1.2f;
+    [SerializeField] private ImpulseControlReleaseMode controlReleaseMode = ImpulseControlReleaseMode.UntilGrounded;
+    [SerializeField, Min(0f)] private float controlReleaseTimeout = 1f;
     [SerializeField] private bool pushFromCasterCenter = true;
     [SerializeField] private bool facePushDirection = true;
+    [SerializeField] private bool clearTargetMovementCommands = true;
 
     [Header("Visual")]
     [SerializeField] private GameObject networkEffectPrefab;
@@ -29,11 +31,15 @@ public class PushWaveSkillDefinition : SkillDefinition
     public float Width => width;
     public float Height => height;
     public float ForwardOffset => forwardOffset;
-    public float PushSpeed => pushSpeed;
-    public float PushDuration => pushDuration;
-    public int PushPriority => pushPriority;
+
+    public float HorizontalImpulse => horizontalImpulse;
+    public float UpwardImpulse => upwardImpulse;
+    public ImpulseControlReleaseMode ControlReleaseMode => controlReleaseMode;
+    public float ControlReleaseTimeout => controlReleaseTimeout;
     public bool PushFromCasterCenter => pushFromCasterCenter;
     public bool FacePushDirection => facePushDirection;
+    public bool ClearTargetMovementCommands => clearTargetMovementCommands;
+
     public GameObject NetworkEffectPrefab => networkEffectPrefab;
 
     public override ISkillRuntime CreateRuntime(SkillRuntimeContext context)

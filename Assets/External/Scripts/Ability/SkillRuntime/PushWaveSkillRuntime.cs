@@ -29,6 +29,7 @@ public sealed class PushWaveSkillRuntime : SkillRuntimeBase<PushWaveSkillDefinit
             return;
 
         Transform spawnPoint = Context.EffectSpawnPoint != null ? Context.EffectSpawnPoint : castOrigin;
+
         Context.Bridge.SpawnNetworkEffect(
             TypedDefinition.NetworkEffectPrefab,
             spawnPoint.position,
@@ -70,13 +71,16 @@ public sealed class PushWaveSkillRuntime : SkillRuntimeBase<PushWaveSkillDefinit
                 continue;
 
             Vector3 pushDirection = GetPushDirection(castOrigin, receiver.transform);
+            Vector3 finalImpulse =
+                pushDirection * TypedDefinition.HorizontalImpulse +
+                Vector3.up * TypedDefinition.UpwardImpulse;
 
-            receiver.RequestKnockback(
-                pushDirection,
-                TypedDefinition.PushSpeed,
-                TypedDefinition.PushDuration,
-                TypedDefinition.PushPriority,
-                TypedDefinition.FacePushDirection);
+            receiver.RequestImpulseKnockback(
+                finalImpulse,
+                TypedDefinition.ControlReleaseMode,
+                TypedDefinition.ControlReleaseTimeout,
+                TypedDefinition.FacePushDirection,
+                TypedDefinition.ClearTargetMovementCommands);
         }
     }
 

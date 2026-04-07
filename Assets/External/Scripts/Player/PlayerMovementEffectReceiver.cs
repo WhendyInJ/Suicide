@@ -17,6 +17,35 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
             playerController = GetComponent<PlayerController>();
     }
 
+    public void RequestImpulseKnockback(
+        Vector3 worldImpulse,
+        ImpulseControlReleaseMode releaseMode,
+        float releaseTimeout = 0f,
+        bool faceDirection = true,
+        bool clearExistingCommands = true)
+    {
+        if (PhotonNetwork.InRoom && photonView.Owner != null)
+        {
+            photonView.RPC(
+                nameof(RPC_ApplyImpulseKnockback),
+                photonView.Owner,
+                worldImpulse,
+                (int)releaseMode,
+                releaseTimeout,
+                faceDirection,
+                clearExistingCommands);
+        }
+        else
+        {
+            RPC_ApplyImpulseKnockback(
+                worldImpulse,
+                (int)releaseMode,
+                releaseTimeout,
+                faceDirection,
+                clearExistingCommands);
+        }
+    }
+
     public void RequestEffect(
         MovementEffectType effectType,
         Vector3 vectorValue,
@@ -52,23 +81,6 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
         }
     }
 
-    public void RequestKnockback(
-        Vector3 direction,
-        float speed,
-        float duration,
-        int priority = 100,
-        bool faceDirection = true)
-    {
-        RequestEffect(
-            MovementEffectType.Knockback,
-            direction,
-            speed,
-            duration,
-            0.1f,
-            priority,
-            faceDirection);
-    }
-
     public void RequestMovementLock(
         float duration,
         int priority = 300)
@@ -99,6 +111,28 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
             stopDistance,
             priority,
             faceDirection);
+    }
+
+    [PunRPC]
+    private void RPC_ApplyImpulseKnockback(
+        Vector3 worldImpulse,
+        int releaseModeRaw,
+        float releaseTimeout,
+        bool faceDirection,
+        bool clearExistingCommands)
+    {
+        if (PhotonNetwork.InRoom && !photonView.IsMine)
+            return;
+
+        if (playerController == null)
+            return;
+
+        playerController.ApplyImpulseKnockback(
+            worldImpulse,
+            (ImpulseControlReleaseMode)releaseModeRaw,
+            releaseTimeout,
+            faceDirection,
+            clearExistingCommands);
     }
 
     [PunRPC]

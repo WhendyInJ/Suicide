@@ -366,6 +366,8 @@ GameObject:
   - component: {fileID: 2265392746849489109}
   - component: {fileID: 3464620825903959518}
   - component: {fileID: 341504517916250023}
+  - component: {fileID: -1688230146479357924}
+  - component: {fileID: -4536734906771263759}
   - component: {fileID: 4276988534317274524}
   - component: {fileID: 6415889720398977426}
   - component: {fileID: 958998029986146911}
@@ -438,6 +440,7 @@ MonoBehaviour:
   photonView: {fileID: 958998029986146911}
   cameraTransform: {fileID: 0}
   inputSource: {fileID: 2265392746849489109}
+  groundSensor: {fileID: -1688230146479357924}
   maxMoveSpeed: 6
   timeToMaxSpeed: 0.1
   deceleration: 80
@@ -447,6 +450,8 @@ MonoBehaviour:
   rotateTowardForcedMotion: 1
   forcedMotionAcceleration: 120
   instantStopOnHardLock: 1
+  clearHorizontalVelocityBeforeImpulse: 1
+  preserveVerticalVelocityOnImpulse: 0
   useCameraMainIfMissing: 1
 --- !u!114 &2265392746849489109
 MonoBehaviour:
@@ -496,6 +501,44 @@ MonoBehaviour:
   skillBindings:
   - slot: 0
     definition: {fileID: 11400000, guid: aae2b67f7b781ce4f9acd0c15acc6c94, type: 2}
+--- !u!114 &-1688230146479357924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3259927792943013746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4eaa87198418b34f9a9f71aba964859, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerGroundSensor
+  probeOrigin: {fileID: 5952247655783481321}
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  probeRadius: 0.25
+  probeDistance: 0.1
+  probeOffset: {x: 0, y: 0.1, z: 0}
+  maxGroundAngle: 60
+  triggerInteraction: 1
+--- !u!114 &-4536734906771263759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3259927792943013746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8281d661f608ff34dbcd0dd487c83b13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  maxHealth: 100
+  startAtMaxHealth: 1
+  initialHealth: 100
+  invulnerable: 0
+  allowHealingWhenDead: 0
 --- !u!54 &4276988534317274524
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -565,6 +608,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
+  - {fileID: -4536734906771263759}
   - {fileID: 2776111555910386042}
   - {fileID: -7016640141220796418}
   - {fileID: -3450619564669310636}

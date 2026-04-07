@@ -4,9 +4,15 @@ using UnityEngine;
 
 public enum MovementEffectType
 {
-    Knockback = 0,
-    PullToPoint = 1,
-    MovementLock = 2
+    PullToPoint = 0,
+    MovementLock = 1
+}
+
+public enum ImpulseControlReleaseMode
+{
+    DurationOnly = 0,
+    UntilGrounded = 1,
+    UntilGroundedOrTimeout = 2
 }
 
 [RequireComponent(typeof(Rigidbody))]
@@ -15,7 +21,6 @@ public class PlayerController : MonoBehaviour
 {
     private enum MovementCommandType
     {
-        DirectionalOverride,
         PullToPoint,
         FollowTransform,
         LockMovement
@@ -31,10 +36,19 @@ public class PlayerController : MonoBehaviour
         public float StopDistance;
         public bool FaceDirection;
         public MovementCommandType Type;
-        public Vector3 Direction;
         public Vector3 TargetPoint;
         public Transform FollowTarget;
         public Vector3 FollowOffset;
+    }
+
+    private struct ImpulseControlState
+    {
+        public bool IsActive;
+        public ImpulseControlReleaseMode ReleaseMode;
+        public float RemainingTimeout;
+        public bool HasBeenAirborneSinceStart;
+        public bool HasFacingDirection;
+        public Vector3 FacingDirection;
     }
 
     [Header("References")]
@@ -42,6 +56,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PhotonView photonView;
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private PlayerInputSource inputSource;
+    [SerializeField] private PlayerGroundSensor groundSensor;
 
     [Header("Base Move")]
     [SerializeField, Min(0f)] private float maxMoveSpeed = 6f;
@@ -58,11 +73,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Min(0.01f)] private float forcedMotionAcceleration = 120f;
     [SerializeField] private bool instantStopOnHardLock = true;
 
+    [Header("Impulse Knockback")]
+    [SerializeField] private bool clearHorizontalVelocityBeforeImpulse = true;
+    [SerializeField] private bool preserveVerticalVelocityOnImpulse = false;
+
     [Header("Options")]
     [SerializeField] private bool useCameraMainIfMissing = true;
 
     public Vector3 MoveDirectionWorld => desiredMoveDirection;
     public bool IsMoving => hasMoveInput;
+
     public bool HasLocalAuthority
     {
         get
@@ -74,6 +94,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public bool IsGrounded => groundSensor != null && groundSensor.IsGrounded;
+    public bool IsAirborne => !IsGrounded;
+    public bool JustLanded => groundSensor != null && groundSensor.JustLanded;
+    public bool JustLeftGround => groundSensor != null && groundSensor.JustLeftGround;
+    public Vector3 GroundNormal => groundSensor != null ? groundSensor.GroundNormal : Vector3.up;
+
     private Vector2 moveInput;
     private Vector3 desiredMoveDirection;
     private bool hasMoveInput;
@@ -82,11 +108,14 @@ public class PlayerController : MonoBehaviour
     private int nextCommandId = 1;
     private int nextCommandSequence = 1;
 
+    private ImpulseControlState impulseControl;
+
     private void Reset()
     {
         rb = GetComponent<Rigidbody>();
         photonView = GetComponent<PhotonView>();
         inputSource = GetComponent<PlayerInputSource>();
+        groundSensor = GetComponent<PlayerGroundSensor>();
     }
 
     private void Awake()
@@ -99,6 +128,9 @@ public class PlayerController : MonoBehaviour
 
         if (inputSource == null)
             inputSource = GetComponent<PlayerInputSource>();
+
+        if (groundSensor == null)
+            groundSensor = GetComponent<PlayerGroundSensor>();
 
         if (cameraTransform == null && useCameraMainIfMissing && Camera.main != null)
             cameraTransform = Camera.main.transform;
@@ -118,7 +150,19 @@ public class PlayerController : MonoBehaviour
         if (!HasLocalAuthority)
             return;
 
+        if (groundSensor != null)
+        {
+            groundSensor.RefreshGrounding(Time.fixedDeltaTime);
+        }
+
         TickMovementCommands(Time.fixedDeltaTime);
+        TickImpulseControl(Time.fixedDeltaTime);
+
+        if (impulseControl.IsActive)
+        {
+            UpdateImpulseLockRotation();
+            return;
+        }
 
         RuntimeMovementCommand activeCommand = GetHighestPriorityCommand();
 
@@ -215,13 +259,6 @@ public class PlayerController : MonoBehaviour
                 ApplyTargetHorizontalVelocity(Vector3.zero, forcedMotionAcceleration, instantStopOnHardLock);
                 break;
 
-            case MovementCommandType.DirectionalOverride:
-                ApplyTargetHorizontalVelocity(
-                    command.Direction.normalized * command.Speed,
-                    forcedMotionAcceleration,
-                    false);
-                break;
-
             case MovementCommandType.PullToPoint:
             case MovementCommandType.FollowTransform:
                 if (!TryGetCommandTargetPoint(command, out Vector3 targetPoint))
@@ -261,13 +298,65 @@ public class PlayerController : MonoBehaviour
         RotateToward(direction);
     }
 
+    private void TickImpulseControl(float deltaTime)
+    {
+        if (!impulseControl.IsActive)
+            return;
+
+        if (IsAirborne)
+        {
+            impulseControl.HasBeenAirborneSinceStart = true;
+        }
+
+        switch (impulseControl.ReleaseMode)
+        {
+            case ImpulseControlReleaseMode.DurationOnly:
+                impulseControl.RemainingTimeout -= deltaTime;
+                if (impulseControl.RemainingTimeout <= 0f)
+                {
+                    ClearImpulseControl();
+                }
+                break;
+
+            case ImpulseControlReleaseMode.UntilGrounded:
+                if (IsGrounded && impulseControl.HasBeenAirborneSinceStart)
+                {
+                    ClearImpulseControl();
+                }
+                break;
+
+            case ImpulseControlReleaseMode.UntilGroundedOrTimeout:
+                impulseControl.RemainingTimeout -= deltaTime;
+
+                if (IsGrounded && impulseControl.HasBeenAirborneSinceStart)
+                {
+                    ClearImpulseControl();
+                }
+                else if (impulseControl.RemainingTimeout <= 0f)
+                {
+                    ClearImpulseControl();
+                }
+                break;
+        }
+    }
+
+    private void UpdateImpulseLockRotation()
+    {
+        if (!rotateTowardForcedMotion || !impulseControl.HasFacingDirection)
+            return;
+
+        RotateToward(impulseControl.FacingDirection);
+    }
+
+    private void ClearImpulseControl()
+    {
+        impulseControl = default;
+    }
+
     private Vector3 GetCommandFacingDirection(RuntimeMovementCommand command)
     {
         switch (command.Type)
         {
-            case MovementCommandType.DirectionalOverride:
-                return command.Direction;
-
             case MovementCommandType.PullToPoint:
             case MovementCommandType.FollowTransform:
                 if (!TryGetCommandTargetPoint(command, out Vector3 targetPoint))
@@ -391,29 +480,6 @@ public class PlayerController : MonoBehaviour
         return command.Id;
     }
 
-    private int AddDirectionalOverrideInternal(
-        Vector3 worldDirection,
-        float speed,
-        float duration,
-        int priority = 100,
-        bool faceDirection = true)
-    {
-        worldDirection.y = 0f;
-
-        if (worldDirection.sqrMagnitude <= 0.0001f || speed <= 0f || duration <= 0f)
-            return -1;
-
-        return AddCommand(new RuntimeMovementCommand
-        {
-            Type = MovementCommandType.DirectionalOverride,
-            Direction = worldDirection.normalized,
-            Speed = speed,
-            RemainingTime = duration,
-            Priority = priority,
-            FaceDirection = faceDirection,
-        });
-    }
-
     private int AddPullToPointInternal(
         Vector3 worldPoint,
         float speed,
@@ -453,6 +519,59 @@ public class PlayerController : MonoBehaviour
         });
     }
 
+    public void ApplyImpulseKnockback(
+        Vector3 worldImpulse,
+        ImpulseControlReleaseMode releaseMode,
+        float releaseTimeout = 0f,
+        bool faceDirection = true,
+        bool clearExistingCommands = true)
+    {
+        if (worldImpulse.sqrMagnitude <= 0.0001f)
+            return;
+
+        if (clearExistingCommands)
+        {
+            ClearCommands();
+        }
+
+        Vector3 velocity = rb.linearVelocity;
+        bool shouldWriteVelocity = false;
+
+        if (clearHorizontalVelocityBeforeImpulse)
+        {
+            velocity.x = 0f;
+            velocity.z = 0f;
+            shouldWriteVelocity = true;
+        }
+
+        if (!preserveVerticalVelocityOnImpulse)
+        {
+            velocity.y = 0f;
+            shouldWriteVelocity = true;
+        }
+
+        if (shouldWriteVelocity)
+        {
+            rb.linearVelocity = velocity;
+        }
+
+        rb.AddForce(worldImpulse, ForceMode.Impulse);
+
+        Vector3 horizontalImpulse = new Vector3(worldImpulse.x, 0f, worldImpulse.z);
+
+        impulseControl = new ImpulseControlState
+        {
+            IsActive = true,
+            ReleaseMode = releaseMode,
+            RemainingTimeout = Mathf.Max(0f, releaseTimeout),
+            HasBeenAirborneSinceStart = IsAirborne,
+            HasFacingDirection = faceDirection && horizontalImpulse.sqrMagnitude > 0.0001f,
+            FacingDirection = horizontalImpulse.sqrMagnitude > 0.0001f
+                ? horizontalImpulse.normalized
+                : Vector3.zero
+        };
+    }
+
     public int ApplyEffect(
         MovementEffectType effectType,
         Vector3 vectorValue,
@@ -464,14 +583,6 @@ public class PlayerController : MonoBehaviour
     {
         switch (effectType)
         {
-            case MovementEffectType.Knockback:
-                return AddDirectionalOverrideInternal(
-                    vectorValue,
-                    speed,
-                    duration,
-                    priority,
-                    faceDirection);
-
             case MovementEffectType.PullToPoint:
                 return AddPullToPointInternal(
                     vectorValue,
@@ -489,23 +600,6 @@ public class PlayerController : MonoBehaviour
             default:
                 return -1;
         }
-    }
-
-    public int ApplyKnockback(
-        Vector3 worldDirection,
-        float speed,
-        float duration,
-        int priority = 100,
-        bool faceDirection = true)
-    {
-        return ApplyEffect(
-            MovementEffectType.Knockback,
-            worldDirection,
-            speed,
-            duration,
-            0.1f,
-            priority,
-            faceDirection);
     }
 
     public int ApplyPullToPoint(

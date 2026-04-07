@@ -43,6 +43,9 @@ MonoBehaviour:
   - RPC_ApplyMovementLock
   - RPC_ApplyPullToPoint
   - RPC_ApplyEffect
+  - RPC_ApplyImpulseKnockback
+  - RPC_RequestDamage
+  - RPC_RequestHeal
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
