@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68b0bc1cc9a5e9846a9a78770b884115, type: 3}
+  m_Name: PushWaveSkillDefinition
+  m_EditorClassIdentifier: Assembly-CSharp::PushWaveSkillDefinition
+  skillId: 1
+  displayName: PushWave
+  cooldown: 2
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  triggerInteraction: 1
+  range: 2
+  width: 2
+  height: 1
+  forwardOffset: 0.8
+  horizontalImpulse: 6
+  upwardImpulse: 3
+  controlReleaseMode: 1
+  controlReleaseTimeout: 1
+  pushFromCasterCenter: 1
+  facePushDirection: 1
+  clearTargetMovementCommands: 1
+  networkEffectPrefab: {fileID: 3240045606009096287, guid: 4f3e3db9e7c5d614a85883d1b500743c, type: 3}
