@@ -1,11 +1,13 @@
 {
   "dependencies": {
-    "com.teller.util": {
-      "version": "https://github.com/KimJinWooDa/Utils.git",
+    "com.boxqkrtm.ide.cursor": {
+      "version": "https://github.com/boxqkrtm/com.unity.ide.cursor.git",
       "depth": 0,
       "source": "git",
-      "dependencies": {},
-      "hash": "96f3d156f0ea17b797eb3dfca3094f74bb147a08"
+      "dependencies": {
+        "com.unity.test-framework": "1.1.9"
+      },
+      "hash": "fd8ff1fb700caf062eb5cce364c1d0a85f99ebe6"
     },
     "com.unity.ai.navigation": {
       "version": "2.0.10",

@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/External/Scenes/WonJePractice.unity
+    guid: e97a7f99a1e21a740acacb25fbed91f1
   - enabled: 1
     path: Assets/Photon/PhotonUnityNetworking/Demos/PunBasics-Tutorial/Scenes/PunBasics-Launcher.unity
     guid: bff77b01b50254edbb6edeeaba5ae8b3
