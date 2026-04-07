@@ -79,6 +79,9 @@ public enum SuicideSquad_ItemEffectType
 /// 인벤토리는 이 데이터를 참조하고,
 /// UI는 여기서 이름/아이콘을 읽고,
 /// 플레이어는 여기서 효과 정보를 읽는다.
+///
+/// 추가로 linkedLegacyItemType 을 통해
+/// 기존 원본 ItemController / ItemType 시스템과 연결할 수 있다.
 /// </summary>
 [CreateAssetMenu(fileName = "SuicideSquad_ItemData", menuName = "SuicideSquad/Item Data")]
 public class SuicideSquad_ItemData : ScriptableObject
@@ -87,6 +90,7 @@ public class SuicideSquad_ItemData : ScriptableObject
 
     /// <summary>
     /// 아이템 종류 구분값.
+    /// SuicideSquad 전용 인벤토리/표시 시스템에서 사용한다.
     /// </summary>
     [SerializeField] private SuicideSquad_ItemType itemType = SuicideSquad_ItemType.None;
 
@@ -125,8 +129,20 @@ public class SuicideSquad_ItemData : ScriptableObject
     /// </summary>
     [SerializeField] private float effectDuration = 0f;
 
+    [Header("원본 능력 시스템 연결")]
+
     /// <summary>
-    /// 외부에서 읽는 아이템 종류.
+    /// 기존 원본 ItemController / ItemType 시스템과 연결하기 위한 브리지 값.
+    ///
+    /// 주의:
+    /// 이 클래스 안에는 ItemType 이라는 프로퍼티가 이미 존재하므로,
+    /// 기존 전역 enum ItemType 과 이름 충돌이 발생할 수 있다.
+    /// 그래서 반드시 global::ItemType 으로 명시해서 사용한다.
+    /// </summary>
+    [SerializeField] private global::ItemType linkedLegacyItemType = global::ItemType.None;
+
+    /// <summary>
+    /// 외부에서 읽는 SuicideSquad 전용 아이템 종류.
     /// </summary>
     public SuicideSquad_ItemType ItemType => itemType;
 
@@ -159,6 +175,12 @@ public class SuicideSquad_ItemData : ScriptableObject
     /// 외부에서 읽는 효과 지속 시간.
     /// </summary>
     public float EffectDuration => effectDuration;
+
+    /// <summary>
+    /// 외부에서 읽는 기존 원본 능력 타입 연결값.
+    /// 기존 ItemController 쪽에서 실제 능력 실행 시 사용한다.
+    /// </summary>
+    public global::ItemType LinkedLegacyItemType => linkedLegacyItemType;
 
 #if UNITY_EDITOR
     /// <summary>

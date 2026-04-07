@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 /// <summary>
@@ -66,6 +67,13 @@ public class SuicideSquad_PlayerItemController : MonoBehaviour
     /// </summary>
     [SerializeField] private bool handleKeyboardInput = true;
 
+    [Header("네트워크 입력 제어")]
+
+    /// <summary>
+    /// 멀티플레이 시 로컬 소유 플레이어만 입력을 받도록 제한할지 여부.
+    /// </summary>
+    [SerializeField] private bool blockRemoteInputInNetwork = true;
+
     /// <summary>
     /// 시작 시 플레이어 리시버를 자동으로 찾을지 여부.
     /// </summary>
@@ -77,6 +85,11 @@ public class SuicideSquad_PlayerItemController : MonoBehaviour
     private readonly List<SuicideSquad_IPlayerItemReceiver> cachedReceivers = new List<SuicideSquad_IPlayerItemReceiver>();
 
     /// <summary>
+    /// 멀티플레이 로컬 소유권 확인용 PhotonView.
+    /// </summary>
+    private PhotonView photonView = null;
+
+    /// <summary>
     /// 시작 시 참조를 보정하고 플레이어 리시버를 캐싱한다.
     /// </summary>
     private void Awake()
@@ -84,6 +97,13 @@ public class SuicideSquad_PlayerItemController : MonoBehaviour
         if (playerRoot == null)
         {
             playerRoot = transform;
+        }
+
+        photonView = GetComponent<PhotonView>();
+
+        if (photonView == null)
+        {
+            photonView = GetComponentInParent<PhotonView>();
         }
 
         if (autoCacheReceiversOnAwake)
@@ -98,6 +118,11 @@ public class SuicideSquad_PlayerItemController : MonoBehaviour
     private void Update()
     {
         if (handleKeyboardInput == false)
+        {
+            return;
+        }
+
+        if (IsLocalInputOwner() == false)
         {
             return;
         }
@@ -166,8 +191,14 @@ public class SuicideSquad_PlayerItemController : MonoBehaviour
     public bool TryUseSelectedItem()
     {
         // TODO (협업 - 플레이어 연결):
-        // 기존 PlayerHealth, PlayerMovement, PlayerStatusEffect 같은 스크립트가
-        // SuicideSquad_IPlayerItemReceiver 를 구현해야 실제 효과가 적용된다.
+        // 현재는 ItemController 가 SuicideSquad_IPlayerItemReceiver 구현체 역할을 한다.
+        // 추후 PlayerHealth, Shield, Buff 시스템이 추가되면
+        // 그쪽도 같은 인터페이스를 구현해서 함께 확장 가능하다.
+
+        if (IsLocalInputOwner() == false)
+        {
+            return false;
+        }
 
         if (itemInventory == null)
         {
@@ -271,5 +302,30 @@ public class SuicideSquad_PlayerItemController : MonoBehaviour
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// 멀티플레이 시 로컬 플레이어만 입력을 받을 수 있도록 검사한다.
+    /// 오프라인에서는 항상 true를 반환한다.
+    /// </summary>
+    /// <returns>현재 오브젝트가 로컬 입력 소유자면 true.</returns>
+    private bool IsLocalInputOwner()
+    {
+        if (blockRemoteInputInNetwork == false)
+        {
+            return true;
+        }
+
+        if (!PhotonNetwork.IsConnected)
+        {
+            return true;
+        }
+
+        if (photonView == null)
+        {
+            return false;
+        }
+
+        return photonView.IsMine;
     }
 }

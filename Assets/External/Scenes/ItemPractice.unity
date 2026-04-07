@@ -533,10 +533,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6c6d7210e86f7e4ba6ec91a7ecae736, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DroppedItemPickup
-  itemType: 0
+  itemData: {fileID: 0}
+  giveCount: 1
+  itemType: 1
+  allowLegacyEquipFallback: 1
   destroyOnPickup: 1
   rotateWhileDropped: 1
   rotationSpeed: {x: 0, y: 120, z: 0}
+  playerTag: Player
+  searchParentsAndChildren: 1
+  setTriggerOnReset: 1
 --- !u!135 &1112859733
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -556,7 +562,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.32
+  m_Radius: 0.12
   m_Center: {x: 0, y: -0.84, z: 0}
 --- !u!135 &1112859734
 SphereCollider:
@@ -577,7 +583,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 1.4
+  m_Radius: 1.91
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &1112859735
 Transform:
@@ -833,8 +839,10 @@ GameObject:
   - component: {fileID: 2067507182}
   - component: {fileID: 2067507181}
   - component: {fileID: 2067507179}
-  - component: {fileID: 2067507180}
   - component: {fileID: 2067507186}
+  - component: {fileID: 2067507187}
+  - component: {fileID: 2067507189}
+  - component: {fileID: 2067507188}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -869,21 +877,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &2067507180
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2067507178}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f37fba3794d254945bb1421847e9af00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  moveSpeed: 5
-  playerItemController: {fileID: 2067507186}
-  startingItem: 0
 --- !u!65 &2067507181
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -989,8 +982,67 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cae6b7bdb494b04eab0ed36517ec3d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemController
+  allowLegacyDirectUseInput: 1
   useKey: 113
   currentItemType: 1
+--- !u!114 &2067507187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2067507178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81b435c1fca022940874a787a1f74fe0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  rb: {fileID: 2067507179}
+  cameraTransform: {fileID: 0}
+  inputSource: {fileID: 0}
+  maxMoveSpeed: 6
+  timeToMaxSpeed: 0.08
+  deceleration: 80
+  instantStopWhenNoInput: 1
+  inputDeadZone: 0.05
+  rotationSpeed: 1080
+  useCameraMainIfMissing: 1
+--- !u!114 &2067507188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2067507178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4798592a3c8c9c46b6693d1f15402a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SuicideSquad_PlayerItemController
+  itemInventory: {fileID: 2067507189}
+  playerRoot: {fileID: 2067507184}
+  previousSlotKey: 106
+  nextSlotKey: 107
+  useItemKey: 108
+  handleKeyboardInput: 1
+  blockRemoteInputInNetwork: 1
+  autoCacheReceiversOnAwake: 1
+--- !u!114 &2067507189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2067507178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e22733804f5d154b90b73b15fd48bd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SuicideSquad_ItemInventory
+  slotCount: 8
+  loopSelection: 1
+  selectedSlotIndex: 0
+  slotList: []
 --- !u!1 &2111789827
 GameObject:
   m_ObjectHideFlags: 0
