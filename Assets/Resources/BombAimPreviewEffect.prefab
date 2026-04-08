@@ -62,10 +62,6 @@ MonoBehaviour:
   rangeCircleSegments: 48
   triggerInteraction: 1
   hideOnStart: 1
-  scaleRangeEffect: 1
-  rangeEffectBaseScale: {x: 1, y: 1, z: 1}
-  rangeScaleDiameterMultiplier: 2
-  rangeScaleHeight: 1
   trajectoryWidth: 0.06
   rangeWidth: 0.045
   trajectoryColor: {r: 0.3, g: 0.95, b: 1, a: 0.95}

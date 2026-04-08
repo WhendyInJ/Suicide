@@ -56,7 +56,7 @@ public sealed class BombAimPreviewEffect : MonoBehaviour
 
     private void OnValidate()
     {
-        EnsureVisualObjects();
+        ResolveExistingVisualObjects();
         ApplyVisualStyle();
     }
 
@@ -188,6 +188,24 @@ public sealed class BombAimPreviewEffect : MonoBehaviour
             rangeRenderer,
             RangeChildName,
             loop: true);
+    }
+
+    private void ResolveExistingVisualObjects()
+    {
+        trajectoryRenderer = ResolveExistingLineRenderer(trajectoryRenderer, TrajectoryChildName);
+        rangeRenderer = ResolveExistingLineRenderer(rangeRenderer, RangeChildName);
+    }
+
+    private LineRenderer ResolveExistingLineRenderer(LineRenderer renderer, string childName)
+    {
+        if (renderer != null)
+            return renderer;
+
+        Transform child = transform.Find(childName);
+        if (child == null)
+            return null;
+
+        return child.GetComponent<LineRenderer>();
     }
 
     private LineRenderer EnsureLineRenderer(LineRenderer renderer, string childName, bool loop)
