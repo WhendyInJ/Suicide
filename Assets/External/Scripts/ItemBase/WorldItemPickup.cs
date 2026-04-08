@@ -130,25 +130,27 @@ public class WorldItemPickup : MonoBehaviourPun, IPunInstantiateMagicCallback
 
         isCollected = true;
         isClaimPendingLocally = false;
-
-        GrantPickupToReceiver(receiverViewId);
+        SetVisualState(false);
 
         if (PhotonNetwork.InRoom)
         {
+            photonView.RPC(nameof(RPC_FinalizePickup), RpcTarget.All, receiverViewId);
             PhotonNetwork.Destroy(gameObject);
             return;
         }
 
+        GrantPickupToReceiver(receiverViewId);
         Destroy(gameObject);
     }
 
     [PunRPC]
     private void RPC_FinalizePickup(int receiverViewId)
     {
-        if (isCollected == false)
-        {
-            isCollected = true;
-        }
+        isCollected = true;
+        isClaimPendingLocally = false;
+        pendingReceiverViewId = -1;
+        pendingClaimRestoreAt = float.NegativeInfinity;
+        SetVisualState(false);
 
         if (TryResolvePickupReceiver(receiverViewId, out IItemPickupReceiver receiver))
         {
@@ -157,8 +159,6 @@ public class WorldItemPickup : MonoBehaviourPun, IPunInstantiateMagicCallback
                 receiver.ReceivePickup(itemDefinition, amount);
             }
         }
-
-        Destroy(gameObject);
     }
 
     [PunRPC]
