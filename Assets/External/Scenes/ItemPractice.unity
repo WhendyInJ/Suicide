@@ -1014,6 +1014,10 @@ MonoBehaviour:
   instantStopOnHardLock: 1
   clearHorizontalVelocityBeforeImpulse: 1
   preserveVerticalVelocityOnImpulse: 0
+<<<<<<< Updated upstream
+=======
+  debugInputBlocked: 0
+>>>>>>> Stashed changes
   useCameraMainIfMissing: 1
 --- !u!114 &2067507188
 MonoBehaviour:
@@ -1049,7 +1053,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SuicideSquad_ItemInventory
   slotCount: 8
   loopSelection: 1
-  selectedSlotIndex: -1
+  selectedSlotIndex: 0
   slotList: []
 --- !u!114 &2067507190
 MonoBehaviour:

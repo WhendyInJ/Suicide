@@ -6,11 +6,17 @@ public class LeverHoldInteraction : NetworkHoldInteractionBase
 {
     [Header("References")]
     [SerializeField] private Transform lever;
+    [SerializeField] private Transform moveTarget;
     [SerializeField] private MonoBehaviour[] triggerTargets;
 
     [Header("Lever X Rotation")]
     [SerializeField] private float inactiveXRotation = -45f;
     [SerializeField] private float activeXRotation = 45f;
+
+    [Header("Target Motion")]
+    [SerializeField] private float activatedTargetWorldY = 5.1f;
+    [SerializeField, Min(0.01f)] private float targetMoveSpeed = 12f;
+    [SerializeField, Min(0f)] private float targetHoldDuration = 1f;
 
     [Header("Runtime Debug")]
     [SerializeField] private bool isActivated;
@@ -18,8 +24,19 @@ public class LeverHoldInteraction : NetworkHoldInteractionBase
     [SerializeField] private bool isReturnAnimating;
 
     private Vector3 leverBaseLocalEuler;
+    private float initialTargetWorldY;
     private double returnAnimationStartTime;
     private float returnAnimationFromProgress;
+    private TargetMovePhase targetMovePhase;
+    private double targetHoldStartTime;
+
+    private enum TargetMovePhase
+    {
+        Idle = 0,
+        MovingToActivated = 1,
+        Holding = 2,
+        Returning = 3
+    }
 
     protected override void Awake()
     {
@@ -27,6 +44,9 @@ public class LeverHoldInteraction : NetworkHoldInteractionBase
             lever = transform;
 
         leverBaseLocalEuler = lever.localEulerAngles;
+        if (moveTarget != null)
+            initialTargetWorldY = moveTarget.position.y;
+
         base.Awake();
         ApplyIdleVisualImmediate();
     }
@@ -39,6 +59,8 @@ public class LeverHoldInteraction : NetworkHoldInteractionBase
 
     protected override void UpdateVisualState(float holdProgress, bool isInteracting, double networkTime)
     {
+        UpdateMoveTargetPosition();
+
         if (isInteracting)
         {
             isReturnAnimating = false;
@@ -80,6 +102,7 @@ public class LeverHoldInteraction : NetworkHoldInteractionBase
         {
             isActivated = !isActivated;
             isReturnAnimating = false;
+            BeginTargetMoveCycle();
             ApplyLeverProgress(GetStableProgress());
             TriggerAssignedTargets();
             return;
@@ -105,6 +128,66 @@ public class LeverHoldInteraction : NetworkHoldInteractionBase
         Vector3 euler = leverBaseLocalEuler;
         euler.x = Mathf.Lerp(inactiveXRotation, activeXRotation, currentVisualProgress);
         lever.localRotation = Quaternion.Euler(euler);
+    }
+
+    private void UpdateMoveTargetPosition()
+    {
+        if (moveTarget == null)
+            return;
+
+        switch (targetMovePhase)
+        {
+            case TargetMovePhase.Idle:
+                MoveTargetTowardsY(initialTargetWorldY);
+                break;
+
+            case TargetMovePhase.MovingToActivated:
+                if (MoveTargetTowardsY(activatedTargetWorldY))
+                {
+                    targetMovePhase = TargetMovePhase.Holding;
+                    targetHoldStartTime = NetworkTime;
+                }
+                break;
+
+            case TargetMovePhase.Holding:
+                SnapTargetY(activatedTargetWorldY);
+                if (NetworkTime >= targetHoldStartTime + targetHoldDuration)
+                    targetMovePhase = TargetMovePhase.Returning;
+                break;
+
+            case TargetMovePhase.Returning:
+                if (MoveTargetTowardsY(initialTargetWorldY))
+                    targetMovePhase = TargetMovePhase.Idle;
+                break;
+        }
+    }
+
+    private void BeginTargetMoveCycle()
+    {
+        if (moveTarget == null)
+            return;
+
+        targetMovePhase = TargetMovePhase.MovingToActivated;
+    }
+
+    private bool MoveTargetTowardsY(float targetY)
+    {
+        Vector3 targetPosition = moveTarget.position;
+        targetPosition.y = targetY;
+
+        moveTarget.position = Vector3.MoveTowards(
+            moveTarget.position,
+            targetPosition,
+            targetMoveSpeed * Time.deltaTime);
+
+        return Mathf.Abs(moveTarget.position.y - targetY) <= 0.001f;
+    }
+
+    private void SnapTargetY(float targetY)
+    {
+        Vector3 position = moveTarget.position;
+        position.y = targetY;
+        moveTarget.position = position;
     }
 
     private void TriggerAssignedTargets()
