@@ -1,5 +1,6 @@
 ﻿<Solution>
   <Project Path="PhotonRealtime.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="AllIn1VfxAssmebly.csproj" />
   <Project Path="AllIn13DShaderAssemebly.Editor.csproj" />
   <Project Path="PhotonUnityNetworking.Editor.csproj" />
@@ -7,12 +8,12 @@
   <Project Path="PhotonUnityNetworking.csproj" />
   <Project Path="AllIn13DShaderDemoScriptsAssembly.csproj" />
   <Project Path="PhotonUnityNetworking.Demos.csproj" />
-  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="PhotonUnityNetworking.Utilities.csproj" />
   <Project Path="AllIn13DShaderAssemebly.csproj" />
   <Project Path="PunDemos.DemoHubEditor.csproj" />
   <Project Path="PunDemos.DemoSlotcarEditor.csproj" />
   <Project Path="AllIn1VfxTexDemoAssembly.csproj" />
+  <Project Path="OccaSoftware.Crosshairs.Editor.csproj" />
   <Project Path="PhotonChat.csproj" />
   <Project Path="PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />

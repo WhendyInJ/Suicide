@@ -53,7 +53,8 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
         float duration,
         float stopDistance = 0.1f,
         int priority = 100,
-        bool faceDirection = true)
+        bool faceDirection = true,
+        bool allowVerticalMovement = false)
     {
         if (PhotonNetwork.InRoom && photonView.Owner != null)
         {
@@ -66,7 +67,8 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
                 duration,
                 stopDistance,
                 priority,
-                faceDirection);
+                faceDirection,
+                allowVerticalMovement);
         }
         else
         {
@@ -77,7 +79,8 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
                 duration,
                 stopDistance,
                 priority,
-                faceDirection);
+                faceDirection,
+                allowVerticalMovement);
         }
     }
 
@@ -101,7 +104,8 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
         float duration,
         float stopDistance = 0.1f,
         int priority = 150,
-        bool faceDirection = true)
+        bool faceDirection = true,
+        bool allowVerticalMovement = false)
     {
         RequestEffect(
             MovementEffectType.PullToPoint,
@@ -110,7 +114,26 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
             duration,
             stopDistance,
             priority,
-            faceDirection);
+            faceDirection,
+            allowVerticalMovement);
+    }
+
+    public void RequestStun(
+        float duration,
+        int priority = 300)
+    {
+        if (PhotonNetwork.InRoom && photonView.Owner != null)
+        {
+            photonView.RPC(
+                nameof(RPC_ApplyStun),
+                photonView.Owner,
+                duration,
+                priority);
+        }
+        else
+        {
+            RPC_ApplyStun(duration, priority);
+        }
     }
 
     [PunRPC]
@@ -143,7 +166,8 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
         float duration,
         float stopDistance,
         int priority,
-        bool faceDirection)
+        bool faceDirection,
+        bool allowVerticalMovement)
     {
         if (PhotonNetwork.InRoom && !photonView.IsMine)
             return;
@@ -158,6 +182,21 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
             duration,
             stopDistance,
             priority,
-            faceDirection);
+            faceDirection,
+            allowVerticalMovement);
+    }
+
+    [PunRPC]
+    private void RPC_ApplyStun(
+        float duration,
+        int priority)
+    {
+        if (PhotonNetwork.InRoom && !photonView.IsMine)
+            return;
+
+        if (playerController == null)
+            return;
+
+        playerController.ApplyStun(duration, priority);
     }
 }

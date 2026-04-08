@@ -235,7 +235,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5661977081806419882}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: ItemSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -250,7 +250,7 @@ Transform:
   m_GameObject: {fileID: 2406665561005411228}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.634, z: 0.573}
+  m_LocalPosition: {x: 0, y: 1.101, z: 0.573}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -363,18 +363,21 @@ GameObject:
   - component: {fileID: 5952247655783481321}
   - component: {fileID: 2586263849498471237}
   - component: {fileID: 7582079418483201481}
+  - component: {fileID: 5314046071771920859}
   - component: {fileID: 2265392746849489109}
   - component: {fileID: 3464620825903959518}
   - component: {fileID: 341504517916250023}
   - component: {fileID: -1688230146479357924}
   - component: {fileID: -4536734906771263759}
+  - component: {fileID: 594426253204681647}
+  - component: {fileID: 6665527372684343841}
   - component: {fileID: 4276988534317274524}
   - component: {fileID: 6415889720398977426}
   - component: {fileID: 958998029986146911}
   - component: {fileID: 2776111555910386042}
-  - component: {fileID: -7016640141220796418}
   - component: {fileID: -3450619564669310636}
-  m_Layer: 0
+  - component: {fileID: -1233478967148384531}
+  m_Layer: 8
   m_Name: PlayerPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -410,12 +413,12 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3259927792943013746}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 41f081d5c6d286c47a33bed3f84de79a, type: 3}
-  m_Controller: {fileID: 9100000, guid: 69ce5dd747afb75488c00ed0f554f1d6, type: 2}
+  m_Controller: {fileID: 9100000, guid: 7af9dd2012e66314991cb2bb31701eea, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
@@ -446,13 +449,68 @@ MonoBehaviour:
   deceleration: 80
   instantStopWhenNoInput: 1
   inputDeadZone: 0.01
+  projectMovementOnGround: 1
+  maxGroundAngle: 60
+  maxStairAngle: 75
+  groundSnapProbeDistance: 0.6
+  maxGroundSnapSpeed: 8
+  groundSnapProbeStartOffset: 0.15
+  groundSnapDisableDurationAfterJump: 0.15
+  groundSnapMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  stairMask:
+    serializedVersion: 2
+    m_Bits: 0
+  enableStepClimb: 1
+  maxStepHeight: 0.35
+  stepDetectionDistance: 0.3
+  stepLowerProbeHeight: 0.05
+  stepUpperProbeClearance: 0.05
+  stepSurfaceSearchHeight: 0.1
+  stepDetectionMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  drawStepClimbGizmos: 1
   rotationSpeed: 720
   rotateTowardForcedMotion: 1
   forcedMotionAcceleration: 120
   instantStopOnHardLock: 1
+  enableJump: 0
+  jumpVelocity: 6
+  jumpBufferTime: 0.12
+  coyoteTime: 0.08
+  airborneDragMultiplier: 1
+  fallSpeedMultiplier: 1.3
+  clearDownwardVelocityOnJump: 1
   clearHorizontalVelocityBeforeImpulse: 1
   preserveVerticalVelocityOnImpulse: 0
+  groundedImpulseReleaseMinLockTime: 0.08
+  groundedImpulseReleaseHorizontalSpeed: 0.35
+  groundedImpulseReleaseVerticalSpeed: 0.2
+  debugInputBlocked: 0
   useCameraMainIfMissing: 1
+--- !u!114 &5314046071771920859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3259927792943013746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c312ff87b3d53a45b6922b5c8ee4337, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementAnimator
+  animator: {fileID: 2586263849498471237}
+  targetRigidbody: {fileID: 4276988534317274524}
+  photonView: {fileID: 958998029986146911}
+  inputSource: {fileID: 2265392746849489109}
+  playerController: {fileID: 7582079418483201481}
+  velocityParameterName: Velocity
+  inputThreshold: 0.01
+  velocityMultiplier: 1
+  dampTime: 0.05
 --- !u!114 &2265392746849489109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -469,6 +527,11 @@ MonoBehaviour:
   lookSensitivity: 1
   primarySkillKey: 102
   secondarySkillKey: 103
+  selectItemSlot1Key: 49
+  selectItemSlot2Key: 50
+  interactKey: 101
+  jumpKey: 32
+  playerController: {fileID: 7582079418483201481}
 --- !u!114 &3464620825903959518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -513,13 +576,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4eaa87198418b34f9a9f71aba964859, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGroundSensor
-  probeOrigin: {fileID: 5952247655783481321}
+  probeOrigin: {fileID: 0}
   groundMask:
     serializedVersion: 2
-    m_Bits: 4294967295
-  probeRadius: 0.25
+    m_Bits: 247
+  probeRadius: 0.2
   probeDistance: 0.1
-  probeOffset: {x: 0, y: 0.1, z: 0}
+  probeOffset: {x: 0, y: 0.25, z: 0}
   maxGroundAngle: 60
   triggerInteraction: 1
 --- !u!114 &-4536734906771263759
@@ -539,6 +602,45 @@ MonoBehaviour:
   initialHealth: 100
   invulnerable: 0
   allowHealingWhenDead: 0
+--- !u!114 &594426253204681647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3259927792943013746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c64e4208fbce404ba115959922c6f88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerItemInventory
+  selectedSlotIndex: -1
+  slotList: []
+--- !u!114 &6665527372684343841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3259927792943013746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e5a78e5295d0844f831540b6567e99b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerItemRunner
+  inventory: {fileID: 594426253204681647}
+  inputSource: {fileID: 2265392746849489109}
+  playerController: {fileID: 7582079418483201481}
+  selfMovementReceiver: {fileID: 3464620825903959518}
+  castOrigin: {fileID: 5661977081806419882}
+  effectSpawnPoint: {fileID: 5661977081806419882}
+  aimCamera: {fileID: 0}
+  heldItemAnchor: {fileID: 5661977081806419882}
+  defaultAimDistance: 30
+  trajectoryAimPreviewPrefab: {fileID: 1246619256393369892, guid: 2fe4dd4ad88c475d8417f6c98ed0ca49, type: 3}
+  crosshairAimPreviewPrefab: {fileID: 8714857369844832137, guid: 142f75112062f374fa176a1d73a8e65f, type: 3}
+  drawGrabAimGizmo: 1
+  grabAimGizmoColor: {r: 0.2, g: 0.9, b: 1, a: 1}
 --- !u!54 &4276988534317274524
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -564,7 +666,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 1
 --- !u!136 &6415889720398977426
 CapsuleCollider:
@@ -585,10 +687,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.3
   m_Height: 1.6
   m_Direction: 1
-  m_Center: {x: 0, y: 0.75, z: 0}
+  m_Center: {x: 0, y: 0.8, z: 0}
 --- !u!114 &958998029986146911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -609,9 +711,10 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: -4536734906771263759}
+  - {fileID: 594426253204681647}
   - {fileID: 2776111555910386042}
-  - {fileID: -7016640141220796418}
   - {fileID: -3450619564669310636}
+  - {fileID: -1233478967148384531}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -633,22 +736,6 @@ MonoBehaviour:
   m_SynchronizeLayers:
   - SynchronizeType: 2
     LayerIndex: 0
---- !u!114 &-7016640141220796418
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3259927792943013746}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonRigidbodyView
-  m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 0
-  m_TeleportEnabled: 0
-  m_TeleportIfDistanceGreaterThan: 3
 --- !u!114 &-3450619564669310636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -665,6 +752,22 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &-1233478967148384531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3259927792943013746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonRigidbodyView
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &3679327386258894117
 GameObject:
   m_ObjectHideFlags: 0

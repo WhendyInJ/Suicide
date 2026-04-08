@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e25a647fd99f89a43866c70f9dfeeccb, type: 3}
+  m_Name: GrabItemDefinition
+  m_EditorClassIdentifier: Assembly-CSharp::GrabItemDefinition
+  itemId: 2
+  displayName: Grab
+  icon: {fileID: -3094715403257382637, guid: 389b95573be51264c8a0c46b606fad47, type: 3}
+  maxStack: 1
+  useCooldown: 0
+  useMode: 1
+  aimSettings:
+    aimType: 1
+    maxDistance: 5
+    aimMask:
+      serializedVersion: 2
+      m_Bits: 0
+    triggerInteraction: 0
+  heldVisual:
+    prefab: {fileID: 1558941558143925840, guid: 5280bf4ade7ef964893bf8921982c998, type: 3}
+    localPosition: {x: 0, y: 0, z: 0.3}
+    localEulerAngles: {x: 0, y: 0, z: 0}
+    localScale: {x: 0.7, y: 0.7, z: 0.7}
+  projectilePrefab: {fileID: 1558941558143925840, guid: 9cbece08b70efc645a931340710af1fd, type: 3}
+  destinationPreviewPrefab: {fileID: 1558941558143925840, guid: 8d3915d5884330c428acd98aa3427374, type: 3}
+  projectileSpeed: 28
+  spawnForwardOffset: 0.6
+  spawnUpwardOffset: 0.2
+  castRange: 14
+  hitMask:
+    serializedVersion: 2
+    m_Bits: 320
+  structureMask:
+    serializedVersion: 2
+    m_Bits: 64
+  triggerInteraction: 1
+  selfPullSpeed: 18
+  selfStopDistance: 2
+  selfMaxPullDuration: 1
+  selfPullPriority: 220
+  targetPullSpeed: 18
+  targetStopDistance: 1.2
+  targetMaxPullDuration: 1.2
+  targetFrontDistance: 1.5
+  targetPullPriority: 220
