@@ -26,5 +26,13 @@ public abstract class ItemDefinition : ScriptableObject
     public ItemAimSettings AimSettings => aimSettings;
     public HeldItemVisualData HeldVisual => heldVisual;
 
+    public virtual bool TryBuildAimPreview(
+        in ItemAimPreviewContext context,
+        out ItemAimPreviewRequest request)
+    {
+        request = default;
+        return false;
+    }
+
     public abstract IItemRuntime CreateRuntime(ItemRuntimeContext context);
 }
