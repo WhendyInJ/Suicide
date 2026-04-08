@@ -73,41 +73,10 @@ public class GameOverManager : MonoBehaviourPunCallbacks
             return;
 
         int defeatedActorNumber = playerHealth.OwnerActorNumber;
-        int winnerActorNumber = ResolveWinnerActorNumber(playerHealth, args);
+        int winnerActorNumber = defeatedActorNumber;
         string winnerName = ResolveWinnerName(winnerActorNumber);
 
         BroadcastGameOver(winnerActorNumber, defeatedActorNumber, winnerName);
-    }
-
-    private int ResolveWinnerActorNumber(PlayerHealth defeatedHealth, HealthChangedEventArgs args)
-    {
-        if (args.SourceViewId > 0)
-        {
-            PhotonView sourceView = PhotonView.Find(args.SourceViewId);
-            if (sourceView != null && sourceView.Owner != null)
-            {
-                int sourceActorNumber = sourceView.Owner.ActorNumber;
-                if (sourceActorNumber > 0 && sourceActorNumber != defeatedHealth.OwnerActorNumber)
-                    return sourceActorNumber;
-            }
-        }
-
-        PlayerHealth bestAlive = null;
-        foreach (PlayerHealth trackedHealth in trackedHealths)
-        {
-            if (trackedHealth == null || !trackedHealth.IsAlive)
-                continue;
-
-            if (bestAlive == null ||
-                trackedHealth.CurrentHealth > bestAlive.CurrentHealth ||
-                (Mathf.Approximately(trackedHealth.CurrentHealth, bestAlive.CurrentHealth) &&
-                 trackedHealth.OwnerActorNumber < bestAlive.OwnerActorNumber))
-            {
-                bestAlive = trackedHealth;
-            }
-        }
-
-        return bestAlive != null ? bestAlive.OwnerActorNumber : -1;
     }
 
     private string ResolveWinnerName(int winnerActorNumber)
