@@ -640,10 +640,19 @@ public class PlayerController : MonoBehaviour
                 }
 
                 Vector3 toTarget = targetPoint - rb.position;
+                bool shouldUseHorizontalStopDistanceOnly =
+                    command.AllowVerticalMovement &&
+                    IsGrounded &&
+                    targetPoint.y <= rb.position.y;
+
+                Vector3 stopDistanceVector = shouldUseHorizontalStopDistanceOnly
+                    ? Vector3.ProjectOnPlane(toTarget, Vector3.up)
+                    : toTarget;
+
                 if (!command.AllowVerticalMovement)
                     toTarget = Vector3.ProjectOnPlane(toTarget, movePlaneNormal);
 
-                if (toTarget.sqrMagnitude <= command.StopDistance * command.StopDistance)
+                if (stopDistanceVector.sqrMagnitude <= command.StopDistance * command.StopDistance)
                 {
                     if (command.AllowVerticalMovement)
                         ApplyTargetVelocity(Vector3.zero, forcedMotionAcceleration, true);
