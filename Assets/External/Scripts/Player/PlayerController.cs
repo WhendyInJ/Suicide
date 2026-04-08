@@ -20,6 +20,10 @@ public enum ImpulseControlReleaseMode
 [RequireComponent(typeof(PhotonView))]
 public class PlayerController : MonoBehaviour
 {
+    private const float StepObstacleMaxUpDot = 0.2f;
+    private const float StepObstacleMinFacingDot = 0.35f;
+    private const float MinDetectedStepHeight = 0.02f;
+
     private enum MovementCommandType
     {
         PullToPoint,
@@ -84,6 +88,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Min(0f)] private float groundSnapDisableDurationAfterJump = 0.15f;
     [SerializeField] private LayerMask groundSnapMask = ~0;
     [SerializeField] private LayerMask stairMask = 0;
+
+    [Header("Step Climb")]
+    [SerializeField] private bool enableStepClimb = true;
+    [SerializeField, Min(0f)] private float maxStepHeight = 0.35f;
+    [SerializeField, Min(0.01f)] private float stepDetectionDistance = 0.3f;
+    [SerializeField, Min(0f)] private float stepLowerProbeHeight = 0.05f;
+    [SerializeField, Min(0f)] private float stepUpperProbeClearance = 0.05f;
+    [SerializeField, Min(0f)] private float stepSurfaceSearchHeight = 0.1f;
+    [SerializeField] private LayerMask stepDetectionMask = ~0;
+    [SerializeField] private bool drawStepClimbGizmos = true;
 
     [Header("Rotation")]
     [SerializeField, Min(0f)] private float rotationSpeed = 1080f;
@@ -155,6 +169,7 @@ public class PlayerController : MonoBehaviour
     private float lastJumpTime = float.NegativeInfinity;
     private float minGroundDotProduct;
     private float minStairDotProduct;
+    private Collider movementCollider;
 
     private readonly List<RuntimeMovementCommand> activeCommands = new();
     private int nextCommandId = 1;
@@ -171,6 +186,10 @@ public class PlayerController : MonoBehaviour
         photonView = GetComponent<PhotonView>();
         inputSource = GetComponent<PlayerInputSource>();
         groundSensor = GetComponent<PlayerGroundSensor>();
+        movementCollider = GetComponent<CapsuleCollider>();
+
+        if (movementCollider == null)
+            movementCollider = GetComponent<Collider>();
     }
 
     private void Awake()
@@ -189,12 +208,18 @@ public class PlayerController : MonoBehaviour
         if (groundSensor == null)
             groundSensor = GetComponent<PlayerGroundSensor>();
 
+        if (movementCollider == null)
+            movementCollider = GetComponent<CapsuleCollider>();
+
+        if (movementCollider == null)
+            movementCollider = GetComponent<Collider>();
+
         if (cameraTransform == null && useCameraMainIfMissing && Camera.main != null)
             cameraTransform = Camera.main.transform;
 
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationY;
     }
 
     private void OnValidate()
@@ -241,6 +266,7 @@ public class PlayerController : MonoBehaviour
         }
 
         UpdateBaseMovement();
+        TryStepClimb();
         UpdateBaseRotation();
     }
 
@@ -331,6 +357,80 @@ public class PlayerController : MonoBehaviour
             return;
 
         RotateToward(desiredMoveDirection);
+    }
+
+    private void TryStepClimb()
+    {
+        if (!CanAttemptStepClimb())
+            return;
+
+        if (!TryGetStepClimbProbeData(out StepClimbProbeData probeData))
+            return;
+
+        if (!Physics.Raycast(
+                probeData.LowerOrigin,
+                probeData.MoveDirection,
+                out RaycastHit lowerHit,
+                stepDetectionDistance,
+                stepDetectionMask,
+                QueryTriggerInteraction.Ignore))
+        {
+            return;
+        }
+
+        if (IsSelfCollider(lowerHit.collider))
+            return;
+
+        Vector3 lowerHitNormal = lowerHit.normal.normalized;
+        float lowerHitUpDot = Vector3.Dot(lowerHitNormal, Vector3.up);
+        if (lowerHitUpDot >= GetMinGroundDot(lowerHit.collider.gameObject.layer))
+            return;
+
+        if (lowerHitUpDot > StepObstacleMaxUpDot)
+            return;
+
+        float obstacleFacingDot = Vector3.Dot(-probeData.MoveDirection, lowerHitNormal);
+        if (obstacleFacingDot < StepObstacleMinFacingDot)
+            return;
+
+        if (Physics.Raycast(
+                probeData.UpperOrigin,
+                probeData.MoveDirection,
+                stepDetectionDistance,
+                stepDetectionMask,
+                QueryTriggerInteraction.Ignore))
+        {
+            return;
+        }
+
+        if (!Physics.Raycast(
+                probeData.SurfaceProbeOrigin(lowerHit.distance),
+                Vector3.down,
+                out RaycastHit topHit,
+                maxStepHeight + stepSurfaceSearchHeight + stepUpperProbeClearance,
+                stepDetectionMask,
+                QueryTriggerInteraction.Ignore))
+        {
+            return;
+        }
+
+        if (IsSelfCollider(topHit.collider))
+            return;
+
+        float topSurfaceDot = Vector3.Dot(topHit.normal.normalized, Vector3.up);
+        if (topSurfaceDot < GetMinGroundDot(topHit.collider.gameObject.layer))
+            return;
+
+        float stepHeightDelta = topHit.point.y - probeData.Bounds.min.y;
+        if (stepHeightDelta <= MinDetectedStepHeight || stepHeightDelta > maxStepHeight)
+            return;
+
+        if (stepHeightDelta <= lowerHit.point.y - probeData.Bounds.min.y)
+            return;
+
+        Vector3 position = rb.position;
+        position.y += stepHeightDelta + 0.01f;
+        rb.MovePosition(position);
     }
 
     private bool ReadJumpPressedThisFrame()
@@ -731,6 +831,141 @@ public class PlayerController : MonoBehaviour
             return Vector3.zero;
 
         return projected.normalized;
+    }
+
+    private bool CanAttemptStepClimb()
+    {
+        if (!enableStepClimb || rb == null || movementCollider == null)
+            return false;
+
+        if (!IsGrounded || !hasMoveInput || desiredMoveDirection.sqrMagnitude <= 0.0001f)
+            return false;
+
+        if (Time.time < lastJumpTime + groundSnapDisableDurationAfterJump)
+            return false;
+
+        Vector3 planarVelocity = Vector3.ProjectOnPlane(rb.linearVelocity, Vector3.up);
+        return planarVelocity.sqrMagnitude > 0.01f;
+    }
+
+    private bool IsSelfCollider(Collider targetCollider)
+    {
+        if (targetCollider == null)
+            return false;
+
+        if (targetCollider == movementCollider)
+            return true;
+
+        if (targetCollider.attachedRigidbody != null && targetCollider.attachedRigidbody == rb)
+            return true;
+
+        return targetCollider.transform.IsChildOf(transform) || transform.IsChildOf(targetCollider.transform);
+    }
+
+    private bool TryGetStepClimbProbeData(out StepClimbProbeData probeData)
+    {
+        probeData = default;
+
+        if (movementCollider == null)
+            return false;
+
+        Vector3 moveDirection = Vector3.ProjectOnPlane(desiredMoveDirection, Vector3.up);
+        if (moveDirection.sqrMagnitude <= 0.0001f)
+            return false;
+
+        moveDirection.Normalize();
+
+        Bounds bounds = movementCollider.bounds;
+        float lowerProbeY = bounds.min.y + Mathf.Max(0f, stepLowerProbeHeight);
+        Vector3 lowerOrigin = new Vector3(bounds.center.x, lowerProbeY, bounds.center.z);
+        Vector3 upperOrigin = lowerOrigin + Vector3.up * (maxStepHeight + stepUpperProbeClearance);
+        float surfaceProbeVerticalOffset = maxStepHeight + stepSurfaceSearchHeight;
+        float surfaceProbeDistance = maxStepHeight + stepSurfaceSearchHeight + stepUpperProbeClearance;
+
+        probeData = new StepClimbProbeData(
+            bounds,
+            moveDirection,
+            lowerOrigin,
+            upperOrigin,
+            surfaceProbeVerticalOffset,
+            surfaceProbeDistance);
+        return true;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (!drawStepClimbGizmos || !enableStepClimb)
+            return;
+
+        Collider gizmoCollider = movementCollider != null ? movementCollider : GetComponent<Collider>();
+        if (gizmoCollider == null)
+            return;
+
+        Collider cachedCollider = movementCollider;
+        movementCollider = gizmoCollider;
+
+        Vector3 cachedDesiredMoveDirection = desiredMoveDirection;
+        if (desiredMoveDirection.sqrMagnitude <= 0.0001f)
+        {
+            desiredMoveDirection = transform.forward;
+        }
+
+        if (!TryGetStepClimbProbeData(out StepClimbProbeData probeData))
+        {
+            desiredMoveDirection = cachedDesiredMoveDirection;
+            movementCollider = cachedCollider;
+            return;
+        }
+
+        float forwardDistance = stepDetectionDistance;
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(probeData.LowerOrigin, probeData.LowerOrigin + probeData.MoveDirection * forwardDistance);
+        Gizmos.DrawWireSphere(probeData.LowerOrigin, 0.03f);
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawLine(probeData.UpperOrigin, probeData.UpperOrigin + probeData.MoveDirection * forwardDistance);
+        Gizmos.DrawWireSphere(probeData.UpperOrigin, 0.03f);
+
+        Gizmos.color = Color.yellow;
+        Vector3 surfaceProbeOrigin = probeData.SurfaceProbeOrigin(stepDetectionDistance * 0.5f);
+        Gizmos.DrawLine(surfaceProbeOrigin, surfaceProbeOrigin + Vector3.down * probeData.SurfaceProbeDistance);
+        Gizmos.DrawWireSphere(surfaceProbeOrigin, 0.03f);
+
+        desiredMoveDirection = cachedDesiredMoveDirection;
+        movementCollider = cachedCollider;
+    }
+
+    private readonly struct StepClimbProbeData
+    {
+        public readonly Bounds Bounds;
+        public readonly Vector3 MoveDirection;
+        public readonly Vector3 LowerOrigin;
+        public readonly Vector3 UpperOrigin;
+        public readonly float SurfaceProbeVerticalOffset;
+        public readonly float SurfaceProbeDistance;
+
+        public StepClimbProbeData(
+            Bounds bounds,
+            Vector3 moveDirection,
+            Vector3 lowerOrigin,
+            Vector3 upperOrigin,
+            float surfaceProbeVerticalOffset,
+            float surfaceProbeDistance)
+        {
+            Bounds = bounds;
+            MoveDirection = moveDirection;
+            LowerOrigin = lowerOrigin;
+            UpperOrigin = upperOrigin;
+            SurfaceProbeVerticalOffset = surfaceProbeVerticalOffset;
+            SurfaceProbeDistance = surfaceProbeDistance;
+        }
+
+        public Vector3 SurfaceProbeOrigin(float lowerHitDistance)
+        {
+            return LowerOrigin +
+                   MoveDirection * Mathf.Max(lowerHitDistance + 0.02f, 0f) +
+                   Vector3.up * SurfaceProbeVerticalOffset;
+        }
     }
 
     private float GetMinGroundDot(int layer)
