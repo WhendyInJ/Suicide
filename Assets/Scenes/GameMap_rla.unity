@@ -1932,6 +1932,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 3524963811935514659, guid: 55f2ef8aa44fc9d489390ca64c94525a, type: 3}
+      propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3840298222871488496, guid: 55f2ef8aa44fc9d489390ca64c94525a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.1684809
@@ -5413,6 +5417,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 76cdf740d01175e438c69801a4617b26, type: 3}
+--- !u!114 &804311988 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4093569644519577458, guid: 76cdf740d01175e438c69801a4617b26, type: 3}
+  m_PrefabInstance: {fileID: 804311987}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04662528b487f4e4d97d13e0b0ea9ef0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeverHoldInteraction
 --- !u!1001 &811174331
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6979,6 +6994,10 @@ MonoBehaviour:
   collisionRadius: 0.2
   collisionBuffer: 0.05
   distanceSmoothSpeed: 20
+  trackedWorldSpaceCanvases: []
+  autoAssignWorldCamera: 1
+  rotateWorldSpaceUiToCamera: 1
+  keepUiUpright: 1
 --- !u!4 &1101320648 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
@@ -7877,6 +7896,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ddfdfd5771785c45b259e09c386ba1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InstantKillOnContact
+  graceSeconds: 0.12
+  leversThatActivateThisTrap:
+  - {fileID: 804311988}
+  activationMemorySeconds: 12
 --- !u!65 &1277457364
 BoxCollider:
   m_ObjectHideFlags: 0

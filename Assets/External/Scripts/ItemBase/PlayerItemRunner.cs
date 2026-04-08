@@ -34,12 +34,17 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
     [SerializeField] private Color grabAimGizmoColor = new Color(0.2f, 0.9f, 1f, 1f);
 
     public bool IsAimingItem => isAimingItem;
+    public bool IsPrimaryItemInUse => isPrimaryItemInUse;
+    public bool IsLocallyOwned => HasLocalAuthority;
 
     public event System.Action<bool> OnAimStateChanged;
 
     private RuntimeSlot[] runtimeSlots;
     private bool isAimingItem;
     private int aimingSlotIndex = -1;
+    private bool isPrimaryItemInUse;
+    private int primaryUseSlotIndex = -1;
+    private IContinuousAimedItemRuntime activeContinuousRuntime;
 
     private ItemDefinition currentHeldDefinition;
     private GameObject currentHeldVisualInstance;
@@ -105,6 +110,8 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
             inventory.OnSelectedSlotChanged -= HandleSelectedSlotChanged;
         }
 
+        EndContinuousPrimaryUse(true);
+        SetAimState(false, -1, true);
         HideAimPreview();
     }
 
@@ -141,6 +148,7 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
 
     private void HandleInventoryChanged()
     {
+        EndContinuousPrimaryUse(true);
         RebuildAllRuntimes();
         RefreshHeldItemVisual();
 
@@ -156,6 +164,11 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
     private void HandleSelectedSlotChanged(int selectedIndex)
     {
         RefreshHeldItemVisual();
+
+        if (isPrimaryItemInUse && primaryUseSlotIndex != selectedIndex)
+        {
+            EndContinuousPrimaryUse(true);
+        }
 
         if (isAimingItem && aimingSlotIndex != selectedIndex)
         {
@@ -258,7 +271,30 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
 
             if (inputSource.ItemSecondaryReleasedThisFrame)
             {
+                EndContinuousPrimaryUse(true);
                 CancelAim();
+                return;
+            }
+
+            if (runtimeSlot.Runtime is IContinuousAimedItemRuntime continuousRuntime)
+            {
+                if (inputSource.ItemPrimaryPressedThisFrame)
+                {
+                    TryBeginContinuousPrimaryUse(selectedSlot, runtimeSlot.Runtime, continuousRuntime);
+                }
+
+                if (isPrimaryItemInUse &&
+                    primaryUseSlotIndex == selectedSlot &&
+                    inputSource.ItemPrimaryHeld)
+                {
+                    TickContinuousPrimaryUse(runtimeSlot.Runtime, continuousRuntime);
+                }
+
+                if (inputSource.ItemPrimaryReleasedThisFrame)
+                {
+                    EndContinuousPrimaryUse(true);
+                }
+
                 return;
             }
 
@@ -341,9 +377,7 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         if (aimingSlotIndex == slotIndex && isAimingItem)
             return;
 
-        isAimingItem = true;
-        aimingSlotIndex = slotIndex;
-        OnAimStateChanged?.Invoke(true);
+        SetAimState(true, slotIndex, true);
     }
 
     private void CancelAim()
@@ -351,10 +385,81 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         if (!isAimingItem)
             return;
 
-        isAimingItem = false;
-        aimingSlotIndex = -1;
+        SetAimState(false, -1, true);
         HideAimPreview();
-        OnAimStateChanged?.Invoke(false);
+    }
+
+    private void SetAimState(bool newIsAiming, int newSlotIndex, bool broadcast)
+    {
+        bool slotChanged = aimingSlotIndex != newSlotIndex;
+        bool stateChanged = isAimingItem != newIsAiming;
+        if (!stateChanged && !slotChanged)
+            return;
+
+        isAimingItem = newIsAiming;
+        aimingSlotIndex = newIsAiming ? newSlotIndex : -1;
+        OnAimStateChanged?.Invoke(isAimingItem);
+
+        if (broadcast && PhotonNetwork.InRoom && CachedPhotonView != null && HasLocalAuthority)
+        {
+            CachedPhotonView.RPC(nameof(RPC_SetAimState), RpcTarget.Others, isAimingItem);
+        }
+    }
+
+    private void SetPrimaryUseState(bool newIsUsing, int newSlotIndex, bool broadcast)
+    {
+        bool slotChanged = primaryUseSlotIndex != newSlotIndex;
+        bool stateChanged = isPrimaryItemInUse != newIsUsing;
+        if (!stateChanged && !slotChanged)
+            return;
+
+        isPrimaryItemInUse = newIsUsing;
+        primaryUseSlotIndex = newIsUsing ? newSlotIndex : -1;
+
+        if (broadcast && PhotonNetwork.InRoom && CachedPhotonView != null && HasLocalAuthority)
+        {
+            CachedPhotonView.RPC(nameof(RPC_SetPrimaryItemUseState), RpcTarget.Others, isPrimaryItemInUse);
+        }
+    }
+
+    private bool TryBeginContinuousPrimaryUse(
+        int slotIndex,
+        IItemRuntime runtime,
+        IContinuousAimedItemRuntime continuousRuntime)
+    {
+        if (runtime == null || continuousRuntime == null)
+            return false;
+
+        if (isPrimaryItemInUse && primaryUseSlotIndex == slotIndex)
+            return true;
+
+        if (!runtime.CanUse())
+            return false;
+
+        ItemUseRequest request = BuildUseRequest(runtime);
+        if (!continuousRuntime.BeginContinuousUse(request))
+            return false;
+
+        activeContinuousRuntime = continuousRuntime;
+        SetPrimaryUseState(true, slotIndex, true);
+        return true;
+    }
+
+    private void TickContinuousPrimaryUse(
+        IItemRuntime runtime,
+        IContinuousAimedItemRuntime continuousRuntime)
+    {
+        if (!isPrimaryItemInUse || runtime == null || continuousRuntime == null)
+            return;
+
+        continuousRuntime.TickContinuousUse(BuildUseRequest(runtime), Time.deltaTime);
+    }
+
+    private void EndContinuousPrimaryUse(bool broadcast)
+    {
+        activeContinuousRuntime?.EndContinuousUse();
+        activeContinuousRuntime = null;
+        SetPrimaryUseState(false, -1, broadcast);
     }
 
     private ItemUseRequest BuildUseRequest(IItemRuntime runtime)
@@ -575,6 +680,7 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
             heldVisual.LocalEulerAngles,
             heldVisual.LocalScale);
         currentHeldDefinition = definition;
+        BindHeldVisualRuntime(currentHeldVisualInstance, definition);
     }
 
     private void RefreshNetworkHeldItemVisual(ItemDefinition definition, HeldItemVisualData heldVisual)
@@ -618,6 +724,7 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
             heldVisual.LocalPosition,
             heldVisual.LocalEulerAngles,
             heldVisual.LocalScale);
+        BindHeldVisualRuntime(spawned, definition);
 
         CachedPhotonView.RPC(
             nameof(RPC_AttachHeldItemVisual),
@@ -709,6 +816,27 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         ClearHeldItemVisualReference(false);
     }
 
+    [PunRPC]
+    private void RPC_SetAimState(bool newIsAiming)
+    {
+        if (HasLocalAuthority)
+            return;
+
+        SetAimState(newIsAiming, newIsAiming ? aimingSlotIndex : -1, false);
+
+        if (!newIsAiming)
+            HideAimPreview();
+    }
+
+    [PunRPC]
+    private void RPC_SetPrimaryItemUseState(bool newIsUsing)
+    {
+        if (HasLocalAuthority)
+            return;
+
+        SetPrimaryUseState(newIsUsing, newIsUsing ? primaryUseSlotIndex : -1, false);
+    }
+
     private IEnumerator WaitForHeldVisualAndAttach(
         int heldViewId,
         string itemId,
@@ -754,7 +882,20 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
             localScale);
 
         currentHeldVisualInstance.SetActive(true);
+        BindHeldVisualRuntime(currentHeldVisualInstance, currentHeldDefinition);
         return true;
+    }
+
+    private void BindHeldVisualRuntime(GameObject heldInstance, ItemDefinition definition)
+    {
+        if (heldInstance == null || definition is not HealSprayerItemDefinition healDefinition)
+            return;
+
+        HealSprayerHeldVisual heldVisual = heldInstance.GetComponentInChildren<HealSprayerHeldVisual>(true);
+        if (heldVisual == null)
+            return;
+
+        heldVisual.Bind(this, healDefinition);
     }
 
     private void ApplyHeldVisualTransform(

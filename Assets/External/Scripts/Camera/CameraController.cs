@@ -26,6 +26,12 @@ public class CameraController : MonoBehaviour
     [SerializeField, Min(0f)] private float collisionBuffer = 0.05f;
     [SerializeField, Min(0f)] private float distanceSmoothSpeed = 20f;
 
+    [Header("World UI")]
+    [SerializeField] private Canvas[] trackedWorldSpaceCanvases;
+    [SerializeField] private bool autoAssignWorldCamera = true;
+    [SerializeField] private bool rotateWorldSpaceUiToCamera = true;
+    [SerializeField] private bool keepUiUpright = true;
+
     public float Yaw => yaw;
     public float Pitch => pitch;
 
@@ -34,9 +40,12 @@ public class CameraController : MonoBehaviour
     private float currentDistance;
     private Vector3 currentPivotPosition;
     private Vector3 pivotVelocity;
+    private Camera cachedCamera;
 
     private void Start()
     {
+        cachedCamera = GetComponent<Camera>();
+
         Vector3 euler = transform.eulerAngles;
         yaw = euler.y;
         pitch = NormalizeAngle(euler.x);
@@ -54,6 +63,8 @@ public class CameraController : MonoBehaviour
         {
             currentPivotPosition = followTarget.position + pivotOffset;
         }
+
+        RefreshTrackedCanvasCameras();
     }
 
     private void LateUpdate()
@@ -63,6 +74,7 @@ public class CameraController : MonoBehaviour
 
         UpdateLookAngles();
         UpdateCameraTransform();
+        UpdateTrackedWorldSpaceUi();
     }
 
     private void FindLocalPlayerTarget()
@@ -130,6 +142,55 @@ public class CameraController : MonoBehaviour
 
         Vector3 cameraPosition = currentPivotPosition + cameraDirection * currentDistance;
         transform.SetPositionAndRotation(cameraPosition, rotation);
+    }
+
+    private void UpdateTrackedWorldSpaceUi()
+    {
+        if (trackedWorldSpaceCanvases == null || trackedWorldSpaceCanvases.Length == 0)
+            return;
+
+        for (int i = 0; i < trackedWorldSpaceCanvases.Length; i++)
+        {
+            Canvas canvas = trackedWorldSpaceCanvases[i];
+            if (canvas == null)
+                continue;
+
+            if (autoAssignWorldCamera && canvas.worldCamera != cachedCamera)
+            {
+                canvas.worldCamera = cachedCamera;
+            }
+
+            if (!rotateWorldSpaceUiToCamera || canvas.renderMode != RenderMode.WorldSpace)
+                continue;
+
+            Transform uiTransform = canvas.transform;
+            Vector3 toCamera = transform.position - uiTransform.position;
+
+            if (keepUiUpright)
+            {
+                toCamera = Vector3.ProjectOnPlane(toCamera, Vector3.up);
+            }
+
+            if (toCamera.sqrMagnitude < 0.0001f)
+                continue;
+
+            uiTransform.rotation = Quaternion.LookRotation(toCamera.normalized, Vector3.up);
+        }
+    }
+
+    private void RefreshTrackedCanvasCameras()
+    {
+        if (!autoAssignWorldCamera || trackedWorldSpaceCanvases == null)
+            return;
+
+        for (int i = 0; i < trackedWorldSpaceCanvases.Length; i++)
+        {
+            Canvas canvas = trackedWorldSpaceCanvases[i];
+            if (canvas == null)
+                continue;
+
+            canvas.worldCamera = cachedCamera;
+        }
     }
 
     private float NormalizeAngle(float angle)

@@ -65,6 +65,8 @@ MonoBehaviour:
   - RPC_AnnounceGameOver
   - RPC_RequestKill
   - RPC_SpawnPulseEffect
+  - RPC_SetAimState
+  - RPC_SetPrimaryItemUseState
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
