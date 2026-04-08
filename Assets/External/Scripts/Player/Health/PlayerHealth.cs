@@ -137,6 +137,17 @@ public class PlayerHealth : PhotonOwnedBehaviour, IDamageable, IPunObservable
         return ApplyHealInternal(amount, sourceViewId);
     }
 
+    public bool RequestKill(int sourceViewId = -1)
+    {
+        if (ShouldForwardRequestToOwner())
+        {
+            CachedPhotonView.RPC(nameof(RPC_RequestKill), CachedPhotonView.Owner, sourceViewId);
+            return true;
+        }
+
+        return KillLocal(sourceViewId);
+    }
+
     public bool SetHealthLocal(float newHealth, int sourceViewId = -1)
     {
         if (!CanMutateStateLocally())
@@ -316,6 +327,15 @@ public class PlayerHealth : PhotonOwnedBehaviour, IDamageable, IPunObservable
             return;
 
         ApplyHealInternal(amount, sourceViewId);
+    }
+
+    [PunRPC]
+    private void RPC_RequestKill(int sourceViewId)
+    {
+        if (PhotonNetwork.InRoom && !HasLocalAuthority)
+            return;
+
+        KillLocal(sourceViewId);
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

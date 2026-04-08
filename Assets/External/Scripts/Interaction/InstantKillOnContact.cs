@@ -5,7 +5,6 @@ using UnityEngine;
 public class InstantKillOnContact : MonoBehaviour
 {
     [Header("Options")]
-    [SerializeField] private bool affectOnlyLocallyOwnedPlayers = true;
     [SerializeField] private string requiredTag = "Player";
 
     private void OnTriggerEnter(Collider other)
@@ -33,9 +32,6 @@ public class InstantKillOnContact : MonoBehaviour
         if (health == null)
             return;
 
-        if (affectOnlyLocallyOwnedPlayers && !health.IsLocallyOwned)
-            return;
-
-        health.KillLocal();
+        health.RequestKill();
     }
 }
