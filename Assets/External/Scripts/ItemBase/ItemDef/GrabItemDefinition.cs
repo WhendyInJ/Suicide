@@ -5,6 +5,9 @@ using UnityEngine;
     menuName = "Game/Items/Grab Item Definition")]
 public class GrabItemDefinition : ItemDefinition
 {
+    [Header("Aim Preview")]
+    [SerializeField] private CrosshairAimPreview crosshairPreviewPrefab;
+
     [Header("Projectile")]
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private GameObject destinationPreviewPrefab;
@@ -31,6 +34,7 @@ public class GrabItemDefinition : ItemDefinition
     [SerializeField, Min(0f)] private float targetFrontDistance = 1.5f;
     [SerializeField] private int targetPullPriority = 220;
 
+    public CrosshairAimPreview CrosshairPreviewPrefab => crosshairPreviewPrefab;
     public GameObject ProjectilePrefab => projectilePrefab != null
         ? projectilePrefab
         : Resources.Load<GameObject>("GrabProjectile");
@@ -59,6 +63,50 @@ public class GrabItemDefinition : ItemDefinition
     {
         if (structureMask.value == 0)
             structureMask = LayerMask.GetMask("Structure");
+    }
+
+    public override bool TryBuildAimPreview(
+        in ItemAimPreviewContext context,
+        out ItemAimPreviewRequest request)
+    {
+        request = new ItemAimPreviewRequest
+        {
+            ShowCrosshair = true,
+            CrosshairPrefab = crosshairPreviewPrefab
+        };
+
+        if (destinationPreviewPrefab == null || context.SpawnTransform == null)
+            return true;
+
+        Vector3 aimDirection = context.AimDirection.sqrMagnitude > 0.0001f
+            ? context.AimDirection.normalized
+            : context.SpawnTransform.forward;
+        Vector3 start =
+            context.SpawnTransform.position +
+            aimDirection * spawnForwardOffset +
+            Vector3.up * spawnUpwardOffset;
+
+        if (!GrabProjectile.TryPredictResolution(
+                ProjectilePrefab,
+                context.OwnerTransform,
+                start,
+                aimDirection,
+                castRange,
+                hitMask,
+                StructureMask,
+                triggerInteraction,
+                targetFrontDistance,
+                out Vector3 previewPoint,
+                out _))
+        {
+            return true;
+        }
+
+        request.ShowWorldMarker = true;
+        request.WorldMarkerPrefab = destinationPreviewPrefab;
+        request.WorldMarkerPosition = previewPoint;
+        request.WorldMarkerRotation = Quaternion.LookRotation(aimDirection, Vector3.up);
+        return true;
     }
 
     public override IItemRuntime CreateRuntime(ItemRuntimeContext context)

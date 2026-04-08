@@ -5,6 +5,9 @@ using UnityEngine;
     menuName = "Game/Items/Bomb Item Definition")]
 public class BombItemDefinition : ItemDefinition
 {
+    [Header("Aim Preview")]
+    [SerializeField] private BombAimPreviewEffect trajectoryPreviewPrefab;
+
     [Header("Projectile")]
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private BombTrajectoryType trajectoryType = BombTrajectoryType.Parabolic;
@@ -20,6 +23,7 @@ public class BombItemDefinition : ItemDefinition
     [SerializeField] private int stunPriority = 100;
     [SerializeField] private GameObject explosionEffectPrefab;
 
+    public BombAimPreviewEffect TrajectoryPreviewPrefab => trajectoryPreviewPrefab;
     public GameObject ProjectilePrefab => projectilePrefab;
     public BombTrajectoryType TrajectoryType => trajectoryType;
     public float LaunchSpeed => launchSpeed;
@@ -32,6 +36,28 @@ public class BombItemDefinition : ItemDefinition
     public float StunDuration => stunDuration;
     public int StunPriority => stunPriority;
     public GameObject ExplosionEffectPrefab => explosionEffectPrefab;
+
+    public override bool TryBuildAimPreview(
+        in ItemAimPreviewContext context,
+        out ItemAimPreviewRequest request)
+    {
+        request = new ItemAimPreviewRequest
+        {
+            ShowTrajectory = true,
+            TrajectoryPrefab = trajectoryPreviewPrefab,
+            TrajectoryData = new ItemTrajectoryPreviewData
+            {
+                TrajectoryType = trajectoryType,
+                LaunchSpeed = launchSpeed,
+                AdditionalUpwardSpeed = additionalUpwardSpeed,
+                MaxLifetime = maxLifetime,
+                ImpactMask = impactMask,
+                ExplosionRadius = explosionRadius
+            }
+        };
+
+        return true;
+    }
 
     public override IItemRuntime CreateRuntime(ItemRuntimeContext context)
     {
