@@ -25,6 +25,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             Debug.LogError("GameManager is missing a player prefab reference.", this);
         }
+
+        if (GetComponent<GameOverManager>() == null)
+        {
+            gameObject.AddComponent<GameOverManager>();
+        }
     }
 
     private void Start()
