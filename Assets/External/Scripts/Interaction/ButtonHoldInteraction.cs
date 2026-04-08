@@ -27,6 +27,8 @@ public class ButtonHoldInteraction : MonoBehaviour
     private Coroutine activeRoutine;
     private Vector3 defaultLocalPosition;
     private float currentFillAmount;
+    private PlayerController currentInteractingPlayer;
+    private int activeMovementLockId = -1;
 
     private bool IsPlayerInRange => overlappingPlayerColliders.Count > 0;
 
@@ -53,9 +55,6 @@ public class ButtonHoldInteraction : MonoBehaviour
             return;
 
         if (activeRoutine != null)
-            return;
-
-        if (controlledGroup != null && controlledGroup.IsTransitionRunning)
             return;
 
         if (!Input.GetKeyDown(interactKey))
@@ -93,9 +92,11 @@ public class ButtonHoldInteraction : MonoBehaviour
     private void OnDisable()
     {
         CancelCurrentRoutine();
+        ReleasePlayerInteractionLock();
         ApplyStateImmediate(defaultLocalPosition, 0f);
         SetCanvasVisible(false);
         overlappingPlayerColliders.Clear();
+        currentInteractingPlayer = null;
     }
 
     private void TryEnterRange(Collider other)
@@ -106,6 +107,7 @@ public class ButtonHoldInteraction : MonoBehaviour
         if (!overlappingPlayerColliders.Add(colliderId))
             return;
 
+        currentInteractingPlayer = ResolvePlayerController(other);
         SetCanvasVisible(true);
         ApplyStateImmediate(buttonTarget.localPosition, currentFillAmount);
     }
@@ -135,6 +137,18 @@ public class ButtonHoldInteraction : MonoBehaviour
         return true;
     }
 
+    private PlayerController ResolvePlayerController(Collider other)
+    {
+        if (other == null)
+            return null;
+
+        PlayerController playerController = other.GetComponentInParent<PlayerController>();
+        if (playerController == null || !playerController.HasLocalAuthority)
+            return null;
+
+        return playerController;
+    }
+
     private void StartReturnToIdle()
     {
         bool needsPositionReset = (buttonTarget.localPosition - defaultLocalPosition).sqrMagnitude > 0.000001f;
@@ -157,6 +171,8 @@ public class ButtonHoldInteraction : MonoBehaviour
 
     private IEnumerator CoHoldAndPress()
     {
+        AcquirePlayerInteractionLock();
+
         float startFill = currentFillAmount;
         float elapsed = 0f;
         Vector3 startPosition = buttonTarget.localPosition;
@@ -167,6 +183,7 @@ public class ButtonHoldInteraction : MonoBehaviour
             if (!IsPlayerInRange || !Input.GetKey(interactKey))
             {
                 yield return CoAnimateToState(buttonTarget.localPosition, defaultLocalPosition, currentFillAmount, 0f, cancelReturnDuration);
+                ReleasePlayerInteractionLock();
                 activeRoutine = null;
                 yield break;
             }
@@ -180,6 +197,7 @@ public class ButtonHoldInteraction : MonoBehaviour
         }
 
         ApplyStateImmediate(pressedPosition, 1f);
+        ReleasePlayerInteractionLock();
 
         if (controlledGroup != null)
             yield return controlledGroup.CoToggleState();
@@ -232,5 +250,31 @@ public class ButtonHoldInteraction : MonoBehaviour
     {
         if (interactionCanvas != null)
             interactionCanvas.gameObject.SetActive(visible);
+    }
+
+    private void AcquirePlayerInteractionLock()
+    {
+        ReleasePlayerInteractionLock();
+
+        if (currentInteractingPlayer == null)
+            return;
+
+        float expectedDuration = holdDuration
+            + pressCycleDuration
+            + 2f;
+
+        activeMovementLockId = currentInteractingPlayer.ApplyMovementLock(expectedDuration, 1000);
+    }
+
+    private void ReleasePlayerInteractionLock()
+    {
+        if (currentInteractingPlayer == null)
+            return;
+
+        if (activeMovementLockId >= 0)
+        {
+            currentInteractingPlayer.RemoveCommand(activeMovementLockId);
+            activeMovementLockId = -1;
+        }
     }
 }

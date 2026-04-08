@@ -1,16 +1,25 @@
 using System.Collections;
 using UnityEngine;
 
+[System.Serializable]
+public enum SpikeFloorGroupSide
+{
+    First = 0,
+    Second = 1
+}
+
 [DisallowMultipleComponent]
 public class SpikePlatformGroupController : MonoBehaviour
 {
     [Header("Controlled Objects - Group A")]
     [SerializeField] private Transform[] firstSpikeObjects;
     [SerializeField] private Renderer[] firstPlatformRenderers;
+    [SerializeField] private GameObject[] firstHealObjects;
 
     [Header("Controlled Objects - Group B")]
     [SerializeField] private Transform[] secondSpikeObjects;
     [SerializeField] private Renderer[] secondPlatformRenderers;
+    [SerializeField] private GameObject[] secondHealObjects;
 
     [Header("Shared Settings")]
     [SerializeField, Min(0f)] private float spikeMoveDistance = 2f;
@@ -29,6 +38,19 @@ public class SpikePlatformGroupController : MonoBehaviour
 
     public bool IsFirstGroupActive => isFirstGroupActive;
     public bool IsTransitionRunning => isTransitionRunning;
+    public float TransitionDuration => transitionDuration;
+
+    public bool IsGroupInHealState(SpikeFloorGroupSide groupSide)
+    {
+        return groupSide == SpikeFloorGroupSide.First
+            ? isFirstGroupActive
+            : !isFirstGroupActive;
+    }
+
+    public bool IsGroupInDamageState(SpikeFloorGroupSide groupSide)
+    {
+        return !IsGroupInHealState(groupSide);
+    }
 
     private void Awake()
     {
@@ -120,6 +142,12 @@ public class SpikePlatformGroupController : MonoBehaviour
 
         ApplyPlatformColor(firstPlatformRenderers, firstPlatformColor);
         ApplyPlatformColor(secondPlatformRenderers, secondPlatformColor);
+
+        bool firstHealActive = firstGroupActiveProgress >= 0.5f;
+        bool secondHealActive = !firstHealActive;
+
+        SetObjectsActive(firstHealObjects, firstHealActive);
+        SetObjectsActive(secondHealObjects, secondHealActive);
     }
 
     private void ApplySpikeGroupProgress(Transform[] spikes, Vector3[] raisedPositions, float activeProgress)
@@ -170,6 +198,21 @@ public class SpikePlatformGroupController : MonoBehaviour
             }
 
             renderer.SetPropertyBlock(propertyBlock);
+        }
+    }
+
+    private void SetObjectsActive(GameObject[] objects, bool active)
+    {
+        if (objects == null)
+            return;
+
+        for (int i = 0; i < objects.Length; i++)
+        {
+            GameObject target = objects[i];
+            if (target == null || target.activeSelf == active)
+                continue;
+
+            target.SetActive(active);
         }
     }
 }

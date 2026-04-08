@@ -174,7 +174,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 666560269}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 666560268}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &3613433 stripped
 Transform:
@@ -304,7 +310,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 421212032}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 421212031}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!1001 &38481826
 PrefabInstance:
@@ -361,7 +373,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2104471883}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2104471882}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &38481827 stripped
 Transform:
@@ -545,10 +563,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: halfspike2 (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1416352259}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1416352258}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &50702306 stripped
 Transform:
@@ -610,7 +638,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 446863096}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 446863095}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &58126175 stripped
 Transform:
@@ -1202,11 +1236,58 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82b7542c8461b644ea1f6ccf59b66b3a, type: 3}
+--- !u!1 &73022985 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 811174331}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &73022986 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 811174331}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &73022989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 73022985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &73022990
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 73022985}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500012, y: 0.015000008, z: 0.019500019}
+  m_Center: {x: -0.00024998654, y: 0.45, z: 0.0002499695}
 --- !u!1001 &91883464
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1270,18 +1351,71 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1091497348}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1091497347}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &91883465 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 91883464}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &91919628 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 222225316}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &91919629 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 222225316}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &91919632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 91919628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &91919633
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 91919628}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.000001, y: 1.5000008, z: 2.0000005}
+  m_Center: {x: 0, y: 0.45, z: 0.00000011920923}
 --- !u!1001 &92319294
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1334,10 +1468,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: floor_spikes_trap_2x2x1_red (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1268883055}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1268883054}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &92319295 stripped
 Transform:
@@ -1407,23 +1551,123 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1502869367}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1502869366}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &132520414 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 132520413}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &133767679 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 2032305809}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &133767680 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 2032305809}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &133767683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133767679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &133767684
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133767679}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000004, z: 2}
+  m_Center: {x: 0, y: 0.45, z: 0.00000017881393}
+--- !u!1 &157328417 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1910193669}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &157328418 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1910193669}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &157328421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 157328417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &157328422
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 157328417}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.000001, y: 1.5000008, z: 2.0000005}
+  m_Center: {x: 0.0000019073486, y: 0.45, z: 0.00000011920923}
 --- !u!1 &161342058
 GameObject:
   m_ObjectHideFlags: 0
@@ -1596,7 +1840,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1900513052}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1900513051}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!1001 &222225316
 PrefabInstance:
@@ -1653,7 +1903,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 91919633}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 91919632}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &222225317 stripped
 Transform:
@@ -1676,26 +1932,214 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5952247655783481321, guid: 1c24c19a21d7f8f49aac05b3ecb1ac8e, type: 3}
   m_PrefabInstance: {fileID: 1227995641}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &248246754 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1461894526}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &248246755 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1461894526}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &248246758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 248246754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &248246759
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 248246754}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0, y: 0.45, z: -0.000000059604634}
+--- !u!1 &282973548 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1752343290}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &282973549 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1752343290}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &282973552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 282973548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &282973553
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 282973548}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.000001, y: 1.5000008, z: 2.0000005}
+  m_Center: {x: 0, y: 0.45, z: -0.0000008344651}
+--- !u!1 &314084193 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1892412428}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &314084194 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1892412428}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &314084197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 314084193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &314084198
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 314084193}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0.000000059604645, y: 0.45, z: -0.000000059604634}
+--- !u!1 &340741783 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1371827046}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &340741784 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1371827046}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &340741787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340741783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &340741788
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340741783}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.000001, y: 1.5000008, z: 2.0000005}
+  m_Center: {x: 0, y: 0.45, z: -0.0000008344651}
 --- !u!1 &382776741
 GameObject:
   m_ObjectHideFlags: 0
@@ -1980,10 +2424,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: halfspike2 (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1101320652}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1101320651}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &389748188 stripped
 Transform:
@@ -2050,13 +2504,66 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1861654646}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1861654645}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+--- !u!1 &421212027 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 11190779}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &421212028 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 11190779}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &421212031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421212027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &421212032
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421212027}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000004, z: 2}
+  m_Center: {x: 0, y: 0.45, z: 0.000000059604645}
 --- !u!1 &425312531 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0946f713f054dd34d8a90162ff4033fb, type: 3}
@@ -2267,11 +2774,58 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 443749217}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &446863091 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 58126174}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &446863092 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 58126174}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &446863095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 446863091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &446863096
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 446863091}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0, y: 0.45, z: -0.0000019669533}
 --- !u!1001 &461701157
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2431,21 +2985,78 @@ PrefabInstance:
       propertyPath: m_Name
       value: floor_spikes_trap_2x2x1_red (15)
       objectReference: {fileID: 0}
+    - target: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2070573006}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2070573005}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &463214901 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 463214900}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &491339575 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 2024494201}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &491339576 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 2024494201}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &491339579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 491339575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &491339580
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 491339575}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500002, y: 0.015, z: 0.019500006}
+  m_Center: {x: -0.0002499847, y: 0.45, z: 0.00024999917}
 --- !u!1001 &494052298
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2582,11 +3193,58 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1604027005}
   m_SourcePrefab: {fileID: 100100000, guid: 0946f713f054dd34d8a90162ff4033fb, type: 3}
+--- !u!1 &506767402 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 1400983104}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &506767403 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 1400983104}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &506767406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 506767402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &506767407
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 506767402}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500008, y: 0.015000003, z: 0.019500006}
+  m_Center: {x: -0.00025000246, y: 0.45, z: 0.00024999917}
 --- !u!1001 &508016308
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2650,7 +3308,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2087952718}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2087952717}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &508016309 stripped
 Transform:
@@ -2725,7 +3389,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1245668789}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1245668788}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &513465994 stripped
 Transform:
@@ -2742,11 +3412,58 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 92319294}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &571292124 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 716581283}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &571292125 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 716581283}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &571292128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 571292124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &571292129
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 571292124}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.000001, y: 1.5000008, z: 2.0000005}
+  m_Center: {x: 0.0000019073486, y: 0.45, z: 0.00000011920923}
 --- !u!1001 &588266785
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2810,23 +3527,123 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2021901374}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2021901373}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &588266786 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 588266785}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &596744597 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 632545892}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &596744598 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 632545892}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &596744601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 596744597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &596744602
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 596744597}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500008, y: 0.015000003, z: 0.019500006}
+  m_Center: {x: -0.0002499978, y: 0.45, z: 0.00024999172}
+--- !u!1 &613493899 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1954805734}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &613493900 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1954805734}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &613493903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 613493899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &613493904
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 613493899}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0, y: 0.45, z: -0.000000059604634}
 --- !u!1001 &632545892
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2890,18 +3707,71 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 596744602}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 596744601}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &632545893 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 632545892}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &635879485 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 1164811538}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &635879486 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 1164811538}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &635879489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 635879485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &635879490
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 635879485}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500002, y: 0.015, z: 0.019500006}
+  m_Center: {x: -0.00025000706, y: 0.45, z: 0.00025001407}
 --- !u!4 &637304123 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
@@ -2982,11 +3852,58 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1392076802}
   m_SourcePrefab: {fileID: 100100000, guid: 585b6709105139a47aea2d784657c0d2, type: 3}
+--- !u!1 &652429483 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 1505385639}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &652429484 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 1505385639}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &652429487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 652429483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &652429488
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 652429483}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500008, y: 0.015000003, z: 0.019500006}
+  m_Center: {x: -0.00025000525, y: 0.45, z: 0.0002499973}
 --- !u!1001 &656993801
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3042,23 +3959,123 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1395384739}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1395384738}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &656993802 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 656993801}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &666560264 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 3613432}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &666560265 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 3613432}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &666560268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 666560264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &666560269
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 666560264}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0, y: 0.45, z: -0.000000059604634}
+--- !u!1 &675126280 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1660144979}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &675126281 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1660144979}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &675126284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 675126280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &675126285
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 675126280}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.000001, y: 1.5000008, z: 2.0000005}
+  m_Center: {x: 0, y: 0.45, z: 0.00000011920923}
 --- !u!1 &675196293 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0946f713f054dd34d8a90162ff4033fb, type: 3}
@@ -3085,11 +4102,58 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 6.0000014, y: 0.50000036, z: 2.0000005}
   m_Center: {x: 0, y: 0.25, z: -0.00000005960466}
+--- !u!1 &688942674 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 916059465}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &688942675 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 916059465}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &688942678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 688942674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &688942679
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 688942674}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500012, y: 0.015000008, z: 0.019500019}
+  m_Center: {x: -0.00025000144, y: 0.45, z: 0.0002499993}
 --- !u!1001 &704434811
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3142,10 +4206,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: floor_spikes_trap_2x2x1_red (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 908496046}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 908496045}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &704434812 stripped
 Transform:
@@ -3212,18 +4286,71 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 571292129}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 571292128}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &716581284 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 716581283}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &716628732 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1921776261}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &716628733 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1921776261}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &716628736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 716628732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &716628737
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 716628732}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000004, z: 2}
+  m_Center: {x: 0, y: 0.45, z: -0.000000059604645}
 --- !u!1001 &728572642
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3428,7 +4555,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1209156022}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1209156021}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &762215216 stripped
 Transform:
@@ -4020,16 +5153,110 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82b7542c8461b644ea1f6ccf59b66b3a, type: 3}
+--- !u!1 &784885845 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 2095020169}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &784885846 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 2095020169}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &784885849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784885845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &784885850
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784885845}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0, y: 0.45, z: -0.000000059604634}
+--- !u!1 &802085338 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1519193156}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &802085339 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1519193156}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &802085342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 802085338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &802085343
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 802085338}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000004, z: 2}
+  m_Center: {x: 0, y: 0.45, z: 0.000000059604645}
 --- !u!1001 &802200691
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4763,7 +5990,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 73022990}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 73022989}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &811174332 stripped
 Transform:
@@ -4825,7 +6058,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1694908899}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1694908898}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &827868649 stripped
 Transform:
@@ -4842,11 +6081,58 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1519193156}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &847168321 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1056860370}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &847168322 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1056860370}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &847168325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 847168321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &847168326
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 847168321}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000004, z: 2}
+  m_Center: {x: 0, y: 0.45, z: 0.00000017881393}
 --- !u!1001 &848582244
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4915,11 +6201,58 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 425312535}
   m_SourcePrefab: {fileID: 100100000, guid: 0946f713f054dd34d8a90162ff4033fb, type: 3}
+--- !u!1 &851197718 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 2109259447}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &851197719 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 2109259447}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &851197722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 851197718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &851197723
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 851197718}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0.00000023841858, y: 0.45, z: -0.0000019669533}
 --- !u!4 &859060840 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
@@ -5021,6 +6354,7 @@ MonoBehaviour:
   - {fileID: 1446331672}
   - {fileID: 1752343292}
   - {fileID: 1765110201}
+  firstHealObjects: []
   secondSpikeObjects:
   - {fileID: 1716774987}
   - {fileID: 1380958930}
@@ -5083,6 +6417,7 @@ MonoBehaviour:
   - {fileID: 2041990285}
   - {fileID: 704434813}
   - {fileID: 556585710}
+  secondHealObjects: []
   spikeMoveDistance: 2
   transitionDuration: 0.35
   platformColorPropertyName: _BaseColor
@@ -5105,11 +6440,58 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &887469324 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 898728921}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &887469325 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 898728921}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &887469328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 887469324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &887469329
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 887469324}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500002, y: 0.015, z: 0.019500006}
+  m_Center: {x: -0.0002499698, y: 0.45, z: 0.00024999917}
 --- !u!1001 &898728921
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5170,10 +6552,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: halfspike2
       objectReference: {fileID: 0}
+    - target: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 887469329}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 887469328}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &898728922 stripped
 Transform:
@@ -5185,11 +6577,58 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 898728921}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &908496041 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 704434811}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &908496042 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 704434811}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &908496045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 908496041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &908496046
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 908496041}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0.000000059604645, y: 0.45, z: -0.0000019669533}
 --- !u!1001 &916059465
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5253,7 +6692,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 688942679}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 688942678}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &916059466 stripped
 Transform:
@@ -5280,11 +6725,58 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 957226306}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &956502351 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 1005644848}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &956502352 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 1005644848}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &956502355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 956502351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &956502356
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 956502351}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500002, y: 0.015, z: 0.019500006}
+  m_Center: {x: -0.0002499698, y: 0.45, z: 0.00024999917}
 --- !u!1001 &957226306
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5340,13 +6832,66 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1798855282}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1798855281}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+--- !u!1 &969838372 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1518566166}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &969838373 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1518566166}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &969838376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 969838372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &969838377
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 969838372}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0, y: 0.45, z: -0.000000059604634}
 --- !u!1 &969956157
 GameObject:
   m_ObjectHideFlags: 0
@@ -5572,10 +7117,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: floor_spikes_trap_2x2x1_red (9)
       objectReference: {fileID: 0}
+    - target: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1098814714}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1098814713}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &995241466 stripped
 Transform:
@@ -5647,10 +7202,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: halfspike2 (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 956502356}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 956502355}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &1005644849 stripped
 Transform:
@@ -5906,7 +7471,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 847168326}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 847168325}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!1 &1081204441
 GameObject:
@@ -5954,16 +7525,110 @@ Transform:
   - {fileID: 656993802}
   m_Father: {fileID: 2021619633}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1091497343 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 91883464}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1091497344 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 91883464}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1091497347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1091497343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1091497348
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1091497343}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500012, y: 0.015000008, z: 0.019500019}
+  m_Center: {x: -0.00025000144, y: 0.45, z: 0.0002500142}
+--- !u!1 &1098814709 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 995241465}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1098814710 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 995241465}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1098814713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1098814709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1098814714
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1098814709}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0.00000023841858, y: 0.45, z: -0.0000019669533}
 --- !u!1 &1100219144
 GameObject:
   m_ObjectHideFlags: 0
@@ -6131,11 +7796,58 @@ MonoBehaviour:
   collisionRadius: 0.2
   collisionBuffer: 0.05
   distanceSmoothSpeed: 20
+--- !u!1 &1101320647 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 389748187}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1101320648 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 389748187}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1101320651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1101320647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1101320652
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1101320647}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500002, y: 0.015, z: 0.019500006}
+  m_Center: {x: -0.0002499996, y: 0.45, z: 0.0002500001}
 --- !u!23 &1102775796 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
@@ -6209,11 +7921,58 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1983924903}
   m_SourcePrefab: {fileID: 100100000, guid: 0946f713f054dd34d8a90162ff4033fb, type: 3}
+--- !u!1 &1128247354 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 1828510142}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1128247355 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 1828510142}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1128247358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1128247354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1128247359
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1128247354}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500008, y: 0.015000003, z: 0.019500006}
+  m_Center: {x: -0.00025000246, y: 0.45, z: 0.00024999544}
 --- !u!1 &1145098123
 GameObject:
   m_ObjectHideFlags: 0
@@ -6389,7 +8148,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 635879490}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 635879489}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &1164811539 stripped
 Transform:
@@ -6401,11 +8166,58 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 1164811538}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1167548404 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 2144548963}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1167548405 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 2144548963}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1167548408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1167548404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1167548409
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1167548404}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.000001, y: 1.5000008, z: 2.0000005}
+  m_Center: {x: 0.0000019073486, y: 0.45, z: -0.0000008344651}
 --- !u!1 &1181299187 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 3c532e7cbe476a54dbc8d63bff44f0e4, type: 3}
@@ -6470,11 +8282,58 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 2032305809}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1209156017 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 762215215}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1209156018 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 762215215}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1209156021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1209156017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1209156022
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1209156017}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0, y: 0.45, z: -0.0000005364418}
 --- !u!1 &1222521819
 GameObject:
   m_ObjectHideFlags: 0
@@ -6650,7 +8509,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1785905912}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1785905911}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &1225985646 stripped
 Transform:
@@ -6677,6 +8542,10 @@ PrefabInstance:
     - target: {fileID: 3259927792943013746, guid: 1c24c19a21d7f8f49aac05b3ecb1ac8e, type: 3}
       propertyPath: m_Name
       value: PlayerPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 4276988534317274524, guid: 1c24c19a21d7f8f49aac05b3ecb1ac8e, type: 3}
+      propertyPath: m_Constraints
+      value: 112
       objectReference: {fileID: 0}
     - target: {fileID: 5952247655783481321, guid: 1c24c19a21d7f8f49aac05b3ecb1ac8e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6791,11 +8660,58 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 675196297}
   m_SourcePrefab: {fileID: 100100000, guid: 0946f713f054dd34d8a90162ff4033fb, type: 3}
+--- !u!1 &1245668784 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 513465993}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1245668785 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 513465993}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1245668788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1245668784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1245668789
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1245668784}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500012, y: 0.015000008, z: 0.019500019}
+  m_Center: {x: -0.00025000144, y: 0.45, z: 0.00025002912}
 --- !u!1001 &1256152042
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6869,11 +8785,58 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 1005644848}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1268883050 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 92319294}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1268883051 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 92319294}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1268883054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1268883050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1268883055
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1268883050}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0.000000059604645, y: 0.45, z: -0.0000019669533}
 --- !u!1001 &1287654582
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6929,7 +8892,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1637337303}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1637337302}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &1287654583 stripped
 Transform:
@@ -7077,11 +9046,58 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 7569207101230598430, guid: 585b6709105139a47aea2d784657c0d2, type: 3}
+--- !u!1 &1328342808 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1962038806}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1328342809 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1962038806}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1328342812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328342808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1328342813
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328342808}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0.00000023841858, y: 0.45, z: -0.000000059604634}
 --- !u!1001 &1343507374
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7145,7 +9161,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1380958934}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1380958933}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &1343507375 stripped
 Transform:
@@ -7238,28 +9260,128 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 340741788}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 340741787}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &1371827047 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1371827046}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1380958929 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 1343507374}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1380958930 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 1343507374}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1380958933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1380958929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1380958934
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1380958929}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500002, y: 0.015, z: 0.019500006}
+  m_Center: {x: -0.00025000706, y: 0.45, z: 0.00025001407}
 --- !u!23 &1384572881 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1921776261}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1385240821 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1426794961}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1385240822 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1426794961}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1385240825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1385240821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1385240826
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1385240821}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000004, z: 2}
+  m_Center: {x: -0.00000047683716, y: 0.45, z: 0.00000017881393}
 --- !u!1 &1392076801 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 585b6709105139a47aea2d784657c0d2, type: 3}
@@ -7292,11 +9414,58 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 585b6709105139a47aea2d784657c0d2, type: 3}
   m_PrefabInstance: {fileID: 643729668}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1395384734 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 656993801}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1395384735 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 656993801}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1395384738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1395384734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1395384739
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1395384734}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.000001, y: 1.5000008, z: 2.0000005}
+  m_Center: {x: 0, y: 0.45, z: 0.00000011920923}
 --- !u!1001 &1400983104
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7360,7 +9529,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 506767407}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 506767406}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &1400983105 stripped
 Transform:
@@ -7372,11 +9547,58 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 1400983104}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1416352254 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 50702305}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1416352255 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 50702305}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1416352258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1416352254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1416352259
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1416352254}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500002, y: 0.015, z: 0.019500006}
+  m_Center: {x: -0.0002499698, y: 0.45, z: 0.00024999917}
 --- !u!1001 &1426794961
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7432,7 +9654,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1385240826}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1385240825}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!23 &1446331672 stripped
 MeshRenderer:
@@ -7767,7 +9995,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 248246759}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 248246758}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &1461894527 stripped
 Transform:
@@ -7836,10 +10070,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: floor_spikes_trap_2x2x1_red (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1617074428}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1617074427}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &1462724893 stripped
 Transform:
@@ -7851,11 +10095,58 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1462724892}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1483650091 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1662689884}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1483650092 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1662689884}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1483650095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483650091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1483650096
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483650091}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0, y: 0.45, z: -0.0000019669533}
 --- !u!4 &1501912751 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
@@ -7866,11 +10157,58 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 2055424334}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1502869362 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 132520413}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1502869363 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 132520413}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1502869366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1502869362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1502869367
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1502869362}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500002, y: 0.015, z: 0.019500006}
+  m_Center: {x: -0.0002499996, y: 0.45, z: 0.00024999917}
 --- !u!1001 &1505385639
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7934,7 +10272,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 652429488}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 652429487}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &1505385640 stripped
 Transform:
@@ -8001,7 +10345,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 969838377}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 969838376}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &1518566167 stripped
 Transform:
@@ -8063,7 +10413,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 802085343}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 802085342}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!23 &1540439773 stripped
 MeshRenderer:
@@ -8156,7 +10512,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1860005081}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1860005080}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &1570720541 stripped
 Transform:
@@ -8271,11 +10633,58 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 198428939}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1617074423 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1462724892}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1617074424 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1462724892}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1617074427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1617074423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1617074428
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1617074423}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: -0.00000023841858, y: 0.45, z: -0.0000019669533}
 --- !u!1001 &1622600095
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8344,21 +10753,162 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1349699377}
   m_SourcePrefab: {fileID: 100100000, guid: 0946f713f054dd34d8a90162ff4033fb, type: 3}
+--- !u!1 &1630315086 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 2041990283}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1630315087 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 2041990283}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1630315090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1630315086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1630315091
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1630315086}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0, y: 0.45, z: -0.0000019669533}
+--- !u!1 &1637337298 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1287654582}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1637337299 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1287654582}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1637337302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1637337298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1637337303
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1637337298}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.000001, y: 1.5000008, z: 2.0000005}
+  m_Center: {x: 0, y: 0.45, z: -0.0000008344651}
+--- !u!1 &1643098721 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 2055424334}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1643098722 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 2055424334}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1643098725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1643098721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1643098726
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1643098721}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000004, z: 2}
+  m_Center: {x: 0, y: 0.45, z: 0.000000059604645}
 --- !u!23 &1654159365 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
@@ -8419,7 +10969,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 675126285}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 675126284}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &1660144980 stripped
 Transform:
@@ -8486,7 +11042,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1483650096}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1483650095}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &1662689885 stripped
 Transform:
@@ -8503,16 +11065,110 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 463214900}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1694908894 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 827868648}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1694908895 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 827868648}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1694908898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1694908894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1694908899
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1694908894}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0, y: 0.45, z: -0.000000059604634}
+--- !u!1 &1716774986 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 1728813184}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1716774987 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 1728813184}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1716774990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716774986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1716774991
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716774986}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500002, y: 0.015, z: 0.019500006}
+  m_Center: {x: -0.0002499996, y: 0.45, z: 0.00025001407}
 --- !u!1001 &1728813184
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8576,7 +11232,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1716774991}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1716774990}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &1728813185 stripped
 Transform:
@@ -8638,7 +11300,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 282973553}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 282973552}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &1752343291 stripped
 Transform:
@@ -8655,16 +11323,110 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 656993801}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1785905907 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 1225985645}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1785905908 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 1225985645}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1785905911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785905907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1785905912
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785905907}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500012, y: 0.015000008, z: 0.019500019}
+  m_Center: {x: -0.00025000144, y: 0.45, z: 0.00025002912}
+--- !u!1 &1798855277 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 957226306}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1798855278 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 957226306}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1798855281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1798855277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1798855282
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1798855277}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000004, z: 2}
+  m_Center: {x: 0, y: 0.45, z: -0.00000029802322}
 --- !u!23 &1808166060 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
@@ -8733,7 +11495,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1128247359}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1128247358}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &1828510143 stripped
 Transform:
@@ -8755,16 +11523,110 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 50702305}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1860005076 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1570720540}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1860005077 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1570720540}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1860005080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1860005076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1860005081
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1860005076}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0, y: 0.45, z: -0.0000019669533}
+--- !u!1 &1861654641 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 393760385}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1861654642 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 393760385}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1861654645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861654641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1861654646
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861654641}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000004, z: 2}
+  m_Center: {x: 0, y: 0.45, z: 0.00000017881393}
 --- !u!1001 &1877585376
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9481,7 +12343,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2028363226}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2028363225}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &1891818286 stripped
 Transform:
@@ -9545,10 +12413,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: floor_spikes_trap_2x2x1_red (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 314084198}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 314084197}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &1892412429 stripped
 Transform:
@@ -9560,11 +12438,58 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1892412428}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1900513047 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 198428939}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1900513048 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 198428939}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1900513051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1900513047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &1900513052
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1900513047}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000004, z: 2}
+  m_Center: {x: 0, y: 0.45, z: -0.000000059604645}
 --- !u!1001 &1910193669
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9620,7 +12545,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 157328422}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 157328421}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &1910193670 stripped
 Transform:
@@ -9777,7 +12708,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 716628737}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 716628736}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &1924932630 stripped
 Transform:
@@ -9911,10 +12848,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: floor_spikes_trap_2x2x1_red (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 613493904}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 613493903}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &1954805735 stripped
 Transform:
@@ -9978,10 +12925,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: floor_spikes_trap_2x2x1_red (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1328342813}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1328342812}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &1962038807 stripped
 Transform:
@@ -10163,11 +13120,58 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 7569207101230598430, guid: 585b6709105139a47aea2d784657c0d2, type: 3}
+--- !u!1 &2021901369 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 588266785}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2021901370 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 588266785}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2021901373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2021901369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &2021901374
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2021901369}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500002, y: 0.015, z: 0.019500006}
+  m_Center: {x: -0.00025000333, y: 0.45, z: 0.00025001407}
 --- !u!1001 &2024494201
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10228,10 +13232,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: halfspike2 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 491339580}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 491339579}
   m_SourcePrefab: {fileID: 100100000, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
 --- !u!4 &2024494202 stripped
 Transform:
@@ -10243,11 +13257,58 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 2024494201}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2028363221 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 1891818285}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2028363222 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 1891818285}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2028363225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2028363221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &2028363226
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2028363221}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0, y: 0.45, z: -0.0000005364418}
 --- !u!1001 &2032305809
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10303,7 +13364,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 133767684}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 133767683}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!1001 &2041990283
 PrefabInstance:
@@ -10357,10 +13424,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: floor_spikes_trap_2x2x1_red (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1630315091}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1630315090}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &2041990284 stripped
 Transform:
@@ -10473,7 +13550,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1643098726}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1643098725}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!1 &2057420409 stripped
 GameObject:
@@ -10501,21 +13584,115 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 6, y: 0.50000036, z: 2}
   m_Center: {x: 0, y: 0.25, z: -0.000000059604645}
+--- !u!1 &2070573001 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 463214900}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2070573002 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 463214900}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2070573005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070573001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 1
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &2070573006
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070573001}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1.5000001, z: 1.9999996}
+  m_Center: {x: 0.00000023841858, y: 0.45, z: -0.0000019669533}
 --- !u!23 &2077478609 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 198428939}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2087952713 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
+  m_PrefabInstance: {fileID: 508016308}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &2087952714 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: b2a928b6be8de5d409cdd829acb27801, type: 3}
   m_PrefabInstance: {fileID: 508016308}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2087952717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2087952713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &2087952718
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2087952713}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.019500008, y: 0.015000003, z: 0.019500006}
+  m_Center: {x: -0.00024999966, y: 0.45, z: 0.00024999917}
 --- !u!1001 &2095020169
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10571,7 +13748,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 784885850}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 784885849}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &2095020170 stripped
 Transform:
@@ -10668,11 +13851,58 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.000001, y: 2.0000002, z: 1.0000004}
   m_Center: {x: 0, y: 1.0000001, z: -0.00000023841858}
+--- !u!1 &2104471878 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+  m_PrefabInstance: {fileID: 38481826}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2104471879 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6097570671394888107, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
   m_PrefabInstance: {fileID: 38481826}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2104471882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2104471878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4aca352e5af314bada1baa17ca8621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpikeStateHealthTrigger
+  groupController: {fileID: 884222873}
+  groupSide: 0
+  effectMode: 0
+  applyFirstTickImmediatelyOnEnter: 1
+  applyFirstTickImmediatelyOnModeChange: 0
+  amountPerTick: 1
+  tickInterval: 0.2
+  affectOnlyLocallyOwnedPlayers: 1
+  enableDebugLogs: 1
+--- !u!65 &2104471883
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2104471878}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.000001, y: 1.5000008, z: 2.0000005}
+  m_Center: {x: 0.0000019073486, y: 0.45, z: 0.00000011920923}
 --- !u!23 &2105487072 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
@@ -10730,10 +13960,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: floor_spikes_trap_2x2x1_red (13)
       objectReference: {fileID: 0}
+    - target: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 851197723}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 851197722}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &2109259448 stripped
 Transform:
@@ -10836,7 +14076,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1167548409}
+    - targetCorrespondingSourceObject: {fileID: 6361422314767826043, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1167548408}
   m_SourcePrefab: {fileID: 100100000, guid: acba915b9e58acf48a61abcf4bbdd662, type: 3}
 --- !u!4 &2144548964 stripped
 Transform:
