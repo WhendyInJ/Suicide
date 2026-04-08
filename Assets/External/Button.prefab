@@ -150,7 +150,8 @@ MonoBehaviour:
   holdDuration: 1
   cancelReturnDuration: 0.2
   pressedLocalOffset: {x: 0, y: -0.05, z: 0}
-  pressCycleDuration: 1
+  pressCycleDuration: 0.2
+  toggleObjects: []
 --- !u!1 &7048642987917984248
 GameObject:
   m_ObjectHideFlags: 0
