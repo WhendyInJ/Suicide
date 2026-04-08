@@ -36,20 +36,23 @@ public class PlayerHealthStatusBoardUI : MonoBehaviourPunCallbacks
             contentRoot = transform as RectTransform;
     }
 
-    private void OnEnable()
+    public override void OnEnable()
     {
+        base.OnEnable();
+
         PlayerHealth.Registered += HandlePlayerHealthRegistered;
         PlayerHealth.Unregistered += HandlePlayerHealthUnregistered;
 
         RebuildAllEntries();
     }
 
-    private void OnDisable()
+    public override void OnDisable()
     {
         PlayerHealth.Registered -= HandlePlayerHealthRegistered;
         PlayerHealth.Unregistered -= HandlePlayerHealthUnregistered;
 
         UnbindAllEntries();
+        base.OnDisable();
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)

@@ -26,6 +26,7 @@ public class BombProjectile : MonoBehaviourPun
     private float stunDuration;
     private int stunPriority;
     private GameObject explosionEffectPrefab;
+    private string explosionEffectResourceName;
 
     private readonly Collider[] overlapBuffer = new Collider[32];
     private readonly HashSet<PlayerMovementEffectReceiver> uniqueTargets = new();
@@ -78,6 +79,7 @@ public class BombProjectile : MonoBehaviourPun
         this.stunDuration = stunDuration;
         this.stunPriority = stunPriority;
         this.explosionEffectPrefab = explosionEffectPrefab;
+        explosionEffectResourceName = explosionEffectPrefab != null ? explosionEffectPrefab.name : string.Empty;
 
         debugExplosionRadius = explosionRadius;
         initialized = true;
@@ -213,7 +215,7 @@ public class BombProjectile : MonoBehaviourPun
         hasExploded = true;
 
         ApplyExplosionEffects(explodePoint);
-        SpawnExplosionEffect(explodePoint);
+        SpawnExplosionEffect(explodePoint, explosionRadius);
         DestroyProjectile();
     }
 
@@ -248,35 +250,47 @@ public class BombProjectile : MonoBehaviourPun
         }
     }
 
-    private void SpawnExplosionEffect(Vector3 explodePoint)
+    private void SpawnExplosionEffect(Vector3 explodePoint, float effectRadius)
     {
+        if (PhotonNetwork.InRoom)
+        {
+            photonView.RPC(
+                nameof(RPC_SpawnExplosionEffect),
+                RpcTarget.All,
+                explodePoint,
+                effectRadius,
+                explosionEffectResourceName);
+            return;
+        }
+
         if (explosionEffectPrefab == null)
             return;
 
-        GameObject spawnedEffect;
-
-        if (PhotonNetwork.InRoom)
-        {
-            spawnedEffect = PhotonNetwork.Instantiate(
-                explosionEffectPrefab.name,
-                explodePoint,
-                Quaternion.identity);
-        }
-        else
-        {
-            spawnedEffect = Instantiate(explosionEffectPrefab, explodePoint, Quaternion.identity);
-        }
-
-        ApplyExplosionEffectScale(spawnedEffect);
+        GameObject spawnedEffect = Instantiate(explosionEffectPrefab, explodePoint, Quaternion.identity);
+        ApplyExplosionEffectScale(spawnedEffect, explosionEffectPrefab, effectRadius);
     }
 
-    private void ApplyExplosionEffectScale(GameObject spawnedEffect)
+    [PunRPC]
+    private void RPC_SpawnExplosionEffect(Vector3 explodePoint, float effectRadius, string effectResourceName)
     {
-        if (spawnedEffect == null)
+        if (string.IsNullOrWhiteSpace(effectResourceName))
             return;
 
-        Vector3 baseScale = GetNormalizedScale(explosionEffectPrefab.transform.localScale);
-        float diameter = Mathf.Max(0f, explosionRadius) * ExplosionEffectDiameterMultiplier;
+        GameObject effectPrefab = Resources.Load<GameObject>(effectResourceName);
+        if (effectPrefab == null)
+            return;
+
+        GameObject spawnedEffect = Instantiate(effectPrefab, explodePoint, Quaternion.identity);
+        ApplyExplosionEffectScale(spawnedEffect, effectPrefab, effectRadius);
+    }
+
+    private void ApplyExplosionEffectScale(GameObject spawnedEffect, GameObject effectPrefab, float effectRadius)
+    {
+        if (spawnedEffect == null || effectPrefab == null)
+            return;
+
+        Vector3 baseScale = GetNormalizedScale(effectPrefab.transform.localScale);
+        float diameter = Mathf.Max(0f, effectRadius) * ExplosionEffectDiameterMultiplier;
         float uniformScaleMultiplier = diameter > 0f ? diameter : 1f;
 
         spawnedEffect.transform.localScale = baseScale * uniformScaleMultiplier;

@@ -212,16 +212,32 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         EnsureSpawnSequenceInitialized();
 
-        int nextSequence = GetNextSpawnSequence();
-        int assignedIndex = nextSequence % spawnPoints.Length;
-        cachedNextSpawnSequence = nextSequence + 1;
-        hasCachedNextSpawnSequence = true;
+        bool isCurrentMasterActor =
+            PhotonNetwork.CurrentRoom != null &&
+            PhotonNetwork.CurrentRoom.GetPlayer(actorNumber)?.IsMasterClient == true;
 
-        Hashtable changedProperties = new Hashtable
+        int assignedIndex;
+        Hashtable changedProperties = new Hashtable();
+
+        if (isCurrentMasterActor)
         {
-            { NextSpawnSequenceKey, cachedNextSpawnSequence },
-            { GetSpawnAssignmentKey(actorNumber), assignedIndex }
-        };
+            assignedIndex = 0;
+
+            int nextSequence = Mathf.Max(1, GetNextSpawnSequence());
+            cachedNextSpawnSequence = nextSequence;
+            hasCachedNextSpawnSequence = true;
+            changedProperties[NextSpawnSequenceKey] = cachedNextSpawnSequence;
+        }
+        else
+        {
+            int nextSequence = Mathf.Max(1, GetNextSpawnSequence());
+            assignedIndex = GetClientSpawnIndex(nextSequence);
+            cachedNextSpawnSequence = nextSequence + 1;
+            hasCachedNextSpawnSequence = true;
+            changedProperties[NextSpawnSequenceKey] = cachedNextSpawnSequence;
+        }
+
+        changedProperties[GetSpawnAssignmentKey(actorNumber)] = assignedIndex;
 
         PhotonNetwork.CurrentRoom?.SetCustomProperties(changedProperties);
         return assignedIndex;
@@ -240,10 +256,10 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         Hashtable initProperties = new Hashtable
         {
-            { NextSpawnSequenceKey, 0 }
+            { NextSpawnSequenceKey, 1 }
         };
 
-        cachedNextSpawnSequence = 0;
+        cachedNextSpawnSequence = 1;
         hasCachedNextSpawnSequence = true;
         PhotonNetwork.CurrentRoom.SetCustomProperties(initProperties);
     }
@@ -288,7 +304,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private void RefreshSpawnSequenceCache()
     {
-        cachedNextSpawnSequence = GetRoomInt(NextSpawnSequenceKey, 0);
+        cachedNextSpawnSequence = GetRoomInt(NextSpawnSequenceKey, 1);
         hasCachedNextSpawnSequence = true;
     }
 
@@ -301,6 +317,18 @@ public class GameManager : MonoBehaviourPunCallbacks
             return null;
 
         return spawnPoints[spawnIndex];
+    }
+
+    private int GetClientSpawnIndex(int sequence)
+    {
+        if (spawnPoints == null || spawnPoints.Length == 0)
+            return 0;
+
+        if (spawnPoints.Length == 1)
+            return 0;
+
+        int nonHostSpawnCount = spawnPoints.Length - 1;
+        return 1 + ((Mathf.Max(1, sequence) - 1) % nonHostSpawnCount);
     }
 
     private static string GetSpawnAssignmentKey(int actorNumber)
