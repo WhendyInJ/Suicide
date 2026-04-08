@@ -239,7 +239,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SuicideSquad_ItemInventory
   slotCount: 8
   loopSelection: 1
-  selectedSlotIndex: 0
+  selectedSlotIndex: -1
   slotList: []
 --- !u!4 &478075181
 Transform:

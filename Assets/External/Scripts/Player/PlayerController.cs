@@ -41,6 +41,13 @@ public class PlayerController : MonoBehaviour
         public Vector3 FollowOffset;
     }
 
+    private sealed class RuntimeInputBlock
+    {
+        public int Id;
+        public int Priority;
+        public float EndTime;
+    }
+
     private struct ImpulseControlState
     {
         public bool IsActive;
@@ -77,6 +84,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool clearHorizontalVelocityBeforeImpulse = true;
     [SerializeField] private bool preserveVerticalVelocityOnImpulse = false;
 
+    [Header("Input Block")]
+    [SerializeField] private bool debugInputBlocked;
+
     [Header("Options")]
     [SerializeField] private bool useCameraMainIfMissing = true;
 
@@ -100,6 +110,15 @@ public class PlayerController : MonoBehaviour
     public bool JustLeftGround => groundSensor != null && groundSensor.JustLeftGround;
     public Vector3 GroundNormal => groundSensor != null ? groundSensor.GroundNormal : Vector3.up;
 
+    public bool IsInputBlocked
+    {
+        get
+        {
+            CleanupExpiredInputBlocks();
+            return activeInputBlocks.Count > 0;
+        }
+    }
+
     private Vector2 moveInput;
     private Vector3 desiredMoveDirection;
     private bool hasMoveInput;
@@ -107,6 +126,9 @@ public class PlayerController : MonoBehaviour
     private readonly List<RuntimeMovementCommand> activeCommands = new();
     private int nextCommandId = 1;
     private int nextCommandSequence = 1;
+
+    private readonly List<RuntimeInputBlock> activeInputBlocks = new();
+    private int nextInputBlockId = 1;
 
     private ImpulseControlState impulseControl;
 
@@ -142,6 +164,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        CleanupExpiredInputBlocks();
         ReadInput();
     }
 
@@ -180,6 +203,14 @@ public class PlayerController : MonoBehaviour
     private void ReadInput()
     {
         if (!HasLocalAuthority)
+        {
+            moveInput = Vector2.zero;
+            desiredMoveDirection = Vector3.zero;
+            hasMoveInput = false;
+            return;
+        }
+
+        if (IsInputBlocked)
         {
             moveInput = Vector2.zero;
             desiredMoveDirection = Vector3.zero;
@@ -572,6 +603,79 @@ public class PlayerController : MonoBehaviour
         };
     }
 
+    public int AddInputBlock(float duration, int priority = 300)
+    {
+        if (duration <= 0f)
+            return -1;
+
+        RuntimeInputBlock block = new RuntimeInputBlock
+        {
+            Id = nextInputBlockId++,
+            Priority = priority,
+            EndTime = Time.time + duration
+        };
+
+        activeInputBlocks.Add(block);
+        RefreshInputBlockedState();
+        return block.Id;
+    }
+
+    public bool RemoveInputBlock(int blockId)
+    {
+        for (int i = 0; i < activeInputBlocks.Count; i++)
+        {
+            if (activeInputBlocks[i].Id == blockId)
+            {
+                activeInputBlocks.RemoveAt(i);
+                RefreshInputBlockedState();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void ClearInputBlocks()
+    {
+        if (activeInputBlocks.Count == 0)
+            return;
+
+        activeInputBlocks.Clear();
+        RefreshInputBlockedState();
+    }
+
+    private void CleanupExpiredInputBlocks()
+    {
+        bool removed = false;
+
+        for (int i = activeInputBlocks.Count - 1; i >= 0; i--)
+        {
+            if (Time.time >= activeInputBlocks[i].EndTime)
+            {
+                activeInputBlocks.RemoveAt(i);
+                removed = true;
+            }
+        }
+
+        if (removed)
+        {
+            RefreshInputBlockedState();
+        }
+    }
+
+    private void RefreshInputBlockedState()
+    {
+        debugInputBlocked = activeInputBlocks.Count > 0;
+    }
+
+    public void ApplyStun(float duration, int priority = 300)
+    {
+        if (duration <= 0f)
+            return;
+
+        AddInputBlock(duration, priority);
+    }
+
     public int ApplyEffect(
         MovementEffectType effectType,
         Vector3 vectorValue,
@@ -676,6 +780,13 @@ public class PlayerController : MonoBehaviour
     public void ClearCommands()
     {
         activeCommands.Clear();
+    }
+
+    public void ClearAllRestrictions()
+    {
+        ClearCommands();
+        ClearInputBlocks();
+        ClearImpulseControl();
     }
 
     public void SetCameraTransform(Transform newCameraTransform)
