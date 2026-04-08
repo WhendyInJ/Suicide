@@ -13,6 +13,7 @@
   <Project Path="PunDemos.DemoHubEditor.csproj" />
   <Project Path="PunDemos.DemoSlotcarEditor.csproj" />
   <Project Path="AllIn1VfxTexDemoAssembly.csproj" />
+  <Project Path="OccaSoftware.Crosshairs.Editor.csproj" />
   <Project Path="PhotonChat.csproj" />
   <Project Path="PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />

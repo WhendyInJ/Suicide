@@ -52,6 +52,7 @@ MonoBehaviour:
   - RPC_RequestClaimPickup
   - RPC_AttachHeldItemVisual
   - RPC_ClearHeldItemVisual
+  - RPC_RequestSpawnAssignment
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

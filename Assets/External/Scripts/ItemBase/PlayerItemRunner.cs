@@ -7,7 +7,8 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
     private enum AimPreviewType
     {
         None = 0,
-        Trajectory = 1
+        Trajectory = 1,
+        Crosshair = 2
     }
 
     private sealed class RuntimeSlot
@@ -35,6 +36,7 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
 
     [Header("Aim Preview")]
     [SerializeField] private BombAimPreviewEffect trajectoryAimPreviewPrefab;
+    [SerializeField] private CrosshairAimPreview crosshairAimPreviewPrefab;
 
     public bool IsAimingItem => isAimingItem;
 
@@ -49,6 +51,7 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
     private int currentHeldVisualViewId = NoHeldVisualViewId;
     private Coroutine waitForHeldVisualCoroutine;
     private BombAimPreviewEffect trajectoryAimPreviewInstance;
+    private CrosshairAimPreview crosshairAimPreviewInstance;
     private ItemDefinition configuredTrajectoryPreviewDefinition;
     private bool hasLoggedMissingTrajectoryAimPreview;
 
@@ -109,15 +112,11 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
 
     private void OnDestroy()
     {
-        if (trajectoryAimPreviewInstance == null)
-            return;
-
-        if (Application.isPlaying)
-            Destroy(trajectoryAimPreviewInstance.gameObject);
-        else
-            DestroyImmediate(trajectoryAimPreviewInstance.gameObject);
-
+        DestroyAimPreviewInstance(trajectoryAimPreviewInstance);
         trajectoryAimPreviewInstance = null;
+
+        DestroyAimPreviewInstance(crosshairAimPreviewInstance);
+        crosshairAimPreviewInstance = null;
     }
 
     private void Update()
@@ -415,7 +414,7 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
     {
         request = default;
 
-        if (!UsesMouseDrivenTrajectoryAim(runtime))
+        if (!UsesMouseDrivenAim(runtime))
             return false;
 
         Vector3 aimDirection = ResolveMouseDrivenAimDirection(originTransform);
@@ -432,9 +431,9 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         return true;
     }
 
-    private bool UsesMouseDrivenTrajectoryAim(IItemRuntime runtime)
+    private bool UsesMouseDrivenAim(IItemRuntime runtime)
     {
-        return runtime is BombItemRuntime;
+        return runtime is BombItemRuntime || runtime is GrabItemRuntime;
     }
 
     private Vector3 ResolveMouseDrivenAimDirection(Transform originTransform)
@@ -824,6 +823,10 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
                 UpdateTrajectoryAimPreview(previewDefinition, runtime);
                 break;
 
+            case AimPreviewType.Crosshair:
+                UpdateCrosshairAimPreview();
+                break;
+
             case AimPreviewType.None:
             default:
                 HideAimPreview();
@@ -856,6 +859,12 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
             return true;
         }
 
+        if (definition is GrabItemDefinition)
+        {
+            previewType = AimPreviewType.Crosshair;
+            return true;
+        }
+
         return false;
     }
 
@@ -879,6 +888,15 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
 
         ItemUseRequest request = BuildUseRequest(runtime);
         preview.RenderPreview(GetItemEffectSpawnTransform(), request.AimDirection);
+    }
+
+    private void UpdateCrosshairAimPreview()
+    {
+        CrosshairAimPreview preview = GetOrCreateCrosshairAimPreview();
+        if (preview == null)
+            return;
+
+        preview.ShowPreview();
     }
 
     private BombAimPreviewEffect GetOrCreateTrajectoryAimPreview()
@@ -910,6 +928,27 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         return trajectoryAimPreviewInstance;
     }
 
+    private CrosshairAimPreview GetOrCreateCrosshairAimPreview()
+    {
+        if (crosshairAimPreviewInstance != null)
+            return crosshairAimPreviewInstance;
+
+        if (crosshairAimPreviewPrefab != null)
+        {
+            crosshairAimPreviewInstance = Instantiate(crosshairAimPreviewPrefab, transform);
+            crosshairAimPreviewInstance.name = crosshairAimPreviewPrefab.name;
+        }
+        else
+        {
+            GameObject previewObject = new GameObject("CrosshairAimPreview");
+            previewObject.transform.SetParent(transform, false);
+            crosshairAimPreviewInstance = previewObject.AddComponent<CrosshairAimPreview>();
+        }
+
+        crosshairAimPreviewInstance.HidePreview();
+        return crosshairAimPreviewInstance;
+    }
+
     private void HideAimPreview()
     {
         configuredTrajectoryPreviewDefinition = null;
@@ -917,6 +956,11 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         if (trajectoryAimPreviewInstance != null)
         {
             trajectoryAimPreviewInstance.HidePreview();
+        }
+
+        if (crosshairAimPreviewInstance != null)
+        {
+            crosshairAimPreviewInstance.HidePreview();
         }
     }
 
@@ -967,5 +1011,20 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         }
 
         return Instantiate(prefab, position, rotation);
+    }
+
+    private void DestroyAimPreviewInstance(Object previewInstance)
+    {
+        if (previewInstance == null)
+            return;
+
+        Object targetObject = previewInstance;
+        if (previewInstance is Component component)
+            targetObject = component.gameObject;
+
+        if (Application.isPlaying)
+            Destroy(targetObject);
+        else
+            DestroyImmediate(targetObject);
     }
 }

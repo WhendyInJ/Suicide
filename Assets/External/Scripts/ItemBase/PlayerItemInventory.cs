@@ -6,6 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(PhotonView))]
 public class PlayerItemInventory : MonoBehaviour, IItemPickupReceiver, IPunObservable
 {
+    private const int MaxItemsPerSlot = 1;
+
     [Serializable]
     public sealed class SlotData
     {
@@ -23,16 +25,7 @@ public class PlayerItemInventory : MonoBehaviour, IItemPickupReceiver, IPunObser
 
         public bool CanStack(ItemDefinition targetDefinition)
         {
-            if (targetDefinition == null)
-                return false;
-
-            if (IsEmpty)
-                return false;
-
-            if (itemDefinition != targetDefinition)
-                return false;
-
-            return itemCount < itemDefinition.MaxStack;
+            return false;
         }
 
         public int GetRemainingSpace()
@@ -40,7 +33,7 @@ public class PlayerItemInventory : MonoBehaviour, IItemPickupReceiver, IPunObser
             if (IsEmpty)
                 return 0;
 
-            return Mathf.Max(0, itemDefinition.MaxStack - itemCount);
+            return Mathf.Max(0, MaxItemsPerSlot - itemCount);
         }
 
         public void SetSlot(ItemDefinition newDefinition, int newCount)
@@ -160,7 +153,7 @@ public class PlayerItemInventory : MonoBehaviour, IItemPickupReceiver, IPunObser
         if (definition == null || amount <= 0)
             return false;
 
-        return GetAddableCount(definition) >= amount;
+        return GetAddableCount(definition) > 0;
     }
 
     public bool ReceivePickup(ItemDefinition definition, int amount)
@@ -168,7 +161,7 @@ public class PlayerItemInventory : MonoBehaviour, IItemPickupReceiver, IPunObser
         if (!HasLocalPickupAuthority)
             return false;
 
-        return AddItem(definition, amount) == amount;
+        return AddItem(definition, 1) > 0;
     }
 
     public int AddItem(ItemDefinition definition, int addCount)
@@ -179,30 +172,14 @@ public class PlayerItemInventory : MonoBehaviour, IItemPickupReceiver, IPunObser
         InitializeSlotsIfNeeded();
         ClearEmptySelection();
 
-        int remaining = addCount;
+        int remaining = Mathf.Min(MaxItemsPerSlot, addCount);
         int totalAdded = 0;
-
-        for (int i = 0; i < slotList.Count; i++)
-        {
-            if (slotList[i].CanStack(definition))
-            {
-                int added = slotList[i].AddCount(remaining);
-                remaining -= added;
-                totalAdded += added;
-
-                if (remaining <= 0)
-                {
-                    RaiseInventoryChanged();
-                    return totalAdded;
-                }
-            }
-        }
 
         for (int i = 0; i < slotList.Count; i++)
         {
             if (slotList[i].IsEmpty)
             {
-                int placeCount = Mathf.Min(definition.MaxStack, remaining);
+                int placeCount = Mathf.Min(MaxItemsPerSlot, remaining);
                 slotList[i].SetSlot(definition, placeCount);
 
                 remaining -= placeCount;
@@ -237,13 +214,9 @@ public class PlayerItemInventory : MonoBehaviour, IItemPickupReceiver, IPunObser
         {
             SlotData slot = slotList[i];
 
-            if (slot.CanStack(definition))
+            if (slot.IsEmpty)
             {
-                addable += slot.GetRemainingSpace();
-            }
-            else if (slot.IsEmpty)
-            {
-                addable += definition.MaxStack;
+                addable += MaxItemsPerSlot;
             }
         }
 
