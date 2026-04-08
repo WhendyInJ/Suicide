@@ -1,6 +1,7 @@
 using System.Collections;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public enum SpikeFloorGroupSide
@@ -10,8 +11,10 @@ public enum SpikeFloorGroupSide
 }
 
 [DisallowMultipleComponent]
-public class SpikePlatformGroupController : MonoBehaviourPun, IInteractionTriggerTarget
+public class SpikePlatformGroupController : MonoBehaviourPunCallbacks, IInteractionTriggerTarget
 {
+    private const string StatePropertyPrefix = "spike_state_";
+
     [Header("Controlled Objects - Group A")]
     [SerializeField] private Transform[] firstSpikeObjects;
     [SerializeField] private Renderer[] firstPlatformRenderers;
@@ -30,12 +33,14 @@ public class SpikePlatformGroupController : MonoBehaviourPun, IInteractionTrigge
     [SerializeField] private Color inactivePlatformColor = new Color32(0xD6, 0x5A, 0x5D, 0xFF);
     [SerializeField] private bool startWithFirstGroupActive = true;
     [SerializeField] private bool enableDebugLogs = false;
+    [SerializeField] private string stateSyncKeyOverride = string.Empty;
 
     private MaterialPropertyBlock propertyBlock;
     private Vector3[] firstSpikeRaisedLocalPositions;
     private Vector3[] secondSpikeRaisedLocalPositions;
     private bool isFirstGroupActive;
     private bool isTransitionRunning;
+    private string cachedStatePropertyKey;
 
     public event System.Action<bool> StateChanged;
 
@@ -61,7 +66,25 @@ public class SpikePlatformGroupController : MonoBehaviourPun, IInteractionTrigge
         firstSpikeRaisedLocalPositions = CacheSpikePositions(firstSpikeObjects);
         secondSpikeRaisedLocalPositions = CacheSpikePositions(secondSpikeObjects);
         isFirstGroupActive = startWithFirstGroupActive;
+        cachedStatePropertyKey = BuildStatePropertyKey();
         ApplyImmediate(isFirstGroupActive);
+    }
+
+    private void Start()
+    {
+        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
+            return;
+
+        if (TryGetSyncedState(out bool syncedState))
+        {
+            StartCoroutine(CoSetFirstGroupActive(syncedState));
+            return;
+        }
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PublishState(isFirstGroupActive);
+        }
     }
 
     public void TriggerFromInteraction(NetworkHoldInteractionBase source)
@@ -83,16 +106,8 @@ public class SpikePlatformGroupController : MonoBehaviourPun, IInteractionTrigge
         {
             if (!PhotonNetwork.IsMasterClient)
                 return;
-
-            if (photonView != null)
-            {
-                photonView.RPC(nameof(RPC_SetFirstGroupActive), RpcTarget.All, targetFirstGroupActive);
-                return;
-            }
-
-            Debug.LogWarning(
-                $"[{nameof(SpikePlatformGroupController)}:{name}] Missing PhotonView. Falling back to local-only state change.",
-                this);
+            PublishState(targetFirstGroupActive);
+            return;
         }
 
         StartCoroutine(CoSetFirstGroupActive(targetFirstGroupActive));
@@ -149,12 +164,6 @@ public class SpikePlatformGroupController : MonoBehaviourPun, IInteractionTrigge
         isFirstGroupActive = targetFirstGroupActive;
         isTransitionRunning = false;
         NotifyStateChanged();
-    }
-
-    [PunRPC]
-    private void RPC_SetFirstGroupActive(bool targetFirstGroupActive)
-    {
-        StartCoroutine(CoSetFirstGroupActive(targetFirstGroupActive));
     }
 
     private Vector3[] CacheSpikePositions(Transform[] spikes)
@@ -267,5 +276,88 @@ public class SpikePlatformGroupController : MonoBehaviourPun, IInteractionTrigge
     private void NotifyStateChanged()
     {
         StateChanged?.Invoke(isFirstGroupActive);
+    }
+
+    public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
+    {
+        base.OnRoomPropertiesUpdate(propertiesThatChanged);
+
+        if (!PhotonNetwork.InRoom || string.IsNullOrEmpty(cachedStatePropertyKey))
+            return;
+
+        if (!propertiesThatChanged.TryGetValue(cachedStatePropertyKey, out object rawValue))
+            return;
+
+        bool targetState = ConvertPropertyValueToState(rawValue, isFirstGroupActive);
+        if (targetState == isFirstGroupActive && !isTransitionRunning)
+            return;
+
+        StartCoroutine(CoSetFirstGroupActive(targetState));
+    }
+
+    private void PublishState(bool firstGroupActive)
+    {
+        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
+            return;
+
+        ExitGames.Client.Photon.Hashtable changedProperties = new ExitGames.Client.Photon.Hashtable
+        {
+            { cachedStatePropertyKey, firstGroupActive ? 1 : 0 }
+        };
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(changedProperties);
+    }
+
+    private bool TryGetSyncedState(out bool firstGroupActive)
+    {
+        firstGroupActive = startWithFirstGroupActive;
+
+        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null || string.IsNullOrEmpty(cachedStatePropertyKey))
+            return false;
+
+        if (!PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(cachedStatePropertyKey, out object rawValue))
+            return false;
+
+        firstGroupActive = ConvertPropertyValueToState(rawValue, startWithFirstGroupActive);
+        return true;
+    }
+
+    private bool ConvertPropertyValueToState(object rawValue, bool fallbackValue)
+    {
+        return rawValue switch
+        {
+            bool boolValue => boolValue,
+            byte byteValue => byteValue != 0,
+            int intValue => intValue != 0,
+            _ => fallbackValue
+        };
+    }
+
+    private string BuildStatePropertyKey()
+    {
+        if (!string.IsNullOrWhiteSpace(stateSyncKeyOverride))
+            return StatePropertyPrefix + stateSyncKeyOverride.Trim();
+
+        string sceneName = gameObject.scene.IsValid() ? gameObject.scene.name : SceneManager.GetActiveScene().name;
+        string hierarchyPath = GetHierarchyPath(transform);
+        int hash = Animator.StringToHash(sceneName + "/" + hierarchyPath);
+        return StatePropertyPrefix + hash;
+    }
+
+    private string GetHierarchyPath(Transform target)
+    {
+        if (target == null)
+            return string.Empty;
+
+        string path = target.name;
+        Transform current = target.parent;
+
+        while (current != null)
+        {
+            path = current.name + "/" + path;
+            current = current.parent;
+        }
+
+        return path;
     }
 }
