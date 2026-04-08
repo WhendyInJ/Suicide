@@ -65,6 +65,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         UpdateStatus("Disconnected");
     }
 
+    private void Start()
+    {
+        EnsureLobbyCursorVisible();
+    }
+
     private void OnDestroy()
     {
         UnregisterUiListeners();
@@ -679,5 +684,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             return;
 
         button.onClick.RemoveListener(action);
+    }
+
+    private void EnsureLobbyCursorVisible()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 }
