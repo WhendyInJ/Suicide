@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public enum MovementEffectType
 {
@@ -41,11 +42,19 @@ public class PlayerController : MonoBehaviour
         public Vector3 FollowOffset;
     }
 
+    private sealed class RuntimeInputBlock
+    {
+        public int Id;
+        public int Priority;
+        public float EndTime;
+    }
+
     private struct ImpulseControlState
     {
         public bool IsActive;
         public ImpulseControlReleaseMode ReleaseMode;
         public float RemainingTimeout;
+        public float RemainingReleaseCheckDelay;
         public bool HasBeenAirborneSinceStart;
         public bool HasFacingDirection;
         public Vector3 FacingDirection;
@@ -65,6 +74,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool instantStopWhenNoInput = true;
     [SerializeField, Min(0f)] private float inputDeadZone = 0.05f;
 
+    [Header("Ground Adaptation")]
+    [SerializeField] private bool projectMovementOnGround = true;
+    [SerializeField, Range(0f, 89f)] private float maxGroundAngle = 60f;
+    [SerializeField, Range(0f, 89f)] private float maxStairAngle = 75f;
+    [SerializeField, Min(0.01f)] private float groundSnapProbeDistance = 0.6f;
+    [SerializeField, Min(0f)] private float maxGroundSnapSpeed = 8f;
+    [SerializeField, Min(0f)] private float groundSnapProbeStartOffset = 0.15f;
+    [SerializeField, Min(0f)] private float groundSnapDisableDurationAfterJump = 0.15f;
+    [SerializeField] private LayerMask groundSnapMask = ~0;
+    [SerializeField] private LayerMask stairMask = 0;
+
     [Header("Rotation")]
     [SerializeField, Min(0f)] private float rotationSpeed = 1080f;
     [SerializeField] private bool rotateTowardForcedMotion = true;
@@ -73,9 +93,25 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Min(0.01f)] private float forcedMotionAcceleration = 120f;
     [SerializeField] private bool instantStopOnHardLock = true;
 
+    [Header("Jump")]
+    [FormerlySerializedAs("allowJump")]
+    [SerializeField] private bool enableJump = true;
+    [SerializeField, Min(0f)] private float jumpVelocity = 7f;
+    [SerializeField, Min(0f)] private float jumpBufferTime = 0.12f;
+    [SerializeField, Min(0f)] private float coyoteTime = 0.08f;
+    [SerializeField, Min(0f)] private float airborneDragMultiplier = 1f;
+    [SerializeField, Min(0f)] private float fallSpeedMultiplier = 1f;
+    [SerializeField] private bool clearDownwardVelocityOnJump = true;
+
     [Header("Impulse Knockback")]
     [SerializeField] private bool clearHorizontalVelocityBeforeImpulse = true;
     [SerializeField] private bool preserveVerticalVelocityOnImpulse = false;
+    [SerializeField, Min(0f)] private float groundedImpulseReleaseMinLockTime = 0.08f;
+    [SerializeField, Min(0f)] private float groundedImpulseReleaseHorizontalSpeed = 0.35f;
+    [SerializeField, Min(0f)] private float groundedImpulseReleaseVerticalSpeed = 0.2f;
+
+    [Header("Input Block")]
+    [SerializeField] private bool debugInputBlocked;
 
     [Header("Options")]
     [SerializeField] private bool useCameraMainIfMissing = true;
@@ -100,13 +136,32 @@ public class PlayerController : MonoBehaviour
     public bool JustLeftGround => groundSensor != null && groundSensor.JustLeftGround;
     public Vector3 GroundNormal => groundSensor != null ? groundSensor.GroundNormal : Vector3.up;
 
+    public bool IsInputBlocked
+    {
+        get
+        {
+            CleanupExpiredInputBlocks();
+            return activeInputBlocks.Count > 0;
+        }
+    }
+
     private Vector2 moveInput;
     private Vector3 desiredMoveDirection;
+    private Vector3 movementSurfaceNormal = Vector3.up;
     private bool hasMoveInput;
+    private bool hasBufferedJumpRequest;
+    private float jumpRequestExpireTime = float.NegativeInfinity;
+    private bool jumpConsumedSinceLastGrounded;
+    private float lastJumpTime = float.NegativeInfinity;
+    private float minGroundDotProduct;
+    private float minStairDotProduct;
 
     private readonly List<RuntimeMovementCommand> activeCommands = new();
     private int nextCommandId = 1;
     private int nextCommandSequence = 1;
+
+    private readonly List<RuntimeInputBlock> activeInputBlocks = new();
+    private int nextInputBlockId = 1;
 
     private ImpulseControlState impulseControl;
 
@@ -120,6 +175,8 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        CacheGroundThresholds();
+
         if (rb == null)
             rb = GetComponent<Rigidbody>();
 
@@ -140,8 +197,14 @@ public class PlayerController : MonoBehaviour
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
     }
 
+    private void OnValidate()
+    {
+        CacheGroundThresholds();
+    }
+
     private void Update()
     {
+        CleanupExpiredInputBlocks();
         ReadInput();
     }
 
@@ -155,16 +218,20 @@ public class PlayerController : MonoBehaviour
             groundSensor.RefreshGrounding(Time.fixedDeltaTime);
         }
 
+        RefreshMovementSurfaceState();
+        RefreshJumpState();
         TickMovementCommands(Time.fixedDeltaTime);
         TickImpulseControl(Time.fixedDeltaTime);
+
+        RuntimeMovementCommand activeCommand = GetHighestPriorityCommand();
+        TryConsumeJumpRequest(activeCommand);
+        ApplyJumpPhysicsModifiers(Time.fixedDeltaTime, activeCommand);
 
         if (impulseControl.IsActive)
         {
             UpdateImpulseLockRotation();
             return;
         }
-
-        RuntimeMovementCommand activeCommand = GetHighestPriorityCommand();
 
         if (activeCommand != null)
         {
@@ -184,6 +251,16 @@ public class PlayerController : MonoBehaviour
             moveInput = Vector2.zero;
             desiredMoveDirection = Vector3.zero;
             hasMoveInput = false;
+            ClearBufferedJumpRequest();
+            return;
+        }
+
+        if (IsInputBlocked)
+        {
+            moveInput = Vector2.zero;
+            desiredMoveDirection = Vector3.zero;
+            hasMoveInput = false;
+            ClearBufferedJumpRequest();
             return;
         }
 
@@ -202,28 +279,25 @@ public class PlayerController : MonoBehaviour
             moveInput = Vector2.zero;
 
         hasMoveInput = moveInput.sqrMagnitude > 0f;
-        desiredMoveDirection = CalculateMoveDirection(moveInput);
+        desiredMoveDirection = CalculateMoveDirection(moveInput, movementSurfaceNormal);
+
+        BufferJumpRequestIfPressed(ReadJumpPressedThisFrame());
     }
 
-    private Vector3 CalculateMoveDirection(Vector2 input)
+    private Vector3 CalculateMoveDirection(Vector2 input, Vector3 planeNormal)
     {
         if (input.sqrMagnitude <= 0f)
             return Vector3.zero;
 
-        if (cameraTransform == null)
-            return new Vector3(input.x, 0f, input.y).normalized;
+        Vector3 movementPlaneNormal = GetMovementPlaneNormal(planeNormal);
+        Vector3 forwardReference = cameraTransform != null ? cameraTransform.forward : Vector3.forward;
+        Vector3 rightReference = cameraTransform != null ? cameraTransform.right : Vector3.right;
 
-        Vector3 forward = cameraTransform.forward;
-        Vector3 right = cameraTransform.right;
-
-        forward.y = 0f;
-        right.y = 0f;
+        Vector3 forward = ProjectDirectionOnPlane(forwardReference, movementPlaneNormal);
+        Vector3 right = ProjectDirectionOnPlane(rightReference, movementPlaneNormal);
 
         if (forward.sqrMagnitude < 0.0001f || right.sqrMagnitude < 0.0001f)
             return Vector3.zero;
-
-        forward.Normalize();
-        right.Normalize();
 
         Vector3 direction = forward * input.y + right * input.x;
         return direction.sqrMagnitude > 0f ? direction.normalized : Vector3.zero;
@@ -231,15 +305,23 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateBaseMovement()
     {
+        Vector3 movePlaneNormal = GetMovementPlaneNormal(movementSurfaceNormal);
         Vector3 targetHorizontalVelocity = hasMoveInput
             ? desiredMoveDirection * maxMoveSpeed
             : Vector3.zero;
 
         float acceleration = maxMoveSpeed / Mathf.Max(0.0001f, timeToMaxSpeed);
+        float appliedDeceleration = deceleration;
 
-        ApplyTargetHorizontalVelocity(
+        if (IsAirborne)
+        {
+            appliedDeceleration *= Mathf.Max(0f, airborneDragMultiplier);
+        }
+
+        ApplyTargetPlanarVelocity(
             targetHorizontalVelocity,
-            hasMoveInput ? acceleration : deceleration,
+            movePlaneNormal,
+            hasMoveInput ? acceleration : appliedDeceleration,
             !hasMoveInput && instantStopWhenNoInput);
     }
 
@@ -251,12 +333,200 @@ public class PlayerController : MonoBehaviour
         RotateToward(desiredMoveDirection);
     }
 
+    private bool ReadJumpPressedThisFrame()
+    {
+        if (inputSource != null)
+            return inputSource.JumpPressedThisFrame;
+
+        return Input.GetKeyDown(KeyCode.Space);
+    }
+
+    private void BufferJumpRequestIfPressed(bool jumpPressedThisFrame)
+    {
+        if (!enableJump || !jumpPressedThisFrame)
+            return;
+
+        hasBufferedJumpRequest = true;
+        jumpRequestExpireTime = Time.time + jumpBufferTime;
+    }
+
+    private void RefreshJumpState()
+    {
+        ExpireBufferedJumpRequest();
+
+        if (!enableJump || rb == null)
+            return;
+
+        if (JustLanded)
+        {
+            jumpConsumedSinceLastGrounded = false;
+        }
+    }
+
+    private void ExpireBufferedJumpRequest()
+    {
+        if (!hasBufferedJumpRequest)
+            return;
+
+        if (Time.time <= jumpRequestExpireTime)
+            return;
+
+        ClearBufferedJumpRequest();
+    }
+
+    private void ClearBufferedJumpRequest()
+    {
+        hasBufferedJumpRequest = false;
+        jumpRequestExpireTime = float.NegativeInfinity;
+    }
+
+    private void TryConsumeJumpRequest(RuntimeMovementCommand activeCommand)
+    {
+        if (!hasBufferedJumpRequest)
+            return;
+
+        if (!CanExecuteJump(activeCommand))
+            return;
+
+        ExecuteJump();
+    }
+
+    private bool CanExecuteJump(RuntimeMovementCommand activeCommand)
+    {
+        if (!enableJump || rb == null)
+            return false;
+
+        if (impulseControl.IsActive || activeCommand != null)
+            return false;
+
+        if (IsGrounded)
+            return true;
+
+        if (jumpConsumedSinceLastGrounded || groundSensor == null)
+            return false;
+
+        return groundSensor.TimeSinceGrounded <= coyoteTime;
+    }
+
+    private void ExecuteJump()
+    {
+        Vector3 velocity = rb.linearVelocity;
+
+        if (clearDownwardVelocityOnJump && velocity.y < 0f)
+        {
+            velocity.y = 0f;
+        }
+
+        velocity.y = Mathf.Max(velocity.y, jumpVelocity);
+        rb.linearVelocity = velocity;
+
+        jumpConsumedSinceLastGrounded = true;
+        lastJumpTime = Time.time;
+        ClearBufferedJumpRequest();
+    }
+
+    private void ApplyJumpPhysicsModifiers(float deltaTime, RuntimeMovementCommand activeCommand)
+    {
+        if (!enableJump || rb == null || IsGrounded || !jumpConsumedSinceLastGrounded)
+            return;
+
+        if (impulseControl.IsActive || activeCommand != null)
+            return;
+
+        if (Mathf.Approximately(fallSpeedMultiplier, 1f))
+            return;
+
+        Vector3 velocity = rb.linearVelocity;
+        if (velocity.y >= 0f)
+            return;
+
+        velocity += Physics.gravity * (fallSpeedMultiplier - 1f) * deltaTime;
+        rb.linearVelocity = velocity;
+    }
+
+    private void RefreshMovementSurfaceState()
+    {
+        movementSurfaceNormal = GroundNormal;
+
+        if (movementSurfaceNormal.sqrMagnitude > 0.0001f)
+        {
+            movementSurfaceNormal.Normalize();
+        }
+        else
+        {
+            movementSurfaceNormal = Vector3.up;
+        }
+
+        if (IsGrounded)
+        {
+            desiredMoveDirection = CalculateMoveDirection(moveInput, movementSurfaceNormal);
+            return;
+        }
+
+        if (TrySnapToGround(out Vector3 snappedGroundNormal))
+        {
+            movementSurfaceNormal = snappedGroundNormal;
+        }
+        else
+        {
+            movementSurfaceNormal = Vector3.up;
+        }
+
+        desiredMoveDirection = CalculateMoveDirection(moveInput, movementSurfaceNormal);
+    }
+
+    private bool TrySnapToGround(out Vector3 snappedGroundNormal)
+    {
+        snappedGroundNormal = Vector3.up;
+
+        if (rb == null || IsGrounded || groundSensor == null)
+            return false;
+
+        if (groundSensor.TimeSinceGrounded > Time.fixedDeltaTime * 2f)
+            return false;
+
+        if (Time.time < lastJumpTime + groundSnapDisableDurationAfterJump)
+            return false;
+
+        Vector3 velocity = rb.linearVelocity;
+        Vector3 planarVelocity = Vector3.ProjectOnPlane(velocity, Vector3.up);
+        if (planarVelocity.magnitude > maxGroundSnapSpeed)
+            return false;
+
+        Vector3 rayOrigin = rb.worldCenterOfMass + Vector3.up * groundSnapProbeStartOffset;
+        if (!Physics.Raycast(
+                rayOrigin,
+                Vector3.down,
+                out RaycastHit hit,
+                groundSnapProbeDistance + groundSnapProbeStartOffset,
+                groundSnapMask,
+                QueryTriggerInteraction.Ignore))
+        {
+            return false;
+        }
+
+        Vector3 hitNormal = hit.normal.normalized;
+        if (Vector3.Dot(hitNormal, Vector3.up) < GetMinGroundDot(hit.collider.gameObject.layer))
+            return false;
+
+        float separatingSpeed = Vector3.Dot(velocity, hitNormal);
+        if (separatingSpeed > 0f)
+        {
+            rb.linearVelocity = velocity - hitNormal * separatingSpeed;
+        }
+
+        snappedGroundNormal = hitNormal;
+        return true;
+    }
+
     private void UpdateForcedMovement(RuntimeMovementCommand command)
     {
+        Vector3 movePlaneNormal = GetMovementPlaneNormal(movementSurfaceNormal);
+
         switch (command.Type)
         {
             case MovementCommandType.LockMovement:
-                ApplyTargetHorizontalVelocity(Vector3.zero, forcedMotionAcceleration, instantStopOnHardLock);
+                ApplyTargetPlanarVelocity(Vector3.zero, movePlaneNormal, forcedMotionAcceleration, instantStopOnHardLock);
                 break;
 
             case MovementCommandType.PullToPoint:
@@ -264,21 +534,22 @@ public class PlayerController : MonoBehaviour
                 if (!TryGetCommandTargetPoint(command, out Vector3 targetPoint))
                 {
                     RemoveCommand(command.Id);
-                    ApplyTargetHorizontalVelocity(Vector3.zero, forcedMotionAcceleration, true);
+                    ApplyTargetPlanarVelocity(Vector3.zero, movePlaneNormal, forcedMotionAcceleration, true);
                     return;
                 }
 
                 Vector3 toTarget = targetPoint - rb.position;
-                toTarget.y = 0f;
+                toTarget = Vector3.ProjectOnPlane(toTarget, movePlaneNormal);
 
                 if (toTarget.sqrMagnitude <= command.StopDistance * command.StopDistance)
                 {
-                    ApplyTargetHorizontalVelocity(Vector3.zero, forcedMotionAcceleration, true);
+                    ApplyTargetPlanarVelocity(Vector3.zero, movePlaneNormal, forcedMotionAcceleration, true);
                 }
                 else
                 {
-                    ApplyTargetHorizontalVelocity(
+                    ApplyTargetPlanarVelocity(
                         toTarget.normalized * command.Speed,
+                        movePlaneNormal,
                         forcedMotionAcceleration,
                         false);
                 }
@@ -308,6 +579,11 @@ public class PlayerController : MonoBehaviour
             impulseControl.HasBeenAirborneSinceStart = true;
         }
 
+        if (impulseControl.RemainingReleaseCheckDelay > 0f)
+        {
+            impulseControl.RemainingReleaseCheckDelay -= deltaTime;
+        }
+
         switch (impulseControl.ReleaseMode)
         {
             case ImpulseControlReleaseMode.DurationOnly:
@@ -319,7 +595,7 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case ImpulseControlReleaseMode.UntilGrounded:
-                if (IsGrounded && impulseControl.HasBeenAirborneSinceStart)
+                if (CanReleaseGroundedImpulseControl())
                 {
                     ClearImpulseControl();
                 }
@@ -328,7 +604,7 @@ public class PlayerController : MonoBehaviour
             case ImpulseControlReleaseMode.UntilGroundedOrTimeout:
                 impulseControl.RemainingTimeout -= deltaTime;
 
-                if (IsGrounded && impulseControl.HasBeenAirborneSinceStart)
+                if (CanReleaseGroundedImpulseControl())
                 {
                     ClearImpulseControl();
                 }
@@ -338,6 +614,29 @@ public class PlayerController : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    private bool CanReleaseGroundedImpulseControl()
+    {
+        if (!IsGrounded)
+            return false;
+
+        if (impulseControl.RemainingReleaseCheckDelay > 0f)
+            return false;
+
+        Vector3 velocity = rb != null ? rb.linearVelocity : Vector3.zero;
+        Vector2 horizontalVelocity = new Vector2(velocity.x, velocity.z);
+        float horizontalSpeed = horizontalVelocity.magnitude;
+        float verticalSpeed = Mathf.Abs(velocity.y);
+
+        bool wasEffectivelyKnockedIntoAir = impulseControl.HasBeenAirborneSinceStart;
+        bool horizontalSettled = horizontalSpeed <= groundedImpulseReleaseHorizontalSpeed;
+        bool verticalSettled = verticalSpeed <= groundedImpulseReleaseVerticalSpeed;
+
+        if (wasEffectivelyKnockedIntoAir)
+            return horizontalSettled && verticalSettled;
+
+        return horizontalSettled;
     }
 
     private void UpdateImpulseLockRotation()
@@ -387,29 +686,64 @@ public class PlayerController : MonoBehaviour
         rb.MoveRotation(nextRotation);
     }
 
-    private void ApplyTargetHorizontalVelocity(
-        Vector3 targetHorizontalVelocity,
+    private void ApplyTargetPlanarVelocity(
+        Vector3 targetPlanarVelocity,
+        Vector3 planeNormal,
         float acceleration,
         bool snapToZeroImmediately)
     {
         Vector3 velocity = rb.linearVelocity;
-        Vector3 currentHorizontalVelocity = new Vector3(velocity.x, 0f, velocity.z);
+        Vector3 effectivePlaneNormal = GetMovementPlaneNormal(planeNormal);
+        Vector3 currentPlanarVelocity = Vector3.ProjectOnPlane(velocity, effectivePlaneNormal);
 
-        if (targetHorizontalVelocity.sqrMagnitude <= 0.0001f && snapToZeroImmediately)
+        if (targetPlanarVelocity.sqrMagnitude <= 0.0001f && snapToZeroImmediately)
         {
-            rb.linearVelocity = new Vector3(0f, velocity.y, 0f);
+            rb.linearVelocity = velocity - currentPlanarVelocity;
             return;
         }
 
-        Vector3 nextHorizontalVelocity = Vector3.MoveTowards(
-            currentHorizontalVelocity,
-            targetHorizontalVelocity,
+        Vector3 nextPlanarVelocity = Vector3.MoveTowards(
+            currentPlanarVelocity,
+            targetPlanarVelocity,
             Mathf.Max(0f, acceleration) * Time.fixedDeltaTime);
 
-        Vector3 velocityDelta = nextHorizontalVelocity - currentHorizontalVelocity;
+        Vector3 velocityDelta = nextPlanarVelocity - currentPlanarVelocity;
         Vector3 requiredAcceleration = velocityDelta / Time.fixedDeltaTime;
 
         rb.AddForce(requiredAcceleration, ForceMode.Acceleration);
+    }
+
+    private Vector3 GetMovementPlaneNormal(Vector3 planeNormal)
+    {
+        if (!projectMovementOnGround)
+            return Vector3.up;
+
+        if (planeNormal.sqrMagnitude <= 0.0001f)
+            return Vector3.up;
+
+        return planeNormal.normalized;
+    }
+
+    private Vector3 ProjectDirectionOnPlane(Vector3 direction, Vector3 normal)
+    {
+        Vector3 projected = direction - normal * Vector3.Dot(direction, normal);
+        if (projected.sqrMagnitude <= 0.0001f)
+            return Vector3.zero;
+
+        return projected.normalized;
+    }
+
+    private float GetMinGroundDot(int layer)
+    {
+        return (stairMask.value & (1 << layer)) != 0
+            ? minStairDotProduct
+            : minGroundDotProduct;
+    }
+
+    private void CacheGroundThresholds()
+    {
+        minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
+        minStairDotProduct = Mathf.Cos(maxStairAngle * Mathf.Deg2Rad);
     }
 
     private void TickMovementCommands(float deltaTime)
@@ -564,12 +898,86 @@ public class PlayerController : MonoBehaviour
             IsActive = true,
             ReleaseMode = releaseMode,
             RemainingTimeout = Mathf.Max(0f, releaseTimeout),
+            RemainingReleaseCheckDelay = groundedImpulseReleaseMinLockTime,
             HasBeenAirborneSinceStart = IsAirborne,
             HasFacingDirection = faceDirection && horizontalImpulse.sqrMagnitude > 0.0001f,
             FacingDirection = horizontalImpulse.sqrMagnitude > 0.0001f
                 ? horizontalImpulse.normalized
                 : Vector3.zero
         };
+    }
+
+    public int AddInputBlock(float duration, int priority = 300)
+    {
+        if (duration <= 0f)
+            return -1;
+
+        RuntimeInputBlock block = new RuntimeInputBlock
+        {
+            Id = nextInputBlockId++,
+            Priority = priority,
+            EndTime = Time.time + duration
+        };
+
+        activeInputBlocks.Add(block);
+        RefreshInputBlockedState();
+        return block.Id;
+    }
+
+    public bool RemoveInputBlock(int blockId)
+    {
+        for (int i = 0; i < activeInputBlocks.Count; i++)
+        {
+            if (activeInputBlocks[i].Id == blockId)
+            {
+                activeInputBlocks.RemoveAt(i);
+                RefreshInputBlockedState();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void ClearInputBlocks()
+    {
+        if (activeInputBlocks.Count == 0)
+            return;
+
+        activeInputBlocks.Clear();
+        RefreshInputBlockedState();
+    }
+
+    private void CleanupExpiredInputBlocks()
+    {
+        bool removed = false;
+
+        for (int i = activeInputBlocks.Count - 1; i >= 0; i--)
+        {
+            if (Time.time >= activeInputBlocks[i].EndTime)
+            {
+                activeInputBlocks.RemoveAt(i);
+                removed = true;
+            }
+        }
+
+        if (removed)
+        {
+            RefreshInputBlockedState();
+        }
+    }
+
+    private void RefreshInputBlockedState()
+    {
+        debugInputBlocked = activeInputBlocks.Count > 0;
+    }
+
+    public void ApplyStun(float duration, int priority = 300)
+    {
+        if (duration <= 0f)
+            return;
+
+        AddInputBlock(duration, priority);
     }
 
     public int ApplyEffect(
@@ -676,6 +1084,13 @@ public class PlayerController : MonoBehaviour
     public void ClearCommands()
     {
         activeCommands.Clear();
+    }
+
+    public void ClearAllRestrictions()
+    {
+        ClearCommands();
+        ClearInputBlocks();
+        ClearImpulseControl();
     }
 
     public void SetCameraTransform(Transform newCameraTransform)

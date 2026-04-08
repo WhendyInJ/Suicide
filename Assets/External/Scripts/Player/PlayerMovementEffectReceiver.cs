@@ -113,6 +113,24 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
             faceDirection);
     }
 
+    public void RequestStun(
+        float duration,
+        int priority = 300)
+    {
+        if (PhotonNetwork.InRoom && photonView.Owner != null)
+        {
+            photonView.RPC(
+                nameof(RPC_ApplyStun),
+                photonView.Owner,
+                duration,
+                priority);
+        }
+        else
+        {
+            RPC_ApplyStun(duration, priority);
+        }
+    }
+
     [PunRPC]
     private void RPC_ApplyImpulseKnockback(
         Vector3 worldImpulse,
@@ -159,5 +177,19 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
             stopDistance,
             priority,
             faceDirection);
+    }
+
+    [PunRPC]
+    private void RPC_ApplyStun(
+        float duration,
+        int priority)
+    {
+        if (PhotonNetwork.InRoom && !photonView.IsMine)
+            return;
+
+        if (playerController == null)
+            return;
+
+        playerController.ApplyStun(duration, priority);
     }
 }
