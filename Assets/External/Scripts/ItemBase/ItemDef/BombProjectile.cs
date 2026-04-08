@@ -6,6 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class BombProjectile : MonoBehaviourPun
 {
+    private const float ExplosionEffectDiameterMultiplier = 1f;
+
     [Header("Runtime Debug")]
     [SerializeField] private bool initialized;
     [SerializeField] private bool hasExploded;
@@ -251,17 +253,41 @@ public class BombProjectile : MonoBehaviourPun
         if (explosionEffectPrefab == null)
             return;
 
+        GameObject spawnedEffect;
+
         if (PhotonNetwork.InRoom)
         {
-            PhotonNetwork.Instantiate(
+            spawnedEffect = PhotonNetwork.Instantiate(
                 explosionEffectPrefab.name,
                 explodePoint,
                 Quaternion.identity);
         }
         else
         {
-            Instantiate(explosionEffectPrefab, explodePoint, Quaternion.identity);
+            spawnedEffect = Instantiate(explosionEffectPrefab, explodePoint, Quaternion.identity);
         }
+
+        ApplyExplosionEffectScale(spawnedEffect);
+    }
+
+    private void ApplyExplosionEffectScale(GameObject spawnedEffect)
+    {
+        if (spawnedEffect == null)
+            return;
+
+        Vector3 baseScale = GetNormalizedScale(explosionEffectPrefab.transform.localScale);
+        float diameter = Mathf.Max(0f, explosionRadius) * ExplosionEffectDiameterMultiplier;
+        float uniformScaleMultiplier = diameter > 0f ? diameter : 1f;
+
+        spawnedEffect.transform.localScale = baseScale * uniformScaleMultiplier;
+    }
+
+    private Vector3 GetNormalizedScale(Vector3 scale)
+    {
+        return new Vector3(
+            Mathf.Approximately(scale.x, 0f) ? 1f : scale.x,
+            Mathf.Approximately(scale.y, 0f) ? 1f : scale.y,
+            Mathf.Approximately(scale.z, 0f) ? 1f : scale.z);
     }
 
     private void DestroyProjectile()

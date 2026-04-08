@@ -22,13 +22,19 @@ public sealed class BombItemRuntime : ItemRuntimeBase<BombItemDefinition>
             ? request.AimDirection.normalized
             : spawnTransform.forward;
 
-        Vector3 flatDirection = new Vector3(rawLaunchDirection.x, 0f, rawLaunchDirection.z);
-        if (flatDirection.sqrMagnitude <= 0.0001f)
-            flatDirection = spawnTransform.forward;
+        Vector3 launchDirection = rawLaunchDirection.normalized;
+        Vector3 spawnOffsetDirection = new Vector3(launchDirection.x, 0f, launchDirection.z);
+        if (spawnOffsetDirection.sqrMagnitude <= 0.0001f)
+        {
+            spawnOffsetDirection = new Vector3(spawnTransform.forward.x, 0f, spawnTransform.forward.z);
+        }
 
-        Vector3 launchDirection = flatDirection.normalized;
+        if (spawnOffsetDirection.sqrMagnitude <= 0.0001f)
+            spawnOffsetDirection = Vector3.forward;
+
+        spawnOffsetDirection.Normalize();
         Quaternion spawnRotation = Quaternion.LookRotation(launchDirection, Vector3.up);
-        Vector3 spawnPosition = spawnTransform.position + launchDirection * 0.6f + Vector3.up * 0.2f;
+        Vector3 spawnPosition = spawnTransform.position + spawnOffsetDirection * 0.6f + Vector3.up * 0.2f;
 
         GameObject spawned = Context.Bridge.SpawnNetworkObject(
             TypedDefinition.ProjectilePrefab,

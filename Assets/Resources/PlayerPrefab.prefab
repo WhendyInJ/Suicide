@@ -448,14 +448,29 @@ MonoBehaviour:
   deceleration: 80
   instantStopWhenNoInput: 1
   inputDeadZone: 0.01
+  projectMovementOnGround: 1
+  maxGroundAngle: 60
+  maxStairAngle: 75
+  groundSnapProbeDistance: 0.6
+  maxGroundSnapSpeed: 8
+  groundSnapProbeStartOffset: 0.15
+  groundSnapDisableDurationAfterJump: 0.15
+  groundSnapMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  stairMask:
+    serializedVersion: 2
+    m_Bits: 0
   rotationSpeed: 720
   rotateTowardForcedMotion: 1
   forcedMotionAcceleration: 120
   instantStopOnHardLock: 1
-  allowJump: 1
-  jumpVelocity: 7
+  enableJump: 1
+  jumpVelocity: 6
   jumpBufferTime: 0.12
   coyoteTime: 0.08
+  airborneDragMultiplier: 1
+  fallSpeedMultiplier: 1.3
   clearDownwardVelocityOnJump: 1
   clearHorizontalVelocityBeforeImpulse: 1
   preserveVerticalVelocityOnImpulse: 0
@@ -589,6 +604,7 @@ MonoBehaviour:
   aimCamera: {fileID: 0}
   heldItemAnchor: {fileID: 5661977081806419882}
   defaultAimDistance: 30
+  trajectoryAimPreviewPrefab: {fileID: 1246619256393369892, guid: 2fe4dd4ad88c475d8417f6c98ed0ca49, type: 3}
 --- !u!54 &4276988534317274524
 Rigidbody:
   m_ObjectHideFlags: 0
