@@ -53,6 +53,7 @@ public class PlayerController : MonoBehaviour
         public bool IsActive;
         public ImpulseControlReleaseMode ReleaseMode;
         public float RemainingTimeout;
+        public float RemainingReleaseCheckDelay;
         public bool HasBeenAirborneSinceStart;
         public bool HasFacingDirection;
         public Vector3 FacingDirection;
@@ -80,9 +81,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Min(0.01f)] private float forcedMotionAcceleration = 120f;
     [SerializeField] private bool instantStopOnHardLock = true;
 
+    [Header("Jump")]
+    [SerializeField] private bool allowJump = true;
+    [SerializeField, Min(0f)] private float jumpVelocity = 7f;
+    [SerializeField, Min(0f)] private float jumpBufferTime = 0.12f;
+    [SerializeField, Min(0f)] private float coyoteTime = 0.08f;
+    [SerializeField] private bool clearDownwardVelocityOnJump = true;
+
     [Header("Impulse Knockback")]
     [SerializeField] private bool clearHorizontalVelocityBeforeImpulse = true;
     [SerializeField] private bool preserveVerticalVelocityOnImpulse = false;
+    [SerializeField, Min(0f)] private float groundedImpulseReleaseMinLockTime = 0.08f;
+    [SerializeField, Min(0f)] private float groundedImpulseReleaseHorizontalSpeed = 0.35f;
+    [SerializeField, Min(0f)] private float groundedImpulseReleaseVerticalSpeed = 0.2f;
 
     [Header("Input Block")]
     [SerializeField] private bool debugInputBlocked;
@@ -122,6 +133,9 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     private Vector3 desiredMoveDirection;
     private bool hasMoveInput;
+    private bool hasBufferedJumpRequest;
+    private float jumpRequestExpireTime = float.NegativeInfinity;
+    private bool jumpConsumedSinceLastGrounded;
 
     private readonly List<RuntimeMovementCommand> activeCommands = new();
     private int nextCommandId = 1;
@@ -178,16 +192,18 @@ public class PlayerController : MonoBehaviour
             groundSensor.RefreshGrounding(Time.fixedDeltaTime);
         }
 
+        RefreshJumpState();
         TickMovementCommands(Time.fixedDeltaTime);
         TickImpulseControl(Time.fixedDeltaTime);
+
+        RuntimeMovementCommand activeCommand = GetHighestPriorityCommand();
+        TryConsumeJumpRequest(activeCommand);
 
         if (impulseControl.IsActive)
         {
             UpdateImpulseLockRotation();
             return;
         }
-
-        RuntimeMovementCommand activeCommand = GetHighestPriorityCommand();
 
         if (activeCommand != null)
         {
@@ -207,6 +223,7 @@ public class PlayerController : MonoBehaviour
             moveInput = Vector2.zero;
             desiredMoveDirection = Vector3.zero;
             hasMoveInput = false;
+            ClearBufferedJumpRequest();
             return;
         }
 
@@ -215,6 +232,7 @@ public class PlayerController : MonoBehaviour
             moveInput = Vector2.zero;
             desiredMoveDirection = Vector3.zero;
             hasMoveInput = false;
+            ClearBufferedJumpRequest();
             return;
         }
 
@@ -234,6 +252,8 @@ public class PlayerController : MonoBehaviour
 
         hasMoveInput = moveInput.sqrMagnitude > 0f;
         desiredMoveDirection = CalculateMoveDirection(moveInput);
+
+        BufferJumpRequestIfPressed(ReadJumpPressedThisFrame());
     }
 
     private Vector3 CalculateMoveDirection(Vector2 input)
@@ -280,6 +300,97 @@ public class PlayerController : MonoBehaviour
             return;
 
         RotateToward(desiredMoveDirection);
+    }
+
+    private bool ReadJumpPressedThisFrame()
+    {
+        if (inputSource != null)
+            return inputSource.JumpPressedThisFrame;
+
+        return Input.GetKeyDown(KeyCode.Space);
+    }
+
+    private void BufferJumpRequestIfPressed(bool jumpPressedThisFrame)
+    {
+        if (!allowJump || !jumpPressedThisFrame)
+            return;
+
+        hasBufferedJumpRequest = true;
+        jumpRequestExpireTime = Time.time + jumpBufferTime;
+    }
+
+    private void RefreshJumpState()
+    {
+        ExpireBufferedJumpRequest();
+
+        if (!allowJump || rb == null)
+            return;
+
+        if (IsGrounded && rb.linearVelocity.y <= 0.01f)
+        {
+            jumpConsumedSinceLastGrounded = false;
+        }
+    }
+
+    private void ExpireBufferedJumpRequest()
+    {
+        if (!hasBufferedJumpRequest)
+            return;
+
+        if (Time.time <= jumpRequestExpireTime)
+            return;
+
+        ClearBufferedJumpRequest();
+    }
+
+    private void ClearBufferedJumpRequest()
+    {
+        hasBufferedJumpRequest = false;
+        jumpRequestExpireTime = float.NegativeInfinity;
+    }
+
+    private void TryConsumeJumpRequest(RuntimeMovementCommand activeCommand)
+    {
+        if (!hasBufferedJumpRequest)
+            return;
+
+        if (!CanExecuteJump(activeCommand))
+            return;
+
+        ExecuteJump();
+    }
+
+    private bool CanExecuteJump(RuntimeMovementCommand activeCommand)
+    {
+        if (!allowJump || rb == null)
+            return false;
+
+        if (impulseControl.IsActive || activeCommand != null)
+            return false;
+
+        if (IsGrounded)
+            return true;
+
+        if (jumpConsumedSinceLastGrounded || groundSensor == null)
+            return false;
+
+        return groundSensor.TimeSinceGrounded <= coyoteTime;
+    }
+
+    private void ExecuteJump()
+    {
+        Vector3 velocity = rb.linearVelocity;
+
+        if (clearDownwardVelocityOnJump && velocity.y < 0f)
+        {
+            velocity.y = 0f;
+        }
+
+        velocity.y = Mathf.Max(velocity.y, jumpVelocity);
+        rb.linearVelocity = velocity;
+
+        jumpConsumedSinceLastGrounded = true;
+        ClearBufferedJumpRequest();
     }
 
     private void UpdateForcedMovement(RuntimeMovementCommand command)
@@ -339,6 +450,11 @@ public class PlayerController : MonoBehaviour
             impulseControl.HasBeenAirborneSinceStart = true;
         }
 
+        if (impulseControl.RemainingReleaseCheckDelay > 0f)
+        {
+            impulseControl.RemainingReleaseCheckDelay -= deltaTime;
+        }
+
         switch (impulseControl.ReleaseMode)
         {
             case ImpulseControlReleaseMode.DurationOnly:
@@ -350,7 +466,7 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case ImpulseControlReleaseMode.UntilGrounded:
-                if (IsGrounded && impulseControl.HasBeenAirborneSinceStart)
+                if (CanReleaseGroundedImpulseControl())
                 {
                     ClearImpulseControl();
                 }
@@ -359,7 +475,7 @@ public class PlayerController : MonoBehaviour
             case ImpulseControlReleaseMode.UntilGroundedOrTimeout:
                 impulseControl.RemainingTimeout -= deltaTime;
 
-                if (IsGrounded && impulseControl.HasBeenAirborneSinceStart)
+                if (CanReleaseGroundedImpulseControl())
                 {
                     ClearImpulseControl();
                 }
@@ -369,6 +485,29 @@ public class PlayerController : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    private bool CanReleaseGroundedImpulseControl()
+    {
+        if (!IsGrounded)
+            return false;
+
+        if (impulseControl.RemainingReleaseCheckDelay > 0f)
+            return false;
+
+        Vector3 velocity = rb != null ? rb.linearVelocity : Vector3.zero;
+        Vector2 horizontalVelocity = new Vector2(velocity.x, velocity.z);
+        float horizontalSpeed = horizontalVelocity.magnitude;
+        float verticalSpeed = Mathf.Abs(velocity.y);
+
+        bool wasEffectivelyKnockedIntoAir = impulseControl.HasBeenAirborneSinceStart;
+        bool horizontalSettled = horizontalSpeed <= groundedImpulseReleaseHorizontalSpeed;
+        bool verticalSettled = verticalSpeed <= groundedImpulseReleaseVerticalSpeed;
+
+        if (wasEffectivelyKnockedIntoAir)
+            return horizontalSettled && verticalSettled;
+
+        return horizontalSettled;
     }
 
     private void UpdateImpulseLockRotation()
@@ -595,6 +734,7 @@ public class PlayerController : MonoBehaviour
             IsActive = true,
             ReleaseMode = releaseMode,
             RemainingTimeout = Mathf.Max(0f, releaseTimeout),
+            RemainingReleaseCheckDelay = groundedImpulseReleaseMinLockTime,
             HasBeenAirborneSinceStart = IsAirborne,
             HasFacingDirection = faceDirection && horizontalImpulse.sqrMagnitude > 0.0001f,
             FacingDirection = horizontalImpulse.sqrMagnitude > 0.0001f

@@ -23,7 +23,7 @@ MonoBehaviour:
   width: 2
   height: 1
   forwardOffset: 0.8
-  horizontalImpulse: 6
+  horizontalImpulse: 10
   upwardImpulse: 3
   controlReleaseMode: 1
   controlReleaseTimeout: 1
