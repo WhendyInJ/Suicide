@@ -188,6 +188,7 @@ public class GrabProjectile : MonoBehaviourPun
                 selfMaxPullDuration,
                 selfStopDistance,
                 selfPullPriority,
+                true,
                 true);
 
             DestroyProjectile();
@@ -212,6 +213,7 @@ public class GrabProjectile : MonoBehaviourPun
                 targetMaxPullDuration,
                 targetStopDistance,
                 targetPullPriority,
+                true,
                 true);
         }
 
@@ -394,7 +396,7 @@ public class GrabProjectile : MonoBehaviourPun
 
         Vector3 ownerPosition = ownerRoot != null ? ownerRoot.position : Vector3.zero;
         Vector3 pullPoint = ownerPosition + ownerForward * targetFrontDistance;
-        pullPoint.y = targetPosition.y;
+        pullPoint.y = ownerPosition.y;
         return pullPoint;
     }
 

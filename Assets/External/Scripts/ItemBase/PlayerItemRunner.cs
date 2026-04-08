@@ -37,6 +37,8 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
     [Header("Aim Preview")]
     [SerializeField] private BombAimPreviewEffect trajectoryAimPreviewPrefab;
     [SerializeField] private CrosshairAimPreview crosshairAimPreviewPrefab;
+    [SerializeField] private bool drawGrabAimGizmo = true;
+    [SerializeField] private Color grabAimGizmoColor = new Color(0.2f, 0.9f, 1f, 1f);
 
     public bool IsAimingItem => isAimingItem;
 
@@ -1049,21 +1051,7 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
             return;
 
         preview.transform.position = previewPoint;
-        if (previewNormal.sqrMagnitude > 0.0001f)
-        {
-            Vector3 forwardOnPlane = Vector3.ProjectOnPlane(transform.forward, previewNormal);
-            if (forwardOnPlane.sqrMagnitude <= 0.0001f)
-                forwardOnPlane = Vector3.ProjectOnPlane(Vector3.forward, previewNormal);
-
-            if (forwardOnPlane.sqrMagnitude <= 0.0001f)
-                forwardOnPlane = Vector3.right;
-
-            preview.transform.rotation = Quaternion.LookRotation(forwardOnPlane.normalized, previewNormal);
-        }
-        else
-        {
-            preview.transform.rotation = Quaternion.identity;
-        }
+        preview.transform.rotation = Quaternion.LookRotation(aimDirection, Vector3.up);
 
         if (!preview.activeSelf)
             preview.SetActive(true);
@@ -1158,5 +1146,40 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
             Destroy(targetObject);
         else
             DestroyImmediate(targetObject);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (!drawGrabAimGizmo || !Application.isPlaying)
+            return;
+
+        if (inventory == null || !inventory.HasSelection)
+            return;
+
+        int selectedSlotIndex = inventory.SelectedSlotIndex;
+        if (!inventory.TryGetSlotInfo(selectedSlotIndex, out ItemDefinition definition, out _))
+            return;
+
+        if (definition is not GrabItemDefinition grabDefinition)
+            return;
+
+        Transform spawnTransform = GetItemEffectSpawnTransform();
+        if (spawnTransform == null)
+            return;
+
+        Vector3 aimDirection = ResolveMouseDrivenAimDirection(spawnTransform);
+        if (aimDirection.sqrMagnitude <= 0.0001f)
+            return;
+
+        Vector3 start =
+            spawnTransform.position +
+            aimDirection.normalized * grabDefinition.SpawnForwardOffset +
+            Vector3.up * grabDefinition.SpawnUpwardOffset;
+
+        Vector3 end = start + aimDirection.normalized * grabDefinition.CastRange;
+
+        Gizmos.color = grabAimGizmoColor;
+        Gizmos.DrawLine(start, end);
+        Gizmos.DrawSphere(start, 0.05f);
     }
 }

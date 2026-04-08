@@ -7,6 +7,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
 {
     private const string HostNameRoomPropertyKey = "hostName";
 
+    [Header("Scene")]
+    [SerializeField] private string gameSceneName = "Map_Test_1_rla";
+
     public void GameStart()
     {
         if (!PhotonNetwork.IsMasterClient)
@@ -15,7 +18,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
             return;
         }
 
-        PhotonNetwork.LoadLevel("Map_Test_1_rla");
+        if (string.IsNullOrWhiteSpace(gameSceneName))
+        {
+            Debug.LogError("RoomManager: gameSceneName is empty.", this);
+            return;
+        }
+
+        PhotonNetwork.LoadLevel(gameSceneName);
     }
 
     public override void OnJoinedRoom()

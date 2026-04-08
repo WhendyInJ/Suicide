@@ -1913,7 +1913,7 @@ GameObject:
   - component: {fileID: 546769693}
   - component: {fileID: 546769694}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: RoomManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1946,6 +1946,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85481cb149a746442a70f707ffe0b8ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomManager
+  gameSceneName: Map_Test_1_rla
 --- !u!1 &597033835
 GameObject:
   m_ObjectHideFlags: 0
