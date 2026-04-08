@@ -3,7 +3,8 @@ using Photon.Pun;
 using UnityEngine;
 
 /// <summary>
-/// After a short grace period, kills everyone still overlapping.
+/// After a grace period, kills everyone still overlapping in one batch.
+/// All current occupants must each complete <see cref="graceSeconds"/> before anyone resolves (no early solo-kill while another is still overlapping).
 /// If a linked lever was recently completed (trap drop), that player is killed first in RPC order, then the rest by actor number.
 /// </summary>
 [DisallowMultipleComponent]
@@ -19,13 +20,27 @@ public class InstantKillOnContact : MonoBehaviour
 
     [SerializeField, Min(0.05f)] private float activationMemorySeconds = 12f;
 
+    [Header("Debug")]
+    [SerializeField] private bool logTrapEvents = true;
+    [SerializeField] private bool logGraceWait;
+
     private readonly HashSet<PlayerHealth> overlapping = new();
     private readonly Dictionary<PlayerHealth, double> contactStartTime = new();
     private readonly List<PlayerHealth> workList = new();
     private readonly List<PlayerHealth> pruneBuffer = new();
+    private readonly List<PlayerHealth> occupantsBuffer = new();
+    private double lastGraceWaitLogTime = -1d;
 
     private static double NetworkTime =>
         PhotonNetwork.InRoom ? PhotonNetwork.Time : Time.timeAsDouble;
+
+    private void LogTrap(string message)
+    {
+        if (!logTrapEvents)
+            return;
+
+        Debug.Log($"[{nameof(InstantKillOnContact)}:{name}] {message}", this);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -56,24 +71,49 @@ public class InstantKillOnContact : MonoBehaviour
             return;
 
         double now = NetworkTime;
-        workList.Clear();
+        occupantsBuffer.Clear();
 
         foreach (PlayerHealth health in overlapping)
         {
             if (health == null || health.IsDead)
                 continue;
 
-            if (!contactStartTime.TryGetValue(health, out double t0))
+            if (!contactStartTime.ContainsKey(health))
                 continue;
 
-            if (now < t0 + graceSeconds)
-                continue;
-
-            workList.Add(health);
+            occupantsBuffer.Add(health);
         }
 
-        if (workList.Count == 0)
+        if (occupantsBuffer.Count == 0)
             return;
+
+        // Everyone still overlapping must finish their own grace window before anyone dies,
+        // so a player who entered earlier cannot resolve alone while another is still "warming up".
+        for (int i = 0; i < occupantsBuffer.Count; i++)
+        {
+            PlayerHealth health = occupantsBuffer[i];
+            if (!contactStartTime.TryGetValue(health, out double t0))
+                return;
+
+            if (now < t0 + graceSeconds)
+            {
+                if (logTrapEvents && logGraceWait && (lastGraceWaitLogTime < 0d || now - lastGraceWaitLogTime > 0.35d))
+                {
+                    lastGraceWaitLogTime = now;
+                    LogTrap(
+                        $"WaitSynchronizedGrace waitingForActor={health.OwnerActorNumber} " +
+                        $"needUntil={t0 + graceSeconds:F3} now={now:F3} occupants={occupantsBuffer.Count}");
+                }
+
+                return;
+            }
+        }
+
+        lastGraceWaitLogTime = -1d;
+
+        workList.Clear();
+        for (int i = 0; i < occupantsBuffer.Count; i++)
+            workList.Add(occupantsBuffer[i]);
 
         ResolveBatch(now);
     }
@@ -83,12 +123,13 @@ public class InstantKillOnContact : MonoBehaviour
         SortByActorNumber(workList);
 
         int activatorViewId = -1;
-        if (TryGetRecentActivatorViewId(now, out int resolved))
+        bool hadActivator = TryGetRecentActivatorViewId(now, out int resolved);
+        if (hadActivator)
             activatorViewId = resolved;
 
+        int activatorIndex = -1;
         if (activatorViewId > 0)
         {
-            int activatorIndex = -1;
             for (int i = 0; i < workList.Count; i++)
             {
                 if (GetPlayerViewId(workList[i]) == activatorViewId)
@@ -108,8 +149,43 @@ public class InstantKillOnContact : MonoBehaviour
             }
         }
 
+        bool activatorInBatch = activatorViewId > 0 && activatorIndex >= 0;
+        LogTrap(
+            $"ResolveBatch now={now:F3} count={workList.Count} " +
+            $"activatorViewId={(activatorViewId > 0 ? activatorViewId.ToString() : "none")} " +
+            $"activatorInBatch={(activatorViewId > 0 ? (activatorInBatch ? "yes" : "no(outside)") : "n/a")} " +
+            $"reorderedFirst={(activatorIndex > 0 ? "yes" : "no")} " +
+            $"killOrder=[{BuildKillOrderSummary()}]");
+
         for (int i = 0; i < workList.Count; i++)
             workList[i].RequestKill();
+    }
+
+    private string BuildKillOrderSummary()
+    {
+        if (workList == null || workList.Count == 0)
+            return string.Empty;
+
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        for (int i = 0; i < workList.Count; i++)
+        {
+            if (i > 0)
+                sb.Append(", ");
+
+            PlayerHealth h = workList[i];
+            if (h == null)
+            {
+                sb.Append("null");
+                continue;
+            }
+
+            sb.Append("a");
+            sb.Append(h.OwnerActorNumber);
+            sb.Append(":v");
+            sb.Append(GetPlayerViewId(h));
+        }
+
+        return sb.ToString();
     }
 
     private bool TryGetRecentActivatorViewId(double now, out int activatorViewId)
@@ -180,7 +256,12 @@ public class InstantKillOnContact : MonoBehaviour
             return;
 
         if (overlapping.Add(health) && !contactStartTime.ContainsKey(health))
+        {
             contactStartTime[health] = NetworkTime;
+            LogTrap(
+                $"Enter overlap actor={health.OwnerActorNumber} viewId={GetPlayerViewId(health)} " +
+                $"t0={contactStartTime[health]:F3} grace={graceSeconds}s overlapCount={overlapping.Count}");
+        }
     }
 
     private void UnregisterContact(Collider other)
@@ -192,8 +273,11 @@ public class InstantKillOnContact : MonoBehaviour
         if (health == null)
             return;
 
-        overlapping.Remove(health);
-        contactStartTime.Remove(health);
+        if (overlapping.Remove(health))
+        {
+            contactStartTime.Remove(health);
+            LogTrap($"Exit overlap actor={health.OwnerActorNumber} viewId={GetPlayerViewId(health)} overlapCount={overlapping.Count}");
+        }
     }
 
     private void PruneDestroyed()
