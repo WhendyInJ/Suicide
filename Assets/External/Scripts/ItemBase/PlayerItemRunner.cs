@@ -4,13 +4,6 @@ using UnityEngine;
 
 public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
 {
-    private enum AimPreviewType
-    {
-        None = 0,
-        Trajectory = 1,
-        Crosshair = 2
-    }
-
     private sealed class RuntimeSlot
     {
         public ItemDefinition BoundDefinition;
@@ -54,9 +47,10 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
     private Coroutine waitForHeldVisualCoroutine;
     private BombAimPreviewEffect trajectoryAimPreviewInstance;
     private CrosshairAimPreview crosshairAimPreviewInstance;
-    private GameObject grabDestinationPreviewInstance;
-    private GameObject configuredGrabDestinationPreviewPrefab;
-    private ItemDefinition configuredTrajectoryPreviewDefinition;
+    private GameObject worldMarkerAimPreviewInstance;
+    private BombAimPreviewEffect configuredTrajectoryPreviewPrefab;
+    private CrosshairAimPreview configuredCrosshairPreviewPrefab;
+    private GameObject configuredWorldMarkerPreviewPrefab;
     private bool hasLoggedMissingTrajectoryAimPreview;
 
     protected override void Awake()
@@ -122,8 +116,8 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         DestroyAimPreviewInstance(crosshairAimPreviewInstance);
         crosshairAimPreviewInstance = null;
 
-        DestroyAimPreviewInstance(grabDestinationPreviewInstance);
-        grabDestinationPreviewInstance = null;
+        DestroyAimPreviewInstance(worldMarkerAimPreviewInstance);
+        worldMarkerAimPreviewInstance = null;
     }
 
     private void Update()
@@ -814,121 +808,95 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
             return;
         }
 
-        if (!TryGetAimPreviewData(
-                aimingSlotIndex,
-                out AimPreviewType previewType,
-                out ItemDefinition previewDefinition,
-                out IItemRuntime runtime))
+        if (!TryGetUsableRuntime(aimingSlotIndex, out RuntimeSlot runtimeSlot))
         {
             HideAimPreview();
             return;
         }
 
-        switch (previewType)
-        {
-            case AimPreviewType.Trajectory:
-                UpdateTrajectoryAimPreview(previewDefinition, runtime);
-                break;
-
-            case AimPreviewType.Crosshair:
-                UpdateCrosshairAimPreview();
-                break;
-
-            case AimPreviewType.None:
-            default:
-                HideAimPreview();
-                break;
-        }
-    }
-
-    private bool TryGetAimPreviewData(
-        int slotIndex,
-        out AimPreviewType previewType,
-        out ItemDefinition definition,
-        out IItemRuntime runtime)
-    {
-        previewType = AimPreviewType.None;
-        definition = null;
-        runtime = null;
-
-        if (!TryGetUsableRuntime(slotIndex, out RuntimeSlot runtimeSlot))
-            return false;
-
-        runtime = runtimeSlot.Runtime;
-        definition = runtimeSlot.BoundDefinition;
-
+        IItemRuntime runtime = runtimeSlot.Runtime;
+        ItemDefinition definition = runtimeSlot.BoundDefinition;
         if (runtime == null || definition == null || runtime.UseMode != ItemUseMode.Aimed)
-            return false;
-
-        if (definition is BombItemDefinition)
-        {
-            previewType = AimPreviewType.Trajectory;
-            return true;
-        }
-
-        if (definition is GrabItemDefinition)
-        {
-            previewType = AimPreviewType.Crosshair;
-            return true;
-        }
-
-        return false;
-    }
-
-    private void UpdateTrajectoryAimPreview(ItemDefinition definition, IItemRuntime runtime)
-    {
-        if (definition is not BombItemDefinition bombDefinition)
         {
             HideAimPreview();
             return;
         }
 
-        BombAimPreviewEffect preview = GetOrCreateTrajectoryAimPreview();
-        if (preview == null)
-            return;
+        ItemUseRequest useRequest = BuildUseRequest(runtime);
+        ItemAimPreviewContext previewContext = new ItemAimPreviewContext(
+            transform,
+            GetItemEffectSpawnTransform(),
+            useRequest.UseOrigin,
+            useRequest.AimPoint,
+            useRequest.AimDirection);
 
-        if (configuredTrajectoryPreviewDefinition != definition)
+        if (!definition.TryBuildAimPreview(previewContext, out ItemAimPreviewRequest previewRequest))
         {
-            preview.ConfigureFromDefinition(bombDefinition);
-            configuredTrajectoryPreviewDefinition = definition;
+            HideAimPreview();
+            return;
         }
 
-        ItemUseRequest request = BuildUseRequest(runtime);
-        preview.RenderPreview(GetItemEffectSpawnTransform(), request.AimDirection);
+        ApplyAimPreview(previewContext, previewRequest);
     }
 
-    private void UpdateCrosshairAimPreview()
+    private void ApplyAimPreview(
+        in ItemAimPreviewContext previewContext,
+        in ItemAimPreviewRequest previewRequest)
     {
-        CrosshairAimPreview preview = GetOrCreateCrosshairAimPreview();
-        if (preview == null)
-            return;
-
-        preview.ShowPreview();
-
-        if (inventory == null)
-            return;
-
-        if (!inventory.TryGetSlotInfo(aimingSlotIndex, out ItemDefinition definition, out _))
+        if (previewRequest.ShowTrajectory)
         {
-            HideGrabDestinationPreview();
-            return;
+            BombAimPreviewEffect trajectoryPreview = GetOrCreateTrajectoryAimPreview(previewRequest.TrajectoryPrefab);
+            if (trajectoryPreview != null)
+            {
+                ItemTrajectoryPreviewData trajectoryData = previewRequest.TrajectoryData;
+                trajectoryPreview.Configure(
+                    trajectoryData.TrajectoryType,
+                    trajectoryData.LaunchSpeed,
+                    trajectoryData.AdditionalUpwardSpeed,
+                    trajectoryData.MaxLifetime,
+                    trajectoryData.ImpactMask,
+                    trajectoryData.ExplosionRadius);
+                trajectoryPreview.RenderPreview(previewContext.SpawnTransform, previewContext.AimDirection);
+            }
+        }
+        else if (trajectoryAimPreviewInstance != null)
+        {
+            trajectoryAimPreviewInstance.HidePreview();
         }
 
-        if (definition is not GrabItemDefinition grabDefinition)
+        if (previewRequest.ShowCrosshair)
         {
-            HideGrabDestinationPreview();
-            return;
+            CrosshairAimPreview crosshairPreview = GetOrCreateCrosshairAimPreview(previewRequest.CrosshairPrefab);
+            if (crosshairPreview != null)
+                crosshairPreview.ShowPreview();
+        }
+        else if (crosshairAimPreviewInstance != null)
+        {
+            crosshairAimPreviewInstance.HidePreview();
         }
 
-        UpdateGrabDestinationPreview(grabDefinition);
+        if (previewRequest.ShowWorldMarker && previewRequest.WorldMarkerPrefab != null)
+        {
+            GameObject worldMarkerPreview = GetOrCreateWorldMarkerAimPreview(previewRequest.WorldMarkerPrefab);
+            if (worldMarkerPreview != null)
+            {
+                worldMarkerPreview.transform.position = previewRequest.WorldMarkerPosition;
+                worldMarkerPreview.transform.rotation = previewRequest.WorldMarkerRotation;
+                if (!worldMarkerPreview.activeSelf)
+                    worldMarkerPreview.SetActive(true);
+            }
+        }
+        else
+        {
+            HideWorldMarkerAimPreview();
+        }
     }
 
-    private BombAimPreviewEffect GetOrCreateTrajectoryAimPreview()
+    private BombAimPreviewEffect GetOrCreateTrajectoryAimPreview(BombAimPreviewEffect requestedPrefab)
     {
-        if (trajectoryAimPreviewInstance != null)
-            return trajectoryAimPreviewInstance;
-
-        BombAimPreviewEffect prefab = trajectoryAimPreviewPrefab;
+        BombAimPreviewEffect prefab = requestedPrefab != null
+            ? requestedPrefab
+            : trajectoryAimPreviewPrefab;
         if (prefab == null)
         {
             prefab = Resources.Load<BombAimPreviewEffect>("BombAimPreviewEffect");
@@ -945,22 +913,33 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
             return null;
         }
 
+        if (trajectoryAimPreviewInstance != null && configuredTrajectoryPreviewPrefab == prefab)
+            return trajectoryAimPreviewInstance;
+
+        DestroyAimPreviewInstance(trajectoryAimPreviewInstance);
         trajectoryAimPreviewInstance = Instantiate(prefab, transform);
         trajectoryAimPreviewInstance.name = prefab.name;
         trajectoryAimPreviewInstance.HidePreview();
+        configuredTrajectoryPreviewPrefab = prefab;
         hasLoggedMissingTrajectoryAimPreview = false;
         return trajectoryAimPreviewInstance;
     }
 
-    private CrosshairAimPreview GetOrCreateCrosshairAimPreview()
+    private CrosshairAimPreview GetOrCreateCrosshairAimPreview(CrosshairAimPreview requestedPrefab)
     {
-        if (crosshairAimPreviewInstance != null)
+        CrosshairAimPreview prefab = requestedPrefab != null
+            ? requestedPrefab
+            : crosshairAimPreviewPrefab;
+
+        if (crosshairAimPreviewInstance != null && configuredCrosshairPreviewPrefab == prefab)
             return crosshairAimPreviewInstance;
 
-        if (crosshairAimPreviewPrefab != null)
+        DestroyAimPreviewInstance(crosshairAimPreviewInstance);
+
+        if (prefab != null)
         {
-            crosshairAimPreviewInstance = Instantiate(crosshairAimPreviewPrefab, transform);
-            crosshairAimPreviewInstance.name = crosshairAimPreviewPrefab.name;
+            crosshairAimPreviewInstance = Instantiate(prefab, transform);
+            crosshairAimPreviewInstance.name = prefab.name;
         }
         else
         {
@@ -969,14 +948,13 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
             crosshairAimPreviewInstance = previewObject.AddComponent<CrosshairAimPreview>();
         }
 
+        configuredCrosshairPreviewPrefab = prefab;
         crosshairAimPreviewInstance.HidePreview();
         return crosshairAimPreviewInstance;
     }
 
     private void HideAimPreview()
     {
-        configuredTrajectoryPreviewDefinition = null;
-
         if (trajectoryAimPreviewInstance != null)
         {
             trajectoryAimPreviewInstance.HidePreview();
@@ -987,7 +965,7 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
             crosshairAimPreviewInstance.HidePreview();
         }
 
-        HideGrabDestinationPreview();
+        HideWorldMarkerAimPreview();
     }
 
     private Transform GetItemEffectSpawnTransform()
@@ -1001,98 +979,42 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         return transform;
     }
 
-    private void UpdateGrabDestinationPreview(GrabItemDefinition definition)
-    {
-        if (definition == null || definition.DestinationPreviewPrefab == null)
-        {
-            HideGrabDestinationPreview();
-            return;
-        }
-
-        Transform spawnTransform = GetItemEffectSpawnTransform();
-        if (spawnTransform == null)
-        {
-            HideGrabDestinationPreview();
-            return;
-        }
-
-        Vector3 aimDirection = ResolveMouseDrivenAimDirection(spawnTransform);
-        if (aimDirection.sqrMagnitude <= 0.0001f)
-        {
-            HideGrabDestinationPreview();
-            return;
-        }
-
-        Vector3 spawnOffsetDirection = aimDirection.normalized;
-        Vector3 start =
-            spawnTransform.position +
-            spawnOffsetDirection * definition.SpawnForwardOffset +
-            Vector3.up * definition.SpawnUpwardOffset;
-
-        if (!GrabProjectile.TryPredictResolution(
-                definition.ProjectilePrefab,
-                transform,
-                start,
-                spawnOffsetDirection,
-                definition.CastRange,
-                definition.HitMask,
-                definition.StructureMask,
-                definition.TriggerInteraction,
-                definition.TargetFrontDistance,
-                out Vector3 previewPoint,
-                out Vector3 previewNormal))
-        {
-            HideGrabDestinationPreview();
-            return;
-        }
-
-        GameObject preview = GetOrCreateGrabDestinationPreview(definition.DestinationPreviewPrefab);
-        if (preview == null)
-            return;
-
-        preview.transform.position = previewPoint;
-        preview.transform.rotation = Quaternion.LookRotation(aimDirection, Vector3.up);
-
-        if (!preview.activeSelf)
-            preview.SetActive(true);
-    }
-
-    private GameObject GetOrCreateGrabDestinationPreview(GameObject previewPrefab)
+    private GameObject GetOrCreateWorldMarkerAimPreview(GameObject previewPrefab)
     {
         if (previewPrefab == null)
             return null;
 
-        if (grabDestinationPreviewInstance != null && configuredGrabDestinationPreviewPrefab == previewPrefab)
-            return grabDestinationPreviewInstance;
+        if (worldMarkerAimPreviewInstance != null && configuredWorldMarkerPreviewPrefab == previewPrefab)
+            return worldMarkerAimPreviewInstance;
 
-        HideGrabDestinationPreview(true);
+        HideWorldMarkerAimPreview(true);
 
-        grabDestinationPreviewInstance = Instantiate(previewPrefab);
-        grabDestinationPreviewInstance.name = previewPrefab.name;
-        configuredGrabDestinationPreviewPrefab = previewPrefab;
-        grabDestinationPreviewInstance.SetActive(false);
-        return grabDestinationPreviewInstance;
+        worldMarkerAimPreviewInstance = Instantiate(previewPrefab);
+        worldMarkerAimPreviewInstance.name = previewPrefab.name;
+        configuredWorldMarkerPreviewPrefab = previewPrefab;
+        worldMarkerAimPreviewInstance.SetActive(false);
+        return worldMarkerAimPreviewInstance;
     }
 
-    private void HideGrabDestinationPreview(bool destroyInstance = false)
+    private void HideWorldMarkerAimPreview(bool destroyInstance = false)
     {
-        if (grabDestinationPreviewInstance == null)
+        if (worldMarkerAimPreviewInstance == null)
         {
             if (destroyInstance)
-                configuredGrabDestinationPreviewPrefab = null;
+                configuredWorldMarkerPreviewPrefab = null;
             return;
         }
 
         if (destroyInstance)
         {
-            DestroyAimPreviewInstance(grabDestinationPreviewInstance);
-            grabDestinationPreviewInstance = null;
-            configuredGrabDestinationPreviewPrefab = null;
+            DestroyAimPreviewInstance(worldMarkerAimPreviewInstance);
+            worldMarkerAimPreviewInstance = null;
+            configuredWorldMarkerPreviewPrefab = null;
             return;
         }
 
-        if (grabDestinationPreviewInstance.activeSelf)
-            grabDestinationPreviewInstance.SetActive(false);
+        if (worldMarkerAimPreviewInstance.activeSelf)
+            worldMarkerAimPreviewInstance.SetActive(false);
     }
 
     public bool Raycast(
