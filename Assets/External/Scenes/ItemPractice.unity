@@ -533,7 +533,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6c6d7210e86f7e4ba6ec91a7ecae736, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DroppedItemPickup
-  itemType: 0
+  itemType: 1
   destroyOnPickup: 1
   rotateWhileDropped: 1
   rotationSpeed: {x: 0, y: 120, z: 0}
