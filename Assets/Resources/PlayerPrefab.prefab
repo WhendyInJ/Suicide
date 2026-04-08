@@ -639,6 +639,8 @@ MonoBehaviour:
   defaultAimDistance: 30
   trajectoryAimPreviewPrefab: {fileID: 1246619256393369892, guid: 2fe4dd4ad88c475d8417f6c98ed0ca49, type: 3}
   crosshairAimPreviewPrefab: {fileID: 8714857369844832137, guid: 142f75112062f374fa176a1d73a8e65f, type: 3}
+  drawGrabAimGizmo: 1
+  grabAimGizmoColor: {r: 0.2, g: 0.9, b: 1, a: 1}
 --- !u!54 &4276988534317274524
 Rigidbody:
   m_ObjectHideFlags: 0

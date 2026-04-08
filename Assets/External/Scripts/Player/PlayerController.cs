@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour
         public float Speed;
         public float StopDistance;
         public bool FaceDirection;
+        public bool AllowVerticalMovement;
         public MovementCommandType Type;
         public Vector3 TargetPoint;
         public Transform FollowTarget;
@@ -639,19 +640,33 @@ public class PlayerController : MonoBehaviour
                 }
 
                 Vector3 toTarget = targetPoint - rb.position;
-                toTarget = Vector3.ProjectOnPlane(toTarget, movePlaneNormal);
+                if (!command.AllowVerticalMovement)
+                    toTarget = Vector3.ProjectOnPlane(toTarget, movePlaneNormal);
 
                 if (toTarget.sqrMagnitude <= command.StopDistance * command.StopDistance)
                 {
-                    ApplyTargetPlanarVelocity(Vector3.zero, movePlaneNormal, forcedMotionAcceleration, true);
+                    if (command.AllowVerticalMovement)
+                        ApplyTargetVelocity(Vector3.zero, forcedMotionAcceleration, true);
+                    else
+                        ApplyTargetPlanarVelocity(Vector3.zero, movePlaneNormal, forcedMotionAcceleration, true);
                 }
                 else
                 {
-                    ApplyTargetPlanarVelocity(
-                        toTarget.normalized * command.Speed,
-                        movePlaneNormal,
-                        forcedMotionAcceleration,
-                        false);
+                    if (command.AllowVerticalMovement)
+                    {
+                        ApplyTargetVelocity(
+                            toTarget.normalized * command.Speed,
+                            forcedMotionAcceleration,
+                            false);
+                    }
+                    else
+                    {
+                        ApplyTargetPlanarVelocity(
+                            toTarget.normalized * command.Speed,
+                            movePlaneNormal,
+                            forcedMotionAcceleration,
+                            false);
+                    }
                 }
                 break;
         }
@@ -808,6 +823,30 @@ public class PlayerController : MonoBehaviour
             Mathf.Max(0f, acceleration) * Time.fixedDeltaTime);
 
         Vector3 velocityDelta = nextPlanarVelocity - currentPlanarVelocity;
+        Vector3 requiredAcceleration = velocityDelta / Time.fixedDeltaTime;
+
+        rb.AddForce(requiredAcceleration, ForceMode.Acceleration);
+    }
+
+    private void ApplyTargetVelocity(
+        Vector3 targetVelocity,
+        float acceleration,
+        bool snapToZeroImmediately)
+    {
+        Vector3 velocity = rb.linearVelocity;
+
+        if (targetVelocity.sqrMagnitude <= 0.0001f && snapToZeroImmediately)
+        {
+            rb.linearVelocity = Vector3.zero;
+            return;
+        }
+
+        Vector3 nextVelocity = Vector3.MoveTowards(
+            velocity,
+            targetVelocity,
+            Mathf.Max(0f, acceleration) * Time.fixedDeltaTime);
+
+        Vector3 velocityDelta = nextVelocity - velocity;
         Vector3 requiredAcceleration = velocityDelta / Time.fixedDeltaTime;
 
         rb.AddForce(requiredAcceleration, ForceMode.Acceleration);
@@ -1055,7 +1094,8 @@ public class PlayerController : MonoBehaviour
         float duration,
         float stopDistance = 0.1f,
         int priority = 150,
-        bool faceDirection = true)
+        bool faceDirection = true,
+        bool allowVerticalMovement = false)
     {
         if (speed <= 0f || duration <= 0f)
             return -1;
@@ -1069,6 +1109,7 @@ public class PlayerController : MonoBehaviour
             StopDistance = Mathf.Max(0f, stopDistance),
             Priority = priority,
             FaceDirection = faceDirection,
+            AllowVerticalMovement = allowVerticalMovement,
         });
     }
 
@@ -1222,7 +1263,8 @@ public class PlayerController : MonoBehaviour
         float duration,
         float stopDistance = 0.1f,
         int priority = 100,
-        bool faceDirection = true)
+        bool faceDirection = true,
+        bool allowVerticalMovement = false)
     {
         switch (effectType)
         {
@@ -1233,7 +1275,8 @@ public class PlayerController : MonoBehaviour
                     duration,
                     stopDistance,
                     priority,
-                    faceDirection);
+                    faceDirection,
+                    allowVerticalMovement);
 
             case MovementEffectType.MovementLock:
                 return AddMovementLockInternal(
@@ -1251,7 +1294,8 @@ public class PlayerController : MonoBehaviour
         float duration,
         float stopDistance = 0.1f,
         int priority = 150,
-        bool faceDirection = true)
+        bool faceDirection = true,
+        bool allowVerticalMovement = false)
     {
         return ApplyEffect(
             MovementEffectType.PullToPoint,
@@ -1260,7 +1304,8 @@ public class PlayerController : MonoBehaviour
             duration,
             stopDistance,
             priority,
-            faceDirection);
+            faceDirection,
+            allowVerticalMovement);
     }
 
     public int ApplyMovementLock(
