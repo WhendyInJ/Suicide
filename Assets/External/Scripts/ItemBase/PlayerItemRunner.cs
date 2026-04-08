@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
 {
+    private enum AimPreviewType
+    {
+        None = 0,
+        Trajectory = 1
+    }
+
     private sealed class RuntimeSlot
     {
         public ItemDefinition BoundDefinition;
@@ -27,6 +33,9 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
     [Header("Aim")]
     [SerializeField, Min(0.1f)] private float defaultAimDistance = 30f;
 
+    [Header("Aim Preview")]
+    [SerializeField] private BombAimPreviewEffect trajectoryAimPreviewPrefab;
+
     public bool IsAimingItem => isAimingItem;
 
     public event System.Action<bool> OnAimStateChanged;
@@ -39,6 +48,9 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
     private GameObject currentHeldVisualInstance;
     private int currentHeldVisualViewId = NoHeldVisualViewId;
     private Coroutine waitForHeldVisualCoroutine;
+    private BombAimPreviewEffect trajectoryAimPreviewInstance;
+    private ItemDefinition configuredTrajectoryPreviewDefinition;
+    private bool hasLoggedMissingTrajectoryAimPreview;
 
     protected override void Awake()
     {
@@ -91,6 +103,21 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
             inventory.OnInventoryChanged -= HandleInventoryChanged;
             inventory.OnSelectedSlotChanged -= HandleSelectedSlotChanged;
         }
+
+        HideAimPreview();
+    }
+
+    private void OnDestroy()
+    {
+        if (trajectoryAimPreviewInstance == null)
+            return;
+
+        if (Application.isPlaying)
+            Destroy(trajectoryAimPreviewInstance.gameObject);
+        else
+            DestroyImmediate(trajectoryAimPreviewInstance.gameObject);
+
+        trajectoryAimPreviewInstance = null;
     }
 
     private void Update()
@@ -101,6 +128,7 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         TickRuntimes(Time.deltaTime);
         HandleSlotSelectionInput();
         HandleItemUseInput();
+        UpdateAimPreview();
     }
 
     public bool TryUseSelectedItemPrimary()
@@ -325,6 +353,7 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
 
         isAimingItem = false;
         aimingSlotIndex = -1;
+        HideAimPreview();
         OnAimStateChanged?.Invoke(false);
     }
 
@@ -333,6 +362,10 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         Transform originTransform = castOrigin != null ? castOrigin : transform;
 
         Vector3 useOrigin = originTransform.position;
+
+        if (TryBuildMouseDrivenAimRequest(runtime, originTransform, useOrigin, out ItemUseRequest mouseDrivenRequest))
+            return mouseDrivenRequest;
+
         Vector3 aimDirection = originTransform.forward;
         Vector3 aimPoint = useOrigin + aimDirection * defaultAimDistance;
         GameObject explicitTarget = null;
@@ -372,6 +405,48 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         }
 
         return new ItemUseRequest(useOrigin, aimPoint, aimDirection, explicitTarget);
+    }
+
+    private bool TryBuildMouseDrivenAimRequest(
+        IItemRuntime runtime,
+        Transform originTransform,
+        Vector3 useOrigin,
+        out ItemUseRequest request)
+    {
+        request = default;
+
+        if (!UsesMouseDrivenTrajectoryAim(runtime))
+            return false;
+
+        Vector3 aimDirection = ResolveMouseDrivenAimDirection(originTransform);
+        float aimDistance = runtime != null && runtime.AimSettings.MaxDistance > 0f
+            ? runtime.AimSettings.MaxDistance
+            : defaultAimDistance;
+
+        request = new ItemUseRequest(
+            useOrigin,
+            useOrigin + aimDirection * aimDistance,
+            aimDirection,
+            null);
+
+        return true;
+    }
+
+    private bool UsesMouseDrivenTrajectoryAim(IItemRuntime runtime)
+    {
+        return runtime is BombItemRuntime;
+    }
+
+    private Vector3 ResolveMouseDrivenAimDirection(Transform originTransform)
+    {
+        if (aimCamera != null)
+        {
+            Vector3 cameraForward = aimCamera.transform.forward;
+            if (cameraForward.sqrMagnitude > 0.0001f)
+                return cameraForward.normalized;
+        }
+
+        return originTransform != null ? originTransform.forward : transform.forward;
     }
 
     private Ray BuildAimRay(Transform originTransform)
@@ -716,6 +791,144 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         currentHeldVisualInstance = null;
         currentHeldDefinition = null;
         currentHeldVisualViewId = NoHeldVisualViewId;
+    }
+
+    private void UpdateAimPreview()
+    {
+        if (!HasLocalAuthority || !isAimingItem || inventory == null)
+        {
+            HideAimPreview();
+            return;
+        }
+
+        int selectedSlotIndex = inventory.SelectedSlotIndex;
+        if (selectedSlotIndex != aimingSlotIndex)
+        {
+            HideAimPreview();
+            return;
+        }
+
+        if (!TryGetAimPreviewData(
+                aimingSlotIndex,
+                out AimPreviewType previewType,
+                out ItemDefinition previewDefinition,
+                out IItemRuntime runtime))
+        {
+            HideAimPreview();
+            return;
+        }
+
+        switch (previewType)
+        {
+            case AimPreviewType.Trajectory:
+                UpdateTrajectoryAimPreview(previewDefinition, runtime);
+                break;
+
+            case AimPreviewType.None:
+            default:
+                HideAimPreview();
+                break;
+        }
+    }
+
+    private bool TryGetAimPreviewData(
+        int slotIndex,
+        out AimPreviewType previewType,
+        out ItemDefinition definition,
+        out IItemRuntime runtime)
+    {
+        previewType = AimPreviewType.None;
+        definition = null;
+        runtime = null;
+
+        if (!TryGetUsableRuntime(slotIndex, out RuntimeSlot runtimeSlot))
+            return false;
+
+        runtime = runtimeSlot.Runtime;
+        definition = runtimeSlot.BoundDefinition;
+
+        if (runtime == null || definition == null || runtime.UseMode != ItemUseMode.Aimed)
+            return false;
+
+        if (definition is BombItemDefinition)
+        {
+            previewType = AimPreviewType.Trajectory;
+            return true;
+        }
+
+        return false;
+    }
+
+    private void UpdateTrajectoryAimPreview(ItemDefinition definition, IItemRuntime runtime)
+    {
+        if (definition is not BombItemDefinition bombDefinition)
+        {
+            HideAimPreview();
+            return;
+        }
+
+        BombAimPreviewEffect preview = GetOrCreateTrajectoryAimPreview();
+        if (preview == null)
+            return;
+
+        if (configuredTrajectoryPreviewDefinition != definition)
+        {
+            preview.ConfigureFromDefinition(bombDefinition);
+            configuredTrajectoryPreviewDefinition = definition;
+        }
+
+        ItemUseRequest request = BuildUseRequest(runtime);
+        preview.RenderPreview(GetItemEffectSpawnTransform(), request.AimDirection);
+    }
+
+    private BombAimPreviewEffect GetOrCreateTrajectoryAimPreview()
+    {
+        if (trajectoryAimPreviewInstance != null)
+            return trajectoryAimPreviewInstance;
+
+        BombAimPreviewEffect prefab = trajectoryAimPreviewPrefab;
+        if (prefab == null)
+        {
+            prefab = Resources.Load<BombAimPreviewEffect>("BombAimPreviewEffect");
+        }
+
+        if (prefab == null)
+        {
+            if (!hasLoggedMissingTrajectoryAimPreview)
+            {
+                Debug.LogWarning("Bomb trajectory aim preview prefab is missing. Assign one or place 'BombAimPreviewEffect' in Resources.", this);
+                hasLoggedMissingTrajectoryAimPreview = true;
+            }
+
+            return null;
+        }
+
+        trajectoryAimPreviewInstance = Instantiate(prefab, transform);
+        trajectoryAimPreviewInstance.name = prefab.name;
+        trajectoryAimPreviewInstance.HidePreview();
+        hasLoggedMissingTrajectoryAimPreview = false;
+        return trajectoryAimPreviewInstance;
+    }
+
+    private void HideAimPreview()
+    {
+        configuredTrajectoryPreviewDefinition = null;
+
+        if (trajectoryAimPreviewInstance != null)
+        {
+            trajectoryAimPreviewInstance.HidePreview();
+        }
+    }
+
+    private Transform GetItemEffectSpawnTransform()
+    {
+        if (effectSpawnPoint != null)
+            return effectSpawnPoint;
+
+        if (castOrigin != null)
+            return castOrigin;
+
+        return transform;
     }
 
     public bool Raycast(
