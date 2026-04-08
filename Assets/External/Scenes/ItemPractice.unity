@@ -843,6 +843,7 @@ GameObject:
   - component: {fileID: 2067507187}
   - component: {fileID: 2067507189}
   - component: {fileID: 2067507188}
+  - component: {fileID: 2067507190}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -998,14 +999,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   rb: {fileID: 2067507179}
+  photonView: {fileID: 0}
   cameraTransform: {fileID: 0}
   inputSource: {fileID: 0}
+  groundSensor: {fileID: 0}
   maxMoveSpeed: 6
   timeToMaxSpeed: 0.08
   deceleration: 80
   instantStopWhenNoInput: 1
   inputDeadZone: 0.05
   rotationSpeed: 1080
+  rotateTowardForcedMotion: 1
+  forcedMotionAcceleration: 120
+  instantStopOnHardLock: 1
+  clearHorizontalVelocityBeforeImpulse: 1
+  preserveVerticalVelocityOnImpulse: 0
   useCameraMainIfMissing: 1
 --- !u!114 &2067507188
 MonoBehaviour:
@@ -1043,6 +1051,28 @@ MonoBehaviour:
   loopSelection: 1
   selectedSlotIndex: 0
   slotList: []
+--- !u!114 &2067507190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2067507178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonView
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &2111789827
 GameObject:
   m_ObjectHideFlags: 0
