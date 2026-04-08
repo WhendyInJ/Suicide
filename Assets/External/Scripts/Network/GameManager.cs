@@ -21,6 +21,12 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         if (GetComponent<GameOverManager>() == null)
         {
+            PhotonView localPhotonView = GetComponent<PhotonView>();
+            Debug.LogWarning(
+                $"[GameManager:{name}] Adding {nameof(GameOverManager)} at runtime. " +
+                $"PhotonView viewId={(localPhotonView != null ? localPhotonView.ViewID : -1)} | scene={gameObject.scene.name}. " +
+                "If this object is expected to send RPCs, prefer adding GameOverManager in the scene beforehand.",
+                this);
             gameObject.AddComponent<GameOverManager>();
         }
     }
