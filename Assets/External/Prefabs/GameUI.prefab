@@ -125,29 +125,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3239748584394478479}
     m_Modifications:
-    - target: {fileID: 415491285233576729, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-      propertyPath: m_Type
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 415491285233576729, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1752624573249661684, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-      propertyPath: m_Type
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1752624573249661684, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: c222cd02c447941edb09ecb6433229ce, type: 3}
     - target: {fileID: 1782506644561186783, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
       propertyPath: m_Name
       value: QuickSlotRoot
-      objectReference: {fileID: 0}
-    - target: {fileID: 1782506644561186783, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4122138758420786437, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
       propertyPath: m_Pivot.x
@@ -180,18 +160,6 @@ PrefabInstance:
     - target: {fileID: 4122138758420786437, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
       propertyPath: m_SizeDelta.y
       value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 4122138758420786437, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4122138758420786437, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4122138758420786437, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4122138758420786437, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
       propertyPath: m_LocalPosition.x
@@ -241,142 +209,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4122138758420786437, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 2821870725296604788, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1782506644561186783, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1373854044147175814}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
---- !u!114 &1294625219879975543 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2125246387707651779, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-  m_PrefabInstance: {fileID: 903264828406766772}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
---- !u!1 &1456271034257625963 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1782506644561186783, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-  m_PrefabInstance: {fileID: 903264828406766772}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1373854044147175814
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1456271034257625963}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b0813d8d950d7f4394dbc1119594227, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerQuickSlotUI
-  inventory: {fileID: 0}
-  itemRunner: {fileID: 0}
-  inputSource: {fileID: 0}
-  autoResolveLocalPlayerReferences: 1
-  resolveRetryInterval: 0.5
-  slot1:
-    root: {fileID: 3509577278124568898}
-    frameImage: {fileID: 5100399581685411247}
-    iconImage: {fileID: 1502962370465543744}
-    countText: {fileID: 7451841646880155327}
-  slot2:
-    root: {fileID: 3935720255715775860}
-    frameImage: {fileID: 1294625219879975543}
-    iconImage: {fileID: 7276144832013534242}
-    countText: {fileID: 4296285033837476907}
-  selectedScale: {x: 1.15, y: 1.15, z: 1}
-  unselectedScale: {x: 0.88, y: 0.88, z: 1}
-  aimingScale: {x: 1.2, y: 1.2, z: 1}
-  scaleLerpSpeed: 12
-  selectedFrameColor: {r: 0, g: 0, b: 0, a: 0.6}
-  unselectedFrameColor: {r: 0, g: 0, b: 0, a: 0.2901961}
-  aimingFrameColor: {r: 1, g: 0.9, b: 0.4, a: 1}
-  iconColor: {r: 1, g: 1, b: 1, a: 1}
-  emptyIconColor: {r: 1, g: 1, b: 1, a: 0.35}
-  hideIconWhenEmpty: 1
-  showCountText: 1
-  hideCountWhenOne: 1
-  requireLocalAuthority: 1
---- !u!114 &1502962370465543744 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1752624573249661684, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-  m_PrefabInstance: {fileID: 903264828406766772}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
---- !u!224 &3509577278124568898 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4340783275467320822, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-  m_PrefabInstance: {fileID: 903264828406766772}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &3872477544519332273 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4122138758420786437, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
   m_PrefabInstance: {fileID: 903264828406766772}
   m_PrefabAsset: {fileID: 0}
---- !u!224 &3935720255715775860 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185944305761094080, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-  m_PrefabInstance: {fileID: 903264828406766772}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &4296285033837476907 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3969486474629324959, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-  m_PrefabInstance: {fileID: 903264828406766772}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!114 &5100399581685411247 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5350638054189232411, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-  m_PrefabInstance: {fileID: 903264828406766772}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
---- !u!114 &7276144832013534242 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7526365724143261846, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-  m_PrefabInstance: {fileID: 903264828406766772}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
---- !u!114 &7451841646880155327 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7774137562092468747, guid: fbf6faad553e80044a36c70f6733bb51, type: 3}
-  m_PrefabInstance: {fileID: 903264828406766772}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
