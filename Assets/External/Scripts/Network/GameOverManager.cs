@@ -105,6 +105,18 @@ public class GameOverManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.InRoom)
         {
+            if (photonView == null || photonView.ViewID == 0)
+            {
+                Debug.LogError(
+                    $"[{nameof(GameOverManager)}:{name}] Cannot RPC — PhotonView missing or invalid (ViewID 0). " +
+                    "On scene GameObjects, set PhotonView Scene View Id to a non-zero unique value in the scene (PUN). " +
+                    "Falling back to local game-over only on this client.",
+                    this);
+
+                RPC_AnnounceGameOver(winnerActorNumber, defeatedActorNumber, winnerName ?? string.Empty);
+                return;
+            }
+
             photonView.RPC(
                 nameof(RPC_AnnounceGameOver),
                 RpcTarget.All,
