@@ -4,9 +4,6 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class InstantKillOnContact : MonoBehaviour
 {
-    [Header("Options")]
-    [SerializeField] private string requiredTag = "Player";
-
     private void OnTriggerEnter(Collider other)
     {
         TryKill(other);
@@ -23,9 +20,6 @@ public class InstantKillOnContact : MonoBehaviour
     private void TryKill(Collider other)
     {
         if (other == null)
-            return;
-
-        if (!string.IsNullOrEmpty(requiredTag) && !other.CompareTag(requiredTag))
             return;
 
         PlayerHealth health = other.GetComponentInParent<PlayerHealth>();
