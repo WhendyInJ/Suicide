@@ -39,6 +39,19 @@ MonoBehaviour:
   - DestroySpaceship
   - Fire
   - RespawnSpaceship
+  - RPC_ApplyKnockback
+  - RPC_ApplyMovementLock
+  - RPC_ApplyPullToPoint
+  - RPC_ApplyEffect
+  - RPC_ApplyImpulseKnockback
+  - RPC_RequestDamage
+  - RPC_RequestHeal
+  - RPC_ClaimPickup
+  - RPC_ApplyStun
+  - RPC_FinalizePickup
+  - RPC_RequestClaimPickup
+  - RPC_AttachHeldItemVisual
+  - RPC_ClearHeldItemVisual
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

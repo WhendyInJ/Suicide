@@ -1,41 +1,78 @@
-using UnityEngine;
 using Photon.Pun;
+using UnityEngine;
 
 [DefaultExecutionOrder(-100)]
+[RequireComponent(typeof(PhotonView))]
 public class PlayerInputSource : MonoBehaviour
 {
     [Header("Cursor")]
     [SerializeField] private bool lockCursorOnStart = true;
 
-    [Header("Legacy Input Sample")]
+    [Header("Look")]
     [SerializeField] private float lookSensitivity = 1f;
+
+    [Header("Basic Skill Keys")]
+    [SerializeField] private KeyCode primarySkillKey = KeyCode.F;
+    [SerializeField] private KeyCode secondarySkillKey = KeyCode.G;
+
+    [Header("Inventory Keys")]
+    [SerializeField] private KeyCode selectItemSlot1Key = KeyCode.Alpha1;
+    [SerializeField] private KeyCode selectItemSlot2Key = KeyCode.Alpha2;
+
+    [Header("Control")]
+    [SerializeField] private PlayerController playerController;
 
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
 
+    public bool PrimarySkillPressedThisFrame { get; private set; }
+    public bool SecondarySkillPressedThisFrame { get; private set; }
+
+    public bool SelectItemSlot1PressedThisFrame { get; private set; }
+    public bool SelectItemSlot2PressedThisFrame { get; private set; }
+
+    public bool ItemPrimaryPressedThisFrame { get; private set; }
+    public bool ItemPrimaryReleasedThisFrame { get; private set; }
+    public bool ItemPrimaryHeld { get; private set; }
+
+    public bool ItemSecondaryPressedThisFrame { get; private set; }
+    public bool ItemSecondaryReleasedThisFrame { get; private set; }
+    public bool ItemSecondaryHeld { get; private set; }
+
     private PhotonView photonView;
+
+    public bool HasLocalAuthority
+    {
+        get
+        {
+            if (!PhotonNetwork.InRoom)
+                return true;
+
+            return photonView != null && photonView.IsMine;
+        }
+    }
+
+    private void Reset()
+    {
+        photonView = GetComponent<PhotonView>();
+        playerController = GetComponent<PlayerController>();
+    }
 
     private void Awake()
     {
-        photonView = GetComponent<PhotonView>();
+        if (photonView == null)
+            photonView = GetComponent<PhotonView>();
 
-        // PlayerInputSource가 자식 오브젝트에 붙어있고 PhotonView가 부모에 있다면 이걸 쓰면 됨.
         if (photonView == null)
             photonView = GetComponentInParent<PhotonView>();
 
-        // 네트워크 플레이 중이고 내 오브젝트가 아니면 입력 컴포넌트를 비활성화
-        if (PhotonNetwork.IsConnected && photonView != null && !photonView.IsMine)
-        {
-            MoveInput = Vector2.zero;
-            LookInput = Vector2.zero;
-            enabled = false;
-        }
+        if (playerController == null)
+            playerController = GetComponent<PlayerController>();
     }
 
     private void Start()
     {
-        // 내 플레이어일 때만 커서 잠금
-        if (lockCursorOnStart && IsLocalInputOwner())
+        if (lockCursorOnStart && HasLocalAuthority)
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -44,32 +81,107 @@ public class PlayerInputSource : MonoBehaviour
 
     private void Update()
     {
-        if (!IsLocalInputOwner())
+        if (!HasLocalAuthority)
         {
-            MoveInput = Vector2.zero;
-            LookInput = Vector2.zero;
+            ClearInputs();
             return;
         }
 
+        if (playerController != null && playerController.IsInputBlocked)
+        {
+            ClearInputs();
+            return;
+        }
+
+        ReadMoveInput();
+        ReadLookInput();
+        ReadSkillInput();
+        ReadInventoryInput();
+        ReadItemUseInput();
+    }
+
+    private void ReadMoveInput()
+    {
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveY = Input.GetAxisRaw("Vertical");
         MoveInput = Vector2.ClampMagnitude(new Vector2(moveX, moveY), 1f);
+    }
 
+    private void ReadLookInput()
+    {
         float lookX = Input.GetAxis("Mouse X");
         float lookY = Input.GetAxis("Mouse Y");
         LookInput = new Vector2(lookX, lookY) * lookSensitivity;
     }
 
-    private bool IsLocalInputOwner()
+    private void ReadSkillInput()
     {
-        // PUN 없이 단독 테스트할 때는 그냥 입력 허용
-        if (!PhotonNetwork.IsConnected)
-            return true;
+        PrimarySkillPressedThisFrame = Input.GetKeyDown(primarySkillKey);
+        SecondarySkillPressedThisFrame = Input.GetKeyDown(secondarySkillKey);
+    }
 
-        // PhotonView가 없으면 안전하게 입력 차단
-        if (photonView == null)
-            return false;
+    private void ReadInventoryInput()
+    {
+        SelectItemSlot1PressedThisFrame = Input.GetKeyDown(selectItemSlot1Key);
+        SelectItemSlot2PressedThisFrame = Input.GetKeyDown(selectItemSlot2Key);
+    }
 
-        return photonView.IsMine;
+    private void ReadItemUseInput()
+    {
+        ItemPrimaryPressedThisFrame = Input.GetMouseButtonDown(0);
+        ItemPrimaryReleasedThisFrame = Input.GetMouseButtonUp(0);
+        ItemPrimaryHeld = Input.GetMouseButton(0);
+
+        ItemSecondaryPressedThisFrame = Input.GetMouseButtonDown(1);
+        ItemSecondaryReleasedThisFrame = Input.GetMouseButtonUp(1);
+        ItemSecondaryHeld = Input.GetMouseButton(1);
+    }
+
+    private void ClearInputs()
+    {
+        MoveInput = Vector2.zero;
+        LookInput = Vector2.zero;
+
+        PrimarySkillPressedThisFrame = false;
+        SecondarySkillPressedThisFrame = false;
+
+        SelectItemSlot1PressedThisFrame = false;
+        SelectItemSlot2PressedThisFrame = false;
+
+        ItemPrimaryPressedThisFrame = false;
+        ItemPrimaryReleasedThisFrame = false;
+        ItemPrimaryHeld = false;
+
+        ItemSecondaryPressedThisFrame = false;
+        ItemSecondaryReleasedThisFrame = false;
+        ItemSecondaryHeld = false;
+    }
+
+    public bool GetSkillPressedThisFrame(BasicSkillSlotType slot)
+    {
+        switch (slot)
+        {
+            case BasicSkillSlotType.Primary:
+                return PrimarySkillPressedThisFrame;
+
+            case BasicSkillSlotType.Secondary:
+                return SecondarySkillPressedThisFrame;
+
+            default:
+                return false;
+        }
+    }
+
+    public bool GetInventorySlotPressedThisFrame(int slotIndex)
+    {
+        switch (slotIndex)
+        {
+            case 0:
+                return SelectItemSlot1PressedThisFrame;
+            case 1:
+                return SelectItemSlot2PressedThisFrame;
+            default:
+                return false;
+        }
     }
 }

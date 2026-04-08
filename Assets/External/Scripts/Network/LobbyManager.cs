@@ -21,7 +21,7 @@ private byte maxPlayersPerRoom = 4;
     {
         if (PhotonNetwork.IsConnected)
         {
-            Debug.Log("Connected to RandomRoom");
+            Debug.Log("Connected to ");
             PhotonNetwork.JoinRandomRoom();
         }
         else
