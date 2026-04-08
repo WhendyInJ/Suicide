@@ -73,47 +73,10 @@ public class GameOverManager : MonoBehaviourPunCallbacks
             return;
 
         int defeatedActorNumber = playerHealth.OwnerActorNumber;
-
-        if (!TryGetEndgameWinnerAfterDeath(out int winnerActorNumber, out string winnerName))
-            return;
+        int winnerActorNumber = defeatedActorNumber;
+        string winnerName = ResolveWinnerName(winnerActorNumber);
 
         BroadcastGameOver(winnerActorNumber, defeatedActorNumber, winnerName);
-    }
-
-    /// <summary>
-    /// Ends the match only when at most one player is still alive. Winner is that survivor (or none if everyone is dead).
-    /// This way if two die in one trap, the first death event still sees the other alive and the survivor is named correctly.
-    /// </summary>
-    private bool TryGetEndgameWinnerAfterDeath(out int winnerActorNumber, out string winnerName)
-    {
-        winnerActorNumber = -1;
-        winnerName = string.Empty;
-
-        int aliveCount = 0;
-        PlayerHealth soleSurvivor = null;
-
-        foreach (PlayerHealth h in trackedHealths)
-        {
-            if (h == null || h.IsDead)
-                continue;
-
-            aliveCount++;
-            soleSurvivor = h;
-        }
-
-        if (aliveCount > 1)
-            return false;
-
-        if (aliveCount == 1 && soleSurvivor != null)
-        {
-            winnerActorNumber = soleSurvivor.OwnerActorNumber;
-            winnerName = ResolveWinnerName(winnerActorNumber);
-            return true;
-        }
-
-        winnerActorNumber = -1;
-        winnerName = string.Empty;
-        return true;
     }
 
     private string ResolveWinnerName(int winnerActorNumber)
@@ -295,12 +258,6 @@ public class GameOverManager : MonoBehaviourPunCallbacks
     {
         if (winnerText == null)
             return;
-
-        if (winnerActorNumber <= 0)
-        {
-            winnerText.text = noWinnerMessage;
-            return;
-        }
 
         string resolvedWinnerName = !string.IsNullOrWhiteSpace(winnerName)
             ? winnerName
