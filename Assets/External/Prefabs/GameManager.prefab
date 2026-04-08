@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3840298222871488496}
   - component: {fileID: 4287184269230066347}
+  - component: {fileID: 7253780400180989379}
   - component: {fileID: 3524963811935514659}
   m_Layer: 0
   m_Name: GameManager
@@ -52,6 +53,28 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   autoSpawnLocalPlayer: 1
+--- !u!114 &7253780400180989379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2248745057599960409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1293c53bc3ce2fd40afa36cb9cbdd740, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameOverManager
+  titleSceneName: Title
+  winnerSuffix: ' Wins!'
+  noWinnerMessage: Game Over
+  returnButtonLabel: Return To Title
+  panelColor: {r: 0, g: 0, b: 0, a: 0.82}
+  winnerTextColor: {r: 1, g: 1, b: 1, a: 1}
+  buttonColor: {r: 1, g: 1, b: 1, a: 0.92}
+  buttonTextColor: {r: 0, g: 0, b: 0, a: 1}
+  panelSize: {x: 720, y: 360}
+  sortingOrder: 5000
 --- !u!114 &3524963811935514659
 MonoBehaviour:
   m_ObjectHideFlags: 0
