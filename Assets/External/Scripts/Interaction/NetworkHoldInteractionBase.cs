@@ -35,6 +35,10 @@ public abstract class NetworkHoldInteractionBase : MonoBehaviourPunCallbacks
     [SerializeField] private HoldInteractionStopReason lastStopReason = HoldInteractionStopReason.None;
     [SerializeField] private bool localRequestPending;
 
+    [Header("Last completion (replicated)")]
+    [SerializeField] private int lastCompletedInteractorViewId = -1;
+    [SerializeField] private double lastCompletionNetworkTime = -1d;
+
     private readonly HashSet<int> localOverlapColliderIds = new();
 
     private PlayerInputSource currentLocalInputSource;
@@ -56,6 +60,12 @@ public abstract class NetworkHoldInteractionBase : MonoBehaviourPunCallbacks
     protected bool IsLocalInteractingPlayer => currentLocalPlayerViewId > 0 && currentLocalPlayerViewId == interactingPlayerViewId;
     protected double NetworkTime => PhotonNetwork.InRoom ? PhotonNetwork.Time : Time.timeAsDouble;
     protected bool CanExecuteAuthoritativeTrigger => !PhotonNetwork.InRoom || PhotonNetwork.IsMasterClient;
+
+    /// <summary>PhotonView.ViewID of the player who last finished a full hold (Completed), or -1.</summary>
+    public int LastCompletedInteractorViewId => lastCompletedInteractorViewId;
+
+    /// <summary><see cref="PhotonNetwork.Time"/> (or local time) when the last Completed stop was applied.</summary>
+    public double LastCompletionNetworkTime => lastCompletionNetworkTime;
 
     protected virtual void Reset()
     {
@@ -285,11 +295,18 @@ public abstract class NetworkHoldInteractionBase : MonoBehaviourPunCallbacks
     [PunRPC]
     protected void RPC_StopInteraction(int playerViewId, double stateChangeServerTime, int stopReasonValue)
     {
+        HoldInteractionStopReason stopReason = (HoldInteractionStopReason)stopReasonValue;
+        if (stopReason == HoldInteractionStopReason.Completed && playerViewId > 0)
+        {
+            lastCompletedInteractorViewId = playerViewId;
+            lastCompletionNetworkTime = stateChangeServerTime;
+        }
+
         isSomeoneInteracting = false;
         interactingPlayerViewId = -1;
         interactionStartServerTime = -1d;
         lastStateChangeServerTime = stateChangeServerTime;
-        lastStopReason = (HoldInteractionStopReason)stopReasonValue;
+        lastStopReason = stopReason;
 
         if (currentLocalPlayerViewId == playerViewId)
             localRequestPending = false;
