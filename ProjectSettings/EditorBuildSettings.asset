@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game1.unity
     guid: 301444e04e90464478b01af71db9247f
+  - enabled: 1
+    path: Assets/Scenes/Map_Test_1_rla.unity
+    guid: 170a1b238f01ec94fba35a1942566921
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

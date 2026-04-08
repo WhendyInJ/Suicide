@@ -52,6 +52,8 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
     private Coroutine waitForHeldVisualCoroutine;
     private BombAimPreviewEffect trajectoryAimPreviewInstance;
     private CrosshairAimPreview crosshairAimPreviewInstance;
+    private GameObject grabDestinationPreviewInstance;
+    private GameObject configuredGrabDestinationPreviewPrefab;
     private ItemDefinition configuredTrajectoryPreviewDefinition;
     private bool hasLoggedMissingTrajectoryAimPreview;
 
@@ -117,6 +119,9 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
 
         DestroyAimPreviewInstance(crosshairAimPreviewInstance);
         crosshairAimPreviewInstance = null;
+
+        DestroyAimPreviewInstance(grabDestinationPreviewInstance);
+        grabDestinationPreviewInstance = null;
     }
 
     private void Update()
@@ -897,6 +902,23 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
             return;
 
         preview.ShowPreview();
+
+        if (inventory == null)
+            return;
+
+        if (!inventory.TryGetSlotInfo(aimingSlotIndex, out ItemDefinition definition, out _))
+        {
+            HideGrabDestinationPreview();
+            return;
+        }
+
+        if (definition is not GrabItemDefinition grabDefinition)
+        {
+            HideGrabDestinationPreview();
+            return;
+        }
+
+        UpdateGrabDestinationPreview(grabDefinition);
     }
 
     private BombAimPreviewEffect GetOrCreateTrajectoryAimPreview()
@@ -962,6 +984,8 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         {
             crosshairAimPreviewInstance.HidePreview();
         }
+
+        HideGrabDestinationPreview();
     }
 
     private Transform GetItemEffectSpawnTransform()
@@ -973,6 +997,114 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
             return castOrigin;
 
         return transform;
+    }
+
+    private void UpdateGrabDestinationPreview(GrabItemDefinition definition)
+    {
+        if (definition == null || definition.DestinationPreviewPrefab == null)
+        {
+            HideGrabDestinationPreview();
+            return;
+        }
+
+        Transform spawnTransform = GetItemEffectSpawnTransform();
+        if (spawnTransform == null)
+        {
+            HideGrabDestinationPreview();
+            return;
+        }
+
+        Vector3 aimDirection = ResolveMouseDrivenAimDirection(spawnTransform);
+        if (aimDirection.sqrMagnitude <= 0.0001f)
+        {
+            HideGrabDestinationPreview();
+            return;
+        }
+
+        Vector3 spawnOffsetDirection = aimDirection.normalized;
+        Vector3 start =
+            spawnTransform.position +
+            spawnOffsetDirection * definition.SpawnForwardOffset +
+            Vector3.up * definition.SpawnUpwardOffset;
+
+        if (!GrabProjectile.TryPredictResolution(
+                definition.ProjectilePrefab,
+                transform,
+                start,
+                spawnOffsetDirection,
+                definition.CastRange,
+                definition.HitMask,
+                definition.StructureMask,
+                definition.TriggerInteraction,
+                definition.TargetFrontDistance,
+                out Vector3 previewPoint,
+                out Vector3 previewNormal))
+        {
+            HideGrabDestinationPreview();
+            return;
+        }
+
+        GameObject preview = GetOrCreateGrabDestinationPreview(definition.DestinationPreviewPrefab);
+        if (preview == null)
+            return;
+
+        preview.transform.position = previewPoint;
+        if (previewNormal.sqrMagnitude > 0.0001f)
+        {
+            Vector3 forwardOnPlane = Vector3.ProjectOnPlane(transform.forward, previewNormal);
+            if (forwardOnPlane.sqrMagnitude <= 0.0001f)
+                forwardOnPlane = Vector3.ProjectOnPlane(Vector3.forward, previewNormal);
+
+            if (forwardOnPlane.sqrMagnitude <= 0.0001f)
+                forwardOnPlane = Vector3.right;
+
+            preview.transform.rotation = Quaternion.LookRotation(forwardOnPlane.normalized, previewNormal);
+        }
+        else
+        {
+            preview.transform.rotation = Quaternion.identity;
+        }
+
+        if (!preview.activeSelf)
+            preview.SetActive(true);
+    }
+
+    private GameObject GetOrCreateGrabDestinationPreview(GameObject previewPrefab)
+    {
+        if (previewPrefab == null)
+            return null;
+
+        if (grabDestinationPreviewInstance != null && configuredGrabDestinationPreviewPrefab == previewPrefab)
+            return grabDestinationPreviewInstance;
+
+        HideGrabDestinationPreview(true);
+
+        grabDestinationPreviewInstance = Instantiate(previewPrefab);
+        grabDestinationPreviewInstance.name = previewPrefab.name;
+        configuredGrabDestinationPreviewPrefab = previewPrefab;
+        grabDestinationPreviewInstance.SetActive(false);
+        return grabDestinationPreviewInstance;
+    }
+
+    private void HideGrabDestinationPreview(bool destroyInstance = false)
+    {
+        if (grabDestinationPreviewInstance == null)
+        {
+            if (destroyInstance)
+                configuredGrabDestinationPreviewPrefab = null;
+            return;
+        }
+
+        if (destroyInstance)
+        {
+            DestroyAimPreviewInstance(grabDestinationPreviewInstance);
+            grabDestinationPreviewInstance = null;
+            configuredGrabDestinationPreviewPrefab = null;
+            return;
+        }
+
+        if (grabDestinationPreviewInstance.activeSelf)
+            grabDestinationPreviewInstance.SetActive(false);
     }
 
     public bool Raycast(

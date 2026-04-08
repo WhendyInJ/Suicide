@@ -1,4 +1,5 @@
 using System.Collections;
+using Photon.Pun;
 using UnityEngine;
 
 [System.Serializable]
@@ -9,7 +10,7 @@ public enum SpikeFloorGroupSide
 }
 
 [DisallowMultipleComponent]
-public class SpikePlatformGroupController : MonoBehaviour
+public class SpikePlatformGroupController : MonoBehaviourPun, IInteractionTriggerTarget
 {
     [Header("Controlled Objects - Group A")]
     [SerializeField] private Transform[] firstSpikeObjects;
@@ -36,6 +37,8 @@ public class SpikePlatformGroupController : MonoBehaviour
     private bool isFirstGroupActive;
     private bool isTransitionRunning;
 
+    public event System.Action<bool> StateChanged;
+
     public bool IsFirstGroupActive => isFirstGroupActive;
     public bool IsTransitionRunning => isTransitionRunning;
     public float TransitionDuration => transitionDuration;
@@ -61,6 +64,40 @@ public class SpikePlatformGroupController : MonoBehaviour
         ApplyImmediate(isFirstGroupActive);
     }
 
+    public void TriggerFromInteraction(NetworkHoldInteractionBase source)
+    {
+        RequestToggleState();
+    }
+
+    public void RequestToggleState()
+    {
+        RequestSetFirstGroupActive(!isFirstGroupActive);
+    }
+
+    public void RequestSetFirstGroupActive(bool targetFirstGroupActive)
+    {
+        if (isTransitionRunning || targetFirstGroupActive == isFirstGroupActive)
+            return;
+
+        if (PhotonNetwork.InRoom)
+        {
+            if (!PhotonNetwork.IsMasterClient)
+                return;
+
+            if (photonView != null)
+            {
+                photonView.RPC(nameof(RPC_SetFirstGroupActive), RpcTarget.All, targetFirstGroupActive);
+                return;
+            }
+
+            Debug.LogWarning(
+                $"[{nameof(SpikePlatformGroupController)}:{name}] Missing PhotonView. Falling back to local-only state change.",
+                this);
+        }
+
+        StartCoroutine(CoSetFirstGroupActive(targetFirstGroupActive));
+    }
+
     public IEnumerator CoToggleState()
     {
         yield return CoSetFirstGroupActive(!isFirstGroupActive);
@@ -69,6 +106,9 @@ public class SpikePlatformGroupController : MonoBehaviour
     public IEnumerator CoSetFirstGroupActive(bool targetFirstGroupActive)
     {
         if (isTransitionRunning)
+            yield break;
+
+        if (targetFirstGroupActive == isFirstGroupActive)
             yield break;
 
         isTransitionRunning = true;
@@ -87,6 +127,7 @@ public class SpikePlatformGroupController : MonoBehaviour
             ApplyImmediate(targetFirstGroupActive);
             isFirstGroupActive = targetFirstGroupActive;
             isTransitionRunning = false;
+            NotifyStateChanged();
             yield break;
         }
 
@@ -107,6 +148,13 @@ public class SpikePlatformGroupController : MonoBehaviour
         ApplyImmediate(targetFirstGroupActive);
         isFirstGroupActive = targetFirstGroupActive;
         isTransitionRunning = false;
+        NotifyStateChanged();
+    }
+
+    [PunRPC]
+    private void RPC_SetFirstGroupActive(bool targetFirstGroupActive)
+    {
+        StartCoroutine(CoSetFirstGroupActive(targetFirstGroupActive));
     }
 
     private Vector3[] CacheSpikePositions(Transform[] spikes)
@@ -214,5 +262,10 @@ public class SpikePlatformGroupController : MonoBehaviour
 
             target.SetActive(active);
         }
+    }
+
+    private void NotifyStateChanged()
+    {
+        StateChanged?.Invoke(isFirstGroupActive);
     }
 }

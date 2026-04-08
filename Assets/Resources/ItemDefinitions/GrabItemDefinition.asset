@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GrabItemDefinition
   itemId: 2
   displayName: Grab
-  icon: {fileID: 21300000, guid: ab82c389ad900de489ce89e833eaea95, type: 3}
+  icon: {fileID: -3094715403257382637, guid: 389b95573be51264c8a0c46b606fad47, type: 3}
   maxStack: 1
   useCooldown: 0
   useMode: 1
@@ -31,6 +31,7 @@ MonoBehaviour:
     localEulerAngles: {x: 0, y: 0, z: 0}
     localScale: {x: 0.7, y: 0.7, z: 0.7}
   projectilePrefab: {fileID: 1558941558143925840, guid: 9cbece08b70efc645a931340710af1fd, type: 3}
+  destinationPreviewPrefab: {fileID: 1558941558143925840, guid: 8d3915d5884330c428acd98aa3427374, type: 3}
   projectileSpeed: 28
   spawnForwardOffset: 0.6
   spawnUpwardOffset: 0.2

@@ -19,6 +19,9 @@ public class PlayerInputSource : MonoBehaviour
     [SerializeField] private KeyCode selectItemSlot1Key = KeyCode.Alpha1;
     [SerializeField] private KeyCode selectItemSlot2Key = KeyCode.Alpha2;
 
+    [Header("Interaction Keys")]
+    [SerializeField] private KeyCode interactKey = KeyCode.E;
+
     [Header("Movement Keys")]
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
 
@@ -34,6 +37,9 @@ public class PlayerInputSource : MonoBehaviour
     public bool SelectItemSlot1PressedThisFrame { get; private set; }
     public bool SelectItemSlot2PressedThisFrame { get; private set; }
     public bool JumpPressedThisFrame { get; private set; }
+    public bool InteractPressedThisFrame { get; private set; }
+    public bool InteractReleasedThisFrame { get; private set; }
+    public bool InteractHeld { get; private set; }
 
     public bool ItemPrimaryPressedThisFrame { get; private set; }
     public bool ItemPrimaryReleasedThisFrame { get; private set; }
@@ -100,6 +106,7 @@ public class PlayerInputSource : MonoBehaviour
         ReadMoveInput();
         ReadLookInput();
         ReadJumpInput();
+        ReadInteractionInput();
         ReadSkillInput();
         ReadInventoryInput();
         ReadItemUseInput();
@@ -136,6 +143,13 @@ public class PlayerInputSource : MonoBehaviour
         JumpPressedThisFrame = Input.GetKeyDown(jumpKey);
     }
 
+    private void ReadInteractionInput()
+    {
+        InteractPressedThisFrame = Input.GetKeyDown(interactKey);
+        InteractReleasedThisFrame = Input.GetKeyUp(interactKey);
+        InteractHeld = Input.GetKey(interactKey);
+    }
+
     private void ReadItemUseInput()
     {
         ItemPrimaryPressedThisFrame = Input.GetMouseButtonDown(0);
@@ -158,6 +172,9 @@ public class PlayerInputSource : MonoBehaviour
         SelectItemSlot1PressedThisFrame = false;
         SelectItemSlot2PressedThisFrame = false;
         JumpPressedThisFrame = false;
+        InteractPressedThisFrame = false;
+        InteractReleasedThisFrame = false;
+        InteractHeld = false;
 
         ItemPrimaryPressedThisFrame = false;
         ItemPrimaryReleasedThisFrame = false;

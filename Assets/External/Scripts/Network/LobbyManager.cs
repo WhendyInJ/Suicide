@@ -196,7 +196,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             return;
         }
 
-        PhotonNetwork.LoadLevel("Game1");
+        PhotonNetwork.LoadLevel("Map_Test_1_rla");
     }
 
     public override void OnConnectedToMaster()

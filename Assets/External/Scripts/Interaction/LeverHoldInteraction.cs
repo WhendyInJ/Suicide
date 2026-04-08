@@ -1,225 +1,142 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 [DisallowMultipleComponent]
-[RequireComponent(typeof(Collider))]
-public class LeverHoldInteraction : MonoBehaviour
+public class LeverHoldInteraction : NetworkHoldInteractionBase
 {
     [Header("References")]
     [SerializeField] private Transform lever;
-    [SerializeField] private Canvas interactionCanvas;
-    [SerializeField] private Image holdProgressImage;
-
-    [Header("Interaction")]
-    [SerializeField] private KeyCode interactKey = KeyCode.F;
-    [SerializeField, Min(0.01f)] private float holdDuration = 1f;
-    [SerializeField, Min(0.01f)] private float cancelReturnDuration = 0.2f;
+    [SerializeField] private MonoBehaviour[] triggerTargets;
 
     [Header("Lever X Rotation")]
     [SerializeField] private float inactiveXRotation = -45f;
     [SerializeField] private float activeXRotation = 45f;
 
-    private readonly HashSet<int> localOverlapColliderIds = new();
+    [Header("Runtime Debug")]
+    [SerializeField] private bool isActivated;
+    [SerializeField] private float currentVisualProgress;
+    [SerializeField] private bool isReturnAnimating;
 
-    private Coroutine activeRoutine;
     private Vector3 leverBaseLocalEuler;
-    private float currentProgress;
-    private bool isActivated;
+    private double returnAnimationStartTime;
+    private float returnAnimationFromProgress;
 
-    private bool IsPlayerInRange => localOverlapColliderIds.Count > 0;
-    private float StableProgress => isActivated ? 1f : 0f;
-
-    private void Reset()
-    {
-        Collider trigger = GetComponent<Collider>();
-        if (trigger != null)
-            trigger.isTrigger = true;
-    }
-
-    private void Awake()
+    protected override void Awake()
     {
         if (lever == null)
             lever = transform;
 
         leverBaseLocalEuler = lever.localEulerAngles;
-        ApplyVisualImmediate(StableProgress);
-        SetCanvasVisible(false);
+        base.Awake();
+        ApplyIdleVisualImmediate();
     }
 
-    private void Update()
+    protected override void ApplyIdleVisualImmediate()
     {
-        if (!IsPlayerInRange)
-            return;
-
-        if (activeRoutine != null)
-            return;
-
-        if (!Input.GetKeyDown(interactKey))
-            return;
-
-        activeRoutine = StartCoroutine(CoHoldToggle());
+        isReturnAnimating = false;
+        ApplyLeverProgress(GetStableProgress());
     }
 
-    private void OnTriggerEnter(Collider other)
+    protected override void UpdateVisualState(float holdProgress, bool isInteracting, double networkTime)
     {
-        TryEnterRange(other);
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        TryEnterRange(other);
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (!TryResolveLocalPlayerCollider(other, out int colliderId))
-            return;
-
-        if (!localOverlapColliderIds.Remove(colliderId))
-            return;
-
-        if (!IsPlayerInRange)
+        if (isInteracting)
         {
-            CancelCurrentRoutine();
-            StartReturnToStable();
-            SetCanvasVisible(false);
-        }
-    }
+            isReturnAnimating = false;
 
-    private void OnDisable()
-    {
-        CancelCurrentRoutine();
-        ApplyVisualImmediate(StableProgress);
-        SetCanvasVisible(false);
-        localOverlapColliderIds.Clear();
-    }
-
-    private void TryEnterRange(Collider other)
-    {
-        if (!TryResolveLocalPlayerCollider(other, out int colliderId))
-            return;
-
-        if (!localOverlapColliderIds.Add(colliderId))
-            return;
-
-        SetCanvasVisible(true);
-        ApplyVisualImmediate(currentProgress);
-    }
-
-    private bool TryResolveLocalPlayerCollider(Collider other, out int colliderId)
-    {
-        colliderId = 0;
-
-        if (other == null)
-            return false;
-
-        PlayerInputSource inputSource = other.GetComponentInParent<PlayerInputSource>();
-        if (inputSource != null)
-        {
-            if (!inputSource.HasLocalAuthority)
-                return false;
-
-            colliderId = other.GetInstanceID();
-            return true;
-        }
-
-        PlayerController playerController = other.GetComponentInParent<PlayerController>();
-        if (playerController == null || !playerController.HasLocalAuthority)
-            return false;
-
-        colliderId = other.GetInstanceID();
-        return true;
-    }
-
-    private void StartReturnToStable()
-    {
-        if (Mathf.Approximately(currentProgress, StableProgress))
-        {
-            ApplyVisualImmediate(StableProgress);
+            float from = GetStableProgress();
+            float to = isActivated ? 0f : 1f;
+            ApplyLeverProgress(Mathf.Lerp(from, to, holdProgress));
             return;
         }
 
-        activeRoutine = StartCoroutine(CoAnimateProgress(currentProgress, StableProgress, cancelReturnDuration));
-    }
-
-    private void CancelCurrentRoutine()
-    {
-        if (activeRoutine == null)
-            return;
-
-        StopCoroutine(activeRoutine);
-        activeRoutine = null;
-    }
-
-    private IEnumerator CoHoldToggle()
-    {
-        float startProgress = currentProgress;
-        float targetProgress = isActivated ? 0f : 1f;
-        float elapsed = 0f;
-
-        while (elapsed < holdDuration)
+        if (isReturnAnimating)
         {
-            if (!IsPlayerInRange || !Input.GetKey(interactKey))
+            float t = CancelReturnDuration > 0f
+                ? Mathf.Clamp01((float)((networkTime - returnAnimationStartTime) / CancelReturnDuration))
+                : 1f;
+
+            ApplyLeverProgress(Mathf.Lerp(returnAnimationFromProgress, GetStableProgress(), t));
+
+            if (t >= 1f)
             {
-                yield return CoAnimateProgress(currentProgress, StableProgress, cancelReturnDuration);
-                activeRoutine = null;
-                yield break;
+                isReturnAnimating = false;
+                ApplyLeverProgress(GetStableProgress());
             }
 
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / holdDuration);
-            ApplyVisualImmediate(Mathf.Lerp(startProgress, targetProgress, t));
-            yield return null;
+            return;
         }
 
-        isActivated = !isActivated;
-        ApplyVisualImmediate(StableProgress);
-        activeRoutine = null;
+        ApplyLeverProgress(GetStableProgress());
     }
 
-    private IEnumerator CoAnimateProgress(float from, float to, float duration)
+    protected override void OnInteractionStartedReplicated(int playerViewId, double startServerTime)
     {
-        if (duration <= 0f)
-        {
-            ApplyVisualImmediate(to);
-            activeRoutine = null;
-            yield break;
-        }
-
-        float elapsed = 0f;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-            ApplyVisualImmediate(Mathf.Lerp(from, to, t));
-            yield return null;
-        }
-
-        ApplyVisualImmediate(to);
-        activeRoutine = null;
+        isReturnAnimating = false;
     }
 
-    private void ApplyVisualImmediate(float progress)
+    protected override void OnInteractionStoppedReplicated(int playerViewId, HoldInteractionStopReason stopReason, double stopServerTime)
     {
-        currentProgress = Mathf.Clamp01(progress);
-
-        if (holdProgressImage != null)
-            holdProgressImage.fillAmount = currentProgress;
-
-        if (lever != null)
+        if (stopReason == HoldInteractionStopReason.Completed)
         {
-            Vector3 euler = leverBaseLocalEuler;
-            euler.x = Mathf.Lerp(inactiveXRotation, activeXRotation, currentProgress);
-            lever.localRotation = Quaternion.Euler(euler);
+            isActivated = !isActivated;
+            isReturnAnimating = false;
+            ApplyLeverProgress(GetStableProgress());
+            TriggerAssignedTargets();
+            return;
+        }
+
+        isReturnAnimating = true;
+        returnAnimationStartTime = stopServerTime;
+        returnAnimationFromProgress = currentVisualProgress;
+    }
+
+    private float GetStableProgress()
+    {
+        return isActivated ? 1f : 0f;
+    }
+
+    private void ApplyLeverProgress(float progress)
+    {
+        currentVisualProgress = Mathf.Clamp01(progress);
+
+        if (lever == null)
+            return;
+
+        Vector3 euler = leverBaseLocalEuler;
+        euler.x = Mathf.Lerp(inactiveXRotation, activeXRotation, currentVisualProgress);
+        lever.localRotation = Quaternion.Euler(euler);
+    }
+
+    private void TriggerAssignedTargets()
+    {
+        if (!CanExecuteAuthoritativeTrigger || triggerTargets == null)
+            return;
+
+        HashSet<MonoBehaviour> invokedTargets = null;
+
+        for (int i = 0; i < triggerTargets.Length; i++)
+        {
+            InvokeTriggerTarget(triggerTargets[i], ref invokedTargets);
         }
     }
 
-    private void SetCanvasVisible(bool visible)
+    private void InvokeTriggerTarget(MonoBehaviour target, ref HashSet<MonoBehaviour> invokedTargets)
     {
-        if (interactionCanvas != null)
-            interactionCanvas.gameObject.SetActive(visible);
+        if (target == null)
+            return;
+
+        invokedTargets ??= new HashSet<MonoBehaviour>();
+        if (!invokedTargets.Add(target))
+            return;
+
+        if (target is IInteractionTriggerTarget triggerTarget)
+        {
+            triggerTarget.TriggerFromInteraction(this);
+            return;
+        }
+
+        Debug.LogWarning(
+            $"[{nameof(LeverHoldInteraction)}:{name}] {target.GetType().Name} does not implement {nameof(IInteractionTriggerTarget)}.",
+            target);
     }
 }

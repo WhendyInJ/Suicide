@@ -69,8 +69,19 @@ public class SpikeStateHealthTrigger : MonoBehaviour
         lastEffectEnabled = IsEffectEnabled;
     }
 
+    private void OnEnable()
+    {
+        if (groupController != null)
+            groupController.StateChanged += HandleGroupStateChanged;
+
+        lastEffectEnabled = IsEffectEnabled;
+    }
+
     private void OnDisable()
     {
+        if (groupController != null)
+            groupController.StateChanged -= HandleGroupStateChanged;
+
         colliderToHealth.Clear();
         occupants.Clear();
         removalBuffer.Clear();
@@ -158,15 +169,7 @@ public class SpikeStateHealthTrigger : MonoBehaviour
         }
 
         if (!CanTrackHealth(health))
-        {
-            if (enableDebugLogs)
-            {
-                Debug.LogWarning(
-                    $"[SpikeStateHealthTrigger:{name}] 추적 불가 대상 -> {health.name} | localOwned={health.IsLocallyOwned}",
-                    this);
-            }
             return;
-        }
 
         colliderToHealth.Add(colliderId, health);
 
@@ -282,5 +285,11 @@ public class SpikeStateHealthTrigger : MonoBehaviour
 
             state.NextTickTime = now + tickInterval;
         }
+    }
+
+    private void HandleGroupStateChanged(bool _)
+    {
+        lastEffectEnabled = IsEffectEnabled;
+        RescheduleOccupants(applyFirstTickImmediatelyOnModeChange);
     }
 }

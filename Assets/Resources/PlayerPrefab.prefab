@@ -363,6 +363,7 @@ GameObject:
   - component: {fileID: 5952247655783481321}
   - component: {fileID: 2586263849498471237}
   - component: {fileID: 7582079418483201481}
+  - component: {fileID: 5314046071771920859}
   - component: {fileID: 2265392746849489109}
   - component: {fileID: 3464620825903959518}
   - component: {fileID: 341504517916250023}
@@ -412,12 +413,12 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3259927792943013746}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 41f081d5c6d286c47a33bed3f84de79a, type: 3}
-  m_Controller: {fileID: 9100000, guid: 69ce5dd747afb75488c00ed0f554f1d6, type: 2}
+  m_Controller: {fileID: 9100000, guid: 7af9dd2012e66314991cb2bb31701eea, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
@@ -475,7 +476,7 @@ MonoBehaviour:
   rotateTowardForcedMotion: 1
   forcedMotionAcceleration: 120
   instantStopOnHardLock: 1
-  enableJump: 1
+  enableJump: 0
   jumpVelocity: 6
   jumpBufferTime: 0.12
   coyoteTime: 0.08
@@ -489,6 +490,27 @@ MonoBehaviour:
   groundedImpulseReleaseVerticalSpeed: 0.2
   debugInputBlocked: 0
   useCameraMainIfMissing: 1
+--- !u!114 &5314046071771920859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3259927792943013746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c312ff87b3d53a45b6922b5c8ee4337, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementAnimator
+  animator: {fileID: 2586263849498471237}
+  targetRigidbody: {fileID: 4276988534317274524}
+  photonView: {fileID: 958998029986146911}
+  inputSource: {fileID: 2265392746849489109}
+  playerController: {fileID: 7582079418483201481}
+  velocityParameterName: Velocity
+  inputThreshold: 0.01
+  velocityMultiplier: 1
+  dampTime: 0.05
 --- !u!114 &2265392746849489109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -507,6 +529,7 @@ MonoBehaviour:
   secondarySkillKey: 103
   selectItemSlot1Key: 49
   selectItemSlot2Key: 50
+  interactKey: 101
   jumpKey: 32
   playerController: {fileID: 7582079418483201481}
 --- !u!114 &3464620825903959518
@@ -641,7 +664,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 1
 --- !u!136 &6415889720398977426
 CapsuleCollider:

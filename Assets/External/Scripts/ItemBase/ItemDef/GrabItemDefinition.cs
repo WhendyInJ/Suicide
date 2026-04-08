@@ -7,6 +7,7 @@ public class GrabItemDefinition : ItemDefinition
 {
     [Header("Projectile")]
     [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private GameObject destinationPreviewPrefab;
     [SerializeField, Min(0.1f)] private float projectileSpeed = 28f;
     [SerializeField, Min(0f)] private float spawnForwardOffset = 0.6f;
     [SerializeField, Min(0f)] private float spawnUpwardOffset = 0.2f;
@@ -33,6 +34,7 @@ public class GrabItemDefinition : ItemDefinition
     public GameObject ProjectilePrefab => projectilePrefab != null
         ? projectilePrefab
         : Resources.Load<GameObject>("GrabProjectile");
+    public GameObject DestinationPreviewPrefab => destinationPreviewPrefab;
     public float ProjectileSpeed => projectileSpeed;
     public float SpawnForwardOffset => spawnForwardOffset;
     public float SpawnUpwardOffset => spawnUpwardOffset;
