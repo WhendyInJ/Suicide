@@ -47,12 +47,6 @@ public abstract class NetworkHoldInteractionBase : MonoBehaviourPunCallbacks
     private double previousStateChangeServerTime = -1d;
 
     protected bool IsSomeoneInteracting => isSomeoneInteracting;
-    /// <summary>True while a player is holding this interaction (state is replicated to all clients).</summary>
-    public bool IsBeingHeld => isSomeoneInteracting;
-
-    /// <summary>PhotonView.ViewID of the holding player, or -1 if nobody is holding.</summary>
-    public int HolderPlayerViewId => interactingPlayerViewId;
-
     protected float HoldDuration => holdDuration;
     protected float CancelReturnDuration => cancelReturnDuration;
     protected int InteractingPlayerViewId => interactingPlayerViewId;
