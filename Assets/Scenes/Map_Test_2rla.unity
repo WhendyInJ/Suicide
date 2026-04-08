@@ -7104,6 +7104,7 @@ MonoBehaviour:
   inactivePlatformColor: {r: 0.8392157, g: 0.3529412, b: 0.3647059, a: 1}
   startWithFirstGroupActive: 1
   enableDebugLogs: 0
+  stateSyncKeyOverride: 
 --- !u!4 &884222874
 Transform:
   m_ObjectHideFlags: 0
@@ -8559,7 +8560,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
   followTarget: {fileID: 782117528}
   inputSource: {fileID: 0}
-  pivotOffset: {x: 0, y: 1.6, z: 0}
+  pivotOffset: {x: 0, y: 2.5, z: 0}
   distance: 4
   minDistance: 0.5
   followSmoothTime: 0.03
@@ -9766,8 +9767,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ddfdfd5771785c45b259e09c386ba1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InstantKillOnContact
-  affectOnlyLocallyOwnedPlayers: 1
-  requiredTag: Player
 --- !u!65 &1277457364
 BoxCollider:
   m_ObjectHideFlags: 0

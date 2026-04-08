@@ -71,8 +71,8 @@ public class GrabItemDefinition : ItemDefinition
     {
         request = new ItemAimPreviewRequest
         {
-            ShowCrosshair = true,
-            CrosshairPrefab = crosshairPreviewPrefab
+            // ShowCrosshair = true,
+            // CrosshairPrefab = crosshairPreviewPrefab
         };
 
         if (destinationPreviewPrefab == null || context.SpawnTransform == null)
