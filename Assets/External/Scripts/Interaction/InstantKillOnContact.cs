@@ -14,8 +14,14 @@ public class InstantKillOnContact : MonoBehaviour
     [SerializeField, Min(0f)] private float graceSeconds = 0.12f;
 
     [Header("Simultaneous tie-break")]
-    [Tooltip("If two or more players are still overlapping after grace, a player holding any of these levers survives. Leave empty to kill everyone in the batch.")]
+    [Tooltip("If set, only these levers count. If empty and auto-discover is on, all LeverHoldInteraction in loaded scenes are used.")]
     [SerializeField] private LeverHoldInteraction[] leverHoldInteractionsForTieBreak;
+
+    [SerializeField]
+    [Tooltip("When the list above is empty, find every LeverHoldInteraction in the scene at startup.")]
+    private bool autoDiscoverLeversWhenEmpty = true;
+
+    private NetworkHoldInteractionBase[] effectiveLevers = System.Array.Empty<NetworkHoldInteractionBase>();
 
     private readonly HashSet<PlayerHealth> overlapping = new();
     private readonly Dictionary<PlayerHealth, double> contactStartTime = new();
@@ -24,6 +30,23 @@ public class InstantKillOnContact : MonoBehaviour
 
     private static double NetworkTime =>
         PhotonNetwork.InRoom ? PhotonNetwork.Time : Time.timeAsDouble;
+
+    private void Awake()
+    {
+        if (leverHoldInteractionsForTieBreak != null && leverHoldInteractionsForTieBreak.Length > 0)
+        {
+            effectiveLevers = leverHoldInteractionsForTieBreak;
+            return;
+        }
+
+        if (autoDiscoverLeversWhenEmpty)
+        {
+            LeverHoldInteraction[] found = FindObjectsByType<LeverHoldInteraction>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None);
+            effectiveLevers = found != null && found.Length > 0 ? found : System.Array.Empty<NetworkHoldInteractionBase>();
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -47,7 +70,7 @@ public class InstantKillOnContact : MonoBehaviour
             UnregisterContact(collision.collider);
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         PruneDestroyed();
         if (overlapping.Count == 0)
@@ -126,12 +149,12 @@ public class InstantKillOnContact : MonoBehaviour
 
     private bool IsViewIdHoldingConfiguredLever(int playerViewId)
     {
-        if (leverHoldInteractionsForTieBreak == null || leverHoldInteractionsForTieBreak.Length == 0)
+        if (effectiveLevers == null || effectiveLevers.Length == 0)
             return false;
 
-        for (int i = 0; i < leverHoldInteractionsForTieBreak.Length; i++)
+        for (int i = 0; i < effectiveLevers.Length; i++)
         {
-            NetworkHoldInteractionBase lever = leverHoldInteractionsForTieBreak[i];
+            NetworkHoldInteractionBase lever = effectiveLevers[i];
             if (lever == null)
                 continue;
 
