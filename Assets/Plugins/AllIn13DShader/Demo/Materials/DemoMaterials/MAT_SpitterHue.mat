@@ -285,9 +285,9 @@ Material:
     - _HologramScrollSpeed: 2
     - _HueBrightness: 1
     - _HueBrightnessLM: 1
-    - _HueSaturation: 0.0011638999
+    - _HueSaturation: 2.2857614
     - _HueSaturationLM: 1
-    - _HueShift: 144.89954
+    - _HueShift: 326.68356
     - _HueShiftEnabled: 1
     - _HueShiftLM: 0
     - _InflateBlend: 1
