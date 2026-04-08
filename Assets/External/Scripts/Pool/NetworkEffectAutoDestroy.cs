@@ -15,21 +15,36 @@ public class NetworkEffectAutoDestroy : MonoBehaviour
     private void OnEnable()
     {
         CancelInvoke(nameof(DestroySelf));
+
+        if (lifeTime <= 0f)
+        {
+            DestroySelf();
+            return;
+        }
+
         Invoke(nameof(DestroySelf), lifeTime);
     }
 
     private void DestroySelf()
     {
-        if (PhotonNetwork.InRoom && photonView != null)
+        if (IsPhotonManagedRuntimeObject())
         {
-            if (photonView.IsMine)
+            if (photonView.IsMine || (photonView.IsRoomView && PhotonNetwork.IsMasterClient))
             {
                 PhotonNetwork.Destroy(gameObject);
             }
+
+            return;
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+
+        Destroy(gameObject);
+    }
+
+    private bool IsPhotonManagedRuntimeObject()
+    {
+        if (!PhotonNetwork.InRoom || photonView == null || photonView.ViewID <= 0)
+            return false;
+
+        return photonView.InstantiationId > 0 || photonView.IsRoomView;
     }
 }

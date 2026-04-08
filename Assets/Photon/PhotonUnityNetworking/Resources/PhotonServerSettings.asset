@@ -52,6 +52,18 @@ MonoBehaviour:
   - RPC_RequestClaimPickup
   - RPC_AttachHeldItemVisual
   - RPC_ClearHeldItemVisual
+  - RPC_RequestSpawnAssignment
+  - RPC_GrantPickup
+  - RPC_RejectClaim
+  - RPC_SpawnExplosionEffect
+  - RPC_BeginInteraction
+  - RPC_RejectInteractionRequest
+  - RPC_RequestBeginInteraction
+  - RPC_RequestCancelInteraction
+  - RPC_StopInteraction
+  - RPC_SetFirstGroupActive
+  - RPC_AnnounceGameOver
+  - RPC_RequestKill
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

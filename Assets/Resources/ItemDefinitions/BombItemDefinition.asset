@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BombItemDefinition
   itemId: 1
   displayName: Bomb
-  icon: {fileID: 0}
+  icon: {fileID: 1311577824847866688, guid: 043d05479a24baa4aaa5c93e6cf891e9, type: 3}
   maxStack: 1
   useCooldown: 0
   useMode: 1
@@ -44,4 +44,4 @@ MonoBehaviour:
     m_Bits: 4294967295
   stunDuration: 2
   stunPriority: 100
-  explosionEffectPrefab: {fileID: 3240045606009096287, guid: 4f3e3db9e7c5d614a85883d1b500743c, type: 3}
+  explosionEffectPrefab: {fileID: 9032970908079671593, guid: 2ec4771b7b9338e449c61e0d2e3020d8, type: 3}

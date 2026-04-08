@@ -27,6 +27,12 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
     [Header("Aim")]
     [SerializeField, Min(0.1f)] private float defaultAimDistance = 30f;
 
+    [Header("Aim Preview")]
+    [SerializeField] private BombAimPreviewEffect trajectoryAimPreviewPrefab;
+    [SerializeField] private CrosshairAimPreview crosshairAimPreviewPrefab;
+    [SerializeField] private bool drawGrabAimGizmo = true;
+    [SerializeField] private Color grabAimGizmoColor = new Color(0.2f, 0.9f, 1f, 1f);
+
     public bool IsAimingItem => isAimingItem;
 
     public event System.Action<bool> OnAimStateChanged;
@@ -39,6 +45,13 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
     private GameObject currentHeldVisualInstance;
     private int currentHeldVisualViewId = NoHeldVisualViewId;
     private Coroutine waitForHeldVisualCoroutine;
+    private BombAimPreviewEffect trajectoryAimPreviewInstance;
+    private CrosshairAimPreview crosshairAimPreviewInstance;
+    private GameObject worldMarkerAimPreviewInstance;
+    private BombAimPreviewEffect configuredTrajectoryPreviewPrefab;
+    private CrosshairAimPreview configuredCrosshairPreviewPrefab;
+    private GameObject configuredWorldMarkerPreviewPrefab;
+    private bool hasLoggedMissingTrajectoryAimPreview;
 
     protected override void Awake()
     {
@@ -91,6 +104,20 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
             inventory.OnInventoryChanged -= HandleInventoryChanged;
             inventory.OnSelectedSlotChanged -= HandleSelectedSlotChanged;
         }
+
+        HideAimPreview();
+    }
+
+    private void OnDestroy()
+    {
+        DestroyAimPreviewInstance(trajectoryAimPreviewInstance);
+        trajectoryAimPreviewInstance = null;
+
+        DestroyAimPreviewInstance(crosshairAimPreviewInstance);
+        crosshairAimPreviewInstance = null;
+
+        DestroyAimPreviewInstance(worldMarkerAimPreviewInstance);
+        worldMarkerAimPreviewInstance = null;
     }
 
     private void Update()
@@ -101,6 +128,7 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         TickRuntimes(Time.deltaTime);
         HandleSlotSelectionInput();
         HandleItemUseInput();
+        UpdateAimPreview();
     }
 
     public bool TryUseSelectedItemPrimary()
@@ -325,6 +353,7 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
 
         isAimingItem = false;
         aimingSlotIndex = -1;
+        HideAimPreview();
         OnAimStateChanged?.Invoke(false);
     }
 
@@ -333,6 +362,10 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         Transform originTransform = castOrigin != null ? castOrigin : transform;
 
         Vector3 useOrigin = originTransform.position;
+
+        if (TryBuildMouseDrivenAimRequest(runtime, originTransform, useOrigin, out ItemUseRequest mouseDrivenRequest))
+            return mouseDrivenRequest;
+
         Vector3 aimDirection = originTransform.forward;
         Vector3 aimPoint = useOrigin + aimDirection * defaultAimDistance;
         GameObject explicitTarget = null;
@@ -372,6 +405,48 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         }
 
         return new ItemUseRequest(useOrigin, aimPoint, aimDirection, explicitTarget);
+    }
+
+    private bool TryBuildMouseDrivenAimRequest(
+        IItemRuntime runtime,
+        Transform originTransform,
+        Vector3 useOrigin,
+        out ItemUseRequest request)
+    {
+        request = default;
+
+        if (!UsesMouseDrivenAim(runtime))
+            return false;
+
+        Vector3 aimDirection = ResolveMouseDrivenAimDirection(originTransform);
+        float aimDistance = runtime != null && runtime.AimSettings.MaxDistance > 0f
+            ? runtime.AimSettings.MaxDistance
+            : defaultAimDistance;
+
+        request = new ItemUseRequest(
+            useOrigin,
+            useOrigin + aimDirection * aimDistance,
+            aimDirection,
+            null);
+
+        return true;
+    }
+
+    private bool UsesMouseDrivenAim(IItemRuntime runtime)
+    {
+        return runtime is BombItemRuntime || runtime is GrabItemRuntime;
+    }
+
+    private Vector3 ResolveMouseDrivenAimDirection(Transform originTransform)
+    {
+        if (aimCamera != null)
+        {
+            Vector3 cameraForward = aimCamera.transform.forward;
+            if (cameraForward.sqrMagnitude > 0.0001f)
+                return cameraForward.normalized;
+        }
+
+        return originTransform != null ? originTransform.forward : transform.forward;
     }
 
     private Ray BuildAimRay(Transform originTransform)
@@ -718,6 +793,230 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         currentHeldVisualViewId = NoHeldVisualViewId;
     }
 
+    private void UpdateAimPreview()
+    {
+        if (!HasLocalAuthority || !isAimingItem || inventory == null)
+        {
+            HideAimPreview();
+            return;
+        }
+
+        int selectedSlotIndex = inventory.SelectedSlotIndex;
+        if (selectedSlotIndex != aimingSlotIndex)
+        {
+            HideAimPreview();
+            return;
+        }
+
+        if (!TryGetUsableRuntime(aimingSlotIndex, out RuntimeSlot runtimeSlot))
+        {
+            HideAimPreview();
+            return;
+        }
+
+        IItemRuntime runtime = runtimeSlot.Runtime;
+        ItemDefinition definition = runtimeSlot.BoundDefinition;
+        if (runtime == null || definition == null || runtime.UseMode != ItemUseMode.Aimed)
+        {
+            HideAimPreview();
+            return;
+        }
+
+        ItemUseRequest useRequest = BuildUseRequest(runtime);
+        ItemAimPreviewContext previewContext = new ItemAimPreviewContext(
+            transform,
+            GetItemEffectSpawnTransform(),
+            useRequest.UseOrigin,
+            useRequest.AimPoint,
+            useRequest.AimDirection);
+
+        if (!definition.TryBuildAimPreview(previewContext, out ItemAimPreviewRequest previewRequest))
+        {
+            HideAimPreview();
+            return;
+        }
+
+        ApplyAimPreview(previewContext, previewRequest);
+    }
+
+    private void ApplyAimPreview(
+        in ItemAimPreviewContext previewContext,
+        in ItemAimPreviewRequest previewRequest)
+    {
+        if (previewRequest.ShowTrajectory)
+        {
+            BombAimPreviewEffect trajectoryPreview = GetOrCreateTrajectoryAimPreview(previewRequest.TrajectoryPrefab);
+            if (trajectoryPreview != null)
+            {
+                ItemTrajectoryPreviewData trajectoryData = previewRequest.TrajectoryData;
+                trajectoryPreview.Configure(
+                    trajectoryData.TrajectoryType,
+                    trajectoryData.LaunchSpeed,
+                    trajectoryData.AdditionalUpwardSpeed,
+                    trajectoryData.MaxLifetime,
+                    trajectoryData.ImpactMask,
+                    trajectoryData.ExplosionRadius);
+                trajectoryPreview.RenderPreview(previewContext.SpawnTransform, previewContext.AimDirection);
+            }
+        }
+        else if (trajectoryAimPreviewInstance != null)
+        {
+            trajectoryAimPreviewInstance.HidePreview();
+        }
+
+        if (previewRequest.ShowCrosshair)
+        {
+            CrosshairAimPreview crosshairPreview = GetOrCreateCrosshairAimPreview(previewRequest.CrosshairPrefab);
+            if (crosshairPreview != null)
+                crosshairPreview.ShowPreview();
+        }
+        else if (crosshairAimPreviewInstance != null)
+        {
+            crosshairAimPreviewInstance.HidePreview();
+        }
+
+        if (previewRequest.ShowWorldMarker && previewRequest.WorldMarkerPrefab != null)
+        {
+            GameObject worldMarkerPreview = GetOrCreateWorldMarkerAimPreview(previewRequest.WorldMarkerPrefab);
+            if (worldMarkerPreview != null)
+            {
+                worldMarkerPreview.transform.position = previewRequest.WorldMarkerPosition;
+                worldMarkerPreview.transform.rotation = previewRequest.WorldMarkerRotation;
+                if (!worldMarkerPreview.activeSelf)
+                    worldMarkerPreview.SetActive(true);
+            }
+        }
+        else
+        {
+            HideWorldMarkerAimPreview();
+        }
+    }
+
+    private BombAimPreviewEffect GetOrCreateTrajectoryAimPreview(BombAimPreviewEffect requestedPrefab)
+    {
+        BombAimPreviewEffect prefab = requestedPrefab != null
+            ? requestedPrefab
+            : trajectoryAimPreviewPrefab;
+        if (prefab == null)
+        {
+            prefab = Resources.Load<BombAimPreviewEffect>("BombAimPreviewEffect");
+        }
+
+        if (prefab == null)
+        {
+            if (!hasLoggedMissingTrajectoryAimPreview)
+            {
+                Debug.LogWarning("Bomb trajectory aim preview prefab is missing. Assign one or place 'BombAimPreviewEffect' in Resources.", this);
+                hasLoggedMissingTrajectoryAimPreview = true;
+            }
+
+            return null;
+        }
+
+        if (trajectoryAimPreviewInstance != null && configuredTrajectoryPreviewPrefab == prefab)
+            return trajectoryAimPreviewInstance;
+
+        DestroyAimPreviewInstance(trajectoryAimPreviewInstance);
+        trajectoryAimPreviewInstance = Instantiate(prefab, transform);
+        trajectoryAimPreviewInstance.name = prefab.name;
+        trajectoryAimPreviewInstance.HidePreview();
+        configuredTrajectoryPreviewPrefab = prefab;
+        hasLoggedMissingTrajectoryAimPreview = false;
+        return trajectoryAimPreviewInstance;
+    }
+
+    private CrosshairAimPreview GetOrCreateCrosshairAimPreview(CrosshairAimPreview requestedPrefab)
+    {
+        CrosshairAimPreview prefab = requestedPrefab != null
+            ? requestedPrefab
+            : crosshairAimPreviewPrefab;
+
+        if (crosshairAimPreviewInstance != null && configuredCrosshairPreviewPrefab == prefab)
+            return crosshairAimPreviewInstance;
+
+        DestroyAimPreviewInstance(crosshairAimPreviewInstance);
+
+        if (prefab != null)
+        {
+            crosshairAimPreviewInstance = Instantiate(prefab, transform);
+            crosshairAimPreviewInstance.name = prefab.name;
+        }
+        else
+        {
+            GameObject previewObject = new GameObject("CrosshairAimPreview");
+            previewObject.transform.SetParent(transform, false);
+            crosshairAimPreviewInstance = previewObject.AddComponent<CrosshairAimPreview>();
+        }
+
+        configuredCrosshairPreviewPrefab = prefab;
+        crosshairAimPreviewInstance.HidePreview();
+        return crosshairAimPreviewInstance;
+    }
+
+    private void HideAimPreview()
+    {
+        if (trajectoryAimPreviewInstance != null)
+        {
+            trajectoryAimPreviewInstance.HidePreview();
+        }
+
+        if (crosshairAimPreviewInstance != null)
+        {
+            crosshairAimPreviewInstance.HidePreview();
+        }
+
+        HideWorldMarkerAimPreview();
+    }
+
+    private Transform GetItemEffectSpawnTransform()
+    {
+        if (effectSpawnPoint != null)
+            return effectSpawnPoint;
+
+        if (castOrigin != null)
+            return castOrigin;
+
+        return transform;
+    }
+
+    private GameObject GetOrCreateWorldMarkerAimPreview(GameObject previewPrefab)
+    {
+        if (previewPrefab == null)
+            return null;
+
+        if (worldMarkerAimPreviewInstance != null && configuredWorldMarkerPreviewPrefab == previewPrefab)
+            return worldMarkerAimPreviewInstance;
+
+        HideWorldMarkerAimPreview(true);
+
+        worldMarkerAimPreviewInstance = Instantiate(previewPrefab);
+        worldMarkerAimPreviewInstance.name = previewPrefab.name;
+        configuredWorldMarkerPreviewPrefab = previewPrefab;
+        worldMarkerAimPreviewInstance.SetActive(false);
+        return worldMarkerAimPreviewInstance;
+    }
+
+    private void HideWorldMarkerAimPreview(bool destroyInstance = false)
+    {
+        if (worldMarkerAimPreviewInstance == null)
+        {
+            if (destroyInstance)
+                configuredWorldMarkerPreviewPrefab = null;
+            return;
+        }
+
+        if (destroyInstance)
+        {
+            DestroyAimPreviewInstance(worldMarkerAimPreviewInstance);
+            worldMarkerAimPreviewInstance = null;
+            configuredWorldMarkerPreviewPrefab = null;
+            return;
+        }
+
+        if (worldMarkerAimPreviewInstance.activeSelf)
+            worldMarkerAimPreviewInstance.SetActive(false);
+    }
+
     public bool Raycast(
         Ray ray,
         float maxDistance,
@@ -754,5 +1053,55 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         }
 
         return Instantiate(prefab, position, rotation);
+    }
+
+    private void DestroyAimPreviewInstance(Object previewInstance)
+    {
+        if (previewInstance == null)
+            return;
+
+        Object targetObject = previewInstance;
+        if (previewInstance is Component component)
+            targetObject = component.gameObject;
+
+        if (Application.isPlaying)
+            Destroy(targetObject);
+        else
+            DestroyImmediate(targetObject);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (!drawGrabAimGizmo || !Application.isPlaying)
+            return;
+
+        if (inventory == null || !inventory.HasSelection)
+            return;
+
+        int selectedSlotIndex = inventory.SelectedSlotIndex;
+        if (!inventory.TryGetSlotInfo(selectedSlotIndex, out ItemDefinition definition, out _))
+            return;
+
+        if (definition is not GrabItemDefinition grabDefinition)
+            return;
+
+        Transform spawnTransform = GetItemEffectSpawnTransform();
+        if (spawnTransform == null)
+            return;
+
+        Vector3 aimDirection = ResolveMouseDrivenAimDirection(spawnTransform);
+        if (aimDirection.sqrMagnitude <= 0.0001f)
+            return;
+
+        Vector3 start =
+            spawnTransform.position +
+            aimDirection.normalized * grabDefinition.SpawnForwardOffset +
+            Vector3.up * grabDefinition.SpawnUpwardOffset;
+
+        Vector3 end = start + aimDirection.normalized * grabDefinition.CastRange;
+
+        Gizmos.color = grabAimGizmoColor;
+        Gizmos.DrawLine(start, end);
+        Gizmos.DrawSphere(start, 0.05f);
     }
 }
