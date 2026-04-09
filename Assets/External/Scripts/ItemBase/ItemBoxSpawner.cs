@@ -38,6 +38,7 @@ public class ItemBoxSpawner : MonoBehaviourPunCallbacks
     [SerializeField] private double respawnAtServerTime = -1d;
 
     private PhotonView PhotonView => targetPhotonView != null ? targetPhotonView : photonView;
+    private bool HasSpawnerAuthority => !PhotonNetwork.InRoom || PhotonNetwork.IsMasterClient;
 
     private void Reset()
     {
@@ -68,7 +69,10 @@ public class ItemBoxSpawner : MonoBehaviourPunCallbacks
 
         RefreshStateFromRoomProperties();
 
-        if (PhotonNetwork.IsMasterClient)
+        if (!HasSpawnerAuthority)
+            return;
+
+        if (!isPickupActive && !TryResolveSpawnedPickup(out _))
         {
             TrySpawnPickup();
         }
@@ -76,7 +80,7 @@ public class ItemBoxSpawner : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
+        if (!HasSpawnerAuthority)
             return;
 
         TickSpawner();
@@ -86,7 +90,7 @@ public class ItemBoxSpawner : MonoBehaviourPunCallbacks
     {
         RefreshStateFromRoomProperties();
 
-        if (newMasterClient == null || !newMasterClient.IsLocal)
+        if (!HasSpawnerAuthority || newMasterClient == null || !newMasterClient.IsLocal)
             return;
 
         TickSpawner();
@@ -102,7 +106,7 @@ public class ItemBoxSpawner : MonoBehaviourPunCallbacks
 
     public void ForceSpawnNow()
     {
-        if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
+        if (!HasSpawnerAuthority)
             return;
 
         ClearSpawnState();
@@ -112,7 +116,7 @@ public class ItemBoxSpawner : MonoBehaviourPunCallbacks
 
     public void ClearSpawnedPickup()
     {
-        if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
+        if (!HasSpawnerAuthority)
             return;
 
         if (TryResolveSpawnedPickup(out PhotonView pickupView))
@@ -128,6 +132,26 @@ public class ItemBoxSpawner : MonoBehaviourPunCallbacks
         }
 
         ClearSpawnState();
+        SaveStateToRoomProperties();
+    }
+
+    public void NotifyPickupCollected(int collectedPickupViewId)
+    {
+        if (!HasSpawnerAuthority)
+            return;
+
+        if (!isPickupActive)
+            return;
+
+        if (spawnedPickupViewId > 0 && collectedPickupViewId > 0 && spawnedPickupViewId != collectedPickupViewId)
+            return;
+
+        isPickupActive = false;
+        spawnedPickupViewId = 0;
+        respawnAtServerTime = enableRespawn
+            ? GetCurrentServerTime() + respawnDelay
+            : -1d;
+
         SaveStateToRoomProperties();
     }
 
@@ -179,7 +203,7 @@ public class ItemBoxSpawner : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.InRoom)
         {
-            if (!PhotonNetwork.IsMasterClient)
+            if (!HasSpawnerAuthority)
                 return;
 
             GameObject spawnedObject = PhotonNetwork.InstantiateRoomObject(

@@ -67,6 +67,7 @@ MonoBehaviour:
   - RPC_SpawnPulseEffect
   - RPC_SetAimState
   - RPC_SetPrimaryItemUseState
+  - RPC_SetControlRestrictedEffectState
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

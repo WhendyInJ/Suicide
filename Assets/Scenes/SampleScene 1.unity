@@ -373,6 +373,10 @@ MonoBehaviour:
   collisionRadius: 0.2
   collisionBuffer: 0.05
   distanceSmoothSpeed: 20
+  trackedWorldSpaceCanvases: []
+  autoAssignWorldCamera: 1
+  rotateWorldSpaceUiToCamera: 1
+  keepUiUpright: 1
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -798,10 +802,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 958998029986146911, guid: 1c24c19a21d7f8f49aac05b3ecb1ac8e, type: 3}
-      propertyPath: sceneViewId
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3259927792943013746, guid: 1c24c19a21d7f8f49aac05b3ecb1ac8e, type: 3}
       propertyPath: m_Name
       value: PlayerPrefab
@@ -845,18 +845,6 @@ PrefabInstance:
     - target: {fileID: 5952247655783481321, guid: 1c24c19a21d7f8f49aac05b3ecb1ac8e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7582079418483201481, guid: 1c24c19a21d7f8f49aac05b3ecb1ac8e, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7582079418483201481, guid: 1c24c19a21d7f8f49aac05b3ecb1ac8e, type: 3}
-      propertyPath: maxStepHeight
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7582079418483201481, guid: 1c24c19a21d7f8f49aac05b3ecb1ac8e, type: 3}
-      propertyPath: stepDetectionDistance
-      value: 0.4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

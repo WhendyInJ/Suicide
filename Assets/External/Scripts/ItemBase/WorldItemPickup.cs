@@ -18,6 +18,8 @@ public class WorldItemPickup : MonoBehaviourPun, IPunInstantiateMagicCallback
     private Collider[] cachedColliders;
     private Renderer[] cachedRenderers;
 
+    private bool HasHostPickupAuthority => !PhotonNetwork.InRoom || PhotonNetwork.IsMasterClient;
+
     private void Reset()
     {
         Collider col = GetComponent<Collider>();
@@ -83,9 +85,9 @@ public class WorldItemPickup : MonoBehaviourPun, IPunInstantiateMagicCallback
             return;
         }
 
-        if (PhotonNetwork.IsMasterClient)
+        if (HasHostPickupAuthority)
         {
-            FinalizePickupNetwork(receiver.PickupReceiverViewId);
+            TryFinalizeClaimOnHost(receiver.PickupReceiverViewId);
         }
         else
         {
@@ -111,16 +113,10 @@ public class WorldItemPickup : MonoBehaviourPun, IPunInstantiateMagicCallback
     [PunRPC]
     private void RPC_RequestClaimPickup(int receiverViewId)
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if (!HasHostPickupAuthority)
             return;
 
-        if (isCollected)
-        {
-            SendClaimRejected(receiverViewId);
-            return;
-        }
-
-        FinalizePickupNetwork(receiverViewId);
+        TryFinalizeClaimOnHost(receiverViewId);
     }
 
     private void FinalizePickupNetwork(int receiverViewId)
@@ -131,6 +127,7 @@ public class WorldItemPickup : MonoBehaviourPun, IPunInstantiateMagicCallback
         isCollected = true;
         isClaimPendingLocally = false;
         SetVisualState(false);
+        NotifyOwningSpawnerPickupCollected();
 
         if (PhotonNetwork.InRoom)
         {
@@ -312,5 +309,41 @@ public class WorldItemPickup : MonoBehaviourPun, IPunInstantiateMagicCallback
             return;
 
         photonView.RPC(nameof(RPC_RejectClaim), targetPlayer);
+    }
+
+    private void TryFinalizeClaimOnHost(int receiverViewId)
+    {
+        if (!HasHostPickupAuthority)
+            return;
+
+        if (isCollected || itemDefinition == null)
+        {
+            SendClaimRejected(receiverViewId);
+            return;
+        }
+
+        if (!TryResolvePickupReceiver(receiverViewId, out _))
+        {
+            SendClaimRejected(receiverViewId);
+            return;
+        }
+
+        FinalizePickupNetwork(receiverViewId);
+    }
+
+    private void NotifyOwningSpawnerPickupCollected()
+    {
+        if (owningSpawnerViewId <= 0)
+            return;
+
+        PhotonView spawnerView = PhotonView.Find(owningSpawnerViewId);
+        if (spawnerView == null)
+            return;
+
+        ItemBoxSpawner spawner = spawnerView.GetComponent<ItemBoxSpawner>();
+        if (spawner == null)
+            return;
+
+        spawner.NotifyPickupCollected(photonView != null ? photonView.ViewID : 0);
     }
 }

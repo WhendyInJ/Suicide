@@ -6,6 +6,7 @@ using ExitGames.Client.Photon;
 public class RoomManager : MonoBehaviourPunCallbacks
 {
     private const string HostNameRoomPropertyKey = "hostName";
+    private const string GameStartedRoomPropertyKey = "gameStarted";
 
     [Header("Scene")]
     [SerializeField] private string gameSceneName = "Map_Test_1_rla";
@@ -24,6 +25,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
             return;
         }
 
+        LockRoomForGameStart();
         PhotonNetwork.LoadLevel(gameSceneName);
     }
 
@@ -65,6 +67,22 @@ public class RoomManager : MonoBehaviourPunCallbacks
         Hashtable changedProperties = new Hashtable
         {
             { HostNameRoomPropertyKey, PhotonNetwork.NickName }
+        };
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(changedProperties);
+    }
+
+    private void LockRoomForGameStart()
+    {
+        if (PhotonNetwork.CurrentRoom == null)
+            return;
+
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+        PhotonNetwork.CurrentRoom.IsVisible = false;
+
+        Hashtable changedProperties = new Hashtable
+        {
+            { GameStartedRoomPropertyKey, true }
         };
 
         PhotonNetwork.CurrentRoom.SetCustomProperties(changedProperties);
