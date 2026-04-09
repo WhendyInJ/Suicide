@@ -13,6 +13,8 @@ public class HealSprayerHealZone : MonoBehaviour
 
     [SerializeField] private PlayerItemRunner ownerRunner;
 
+    private Collider volumeCollider;
+
     private readonly Dictionary<int, PlayerHealth> colliderToHealth = new();
     private readonly Dictionary<PlayerHealth, OccupantState> occupants = new();
     private readonly List<PlayerHealth> removalBuffer = new();
@@ -31,12 +33,30 @@ public class HealSprayerHealZone : MonoBehaviour
 
     private void Awake()
     {
-        Collider trigger = GetComponent<Collider>();
-        if (trigger != null && !trigger.isTrigger)
+        volumeCollider = GetComponent<Collider>();
+        if (volumeCollider != null && !volumeCollider.isTrigger)
             Debug.LogWarning($"{name} 의 HealSprayerHealZone은 Trigger Collider가 필요합니다.", this);
     }
 
     private void OnDisable()
+    {
+        ClearTracking();
+    }
+
+    /// <summary>
+    /// Enables or disables the heal volume (trigger collider). When off, overlap/heal state is cleared.
+    /// Use while aiming + primary fire from <see cref="HealSprayerHeldVisual"/>.
+    /// </summary>
+    public void SetSprayVolumeActive(bool active)
+    {
+        if (volumeCollider != null)
+            volumeCollider.enabled = active;
+
+        if (!active)
+            ClearTracking();
+    }
+
+    private void ClearTracking()
     {
         colliderToHealth.Clear();
         occupants.Clear();
@@ -58,6 +78,9 @@ public class HealSprayerHealZone : MonoBehaviour
 
     private void Update()
     {
+        if (volumeCollider != null && !volumeCollider.enabled)
+            return;
+
         if (occupants.Count == 0 || healPerTick <= 0f)
             return;
 
@@ -103,7 +126,7 @@ public class HealSprayerHealZone : MonoBehaviour
 
     private void TryRegisterCollider(Collider other)
     {
-        if (other == null)
+        if (other == null || (volumeCollider != null && !volumeCollider.enabled))
             return;
 
         int colliderId = other.GetInstanceID();

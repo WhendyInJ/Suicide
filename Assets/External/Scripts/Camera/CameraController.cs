@@ -20,6 +20,15 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float maxPitch = 70f;
     [SerializeField] private bool invertY = false;
 
+    [Header("Heal Sprayer Aim (FPS-style zoom + framing)")]
+    [SerializeField] private bool enableHealSprayerAimZoom = true;
+    [Tooltip("Lower FOV = stronger zoom while aiming heal sprayer (right-click aim).")]
+    [SerializeField, Range(15f, 120f)] private float healSprayerAimFieldOfView = 44f;
+    [SerializeField, Min(0.01f)] private float fieldOfViewZoomSpeed = 14f;
+    [Tooltip("Camera shift in view axes while aiming (smoothed). +X = subject moves left on screen; -Y = subject moves down (typical lower-left gun pose).")]
+    [SerializeField] private Vector3 healSprayerAimViewOffsetLocal = new Vector3(0.22f, -0.16f, 0f);
+    [SerializeField, Min(0.01f)] private float healSprayerAimViewOffsetSpeed = 14f;
+
     [Header("Camera Collision")]
     [SerializeField] private LayerMask obstructionMask = ~0;
     [SerializeField, Min(0.01f)] private float collisionRadius = 0.2f;
@@ -41,10 +50,11 @@ public class CameraController : MonoBehaviour
     private Vector3 currentPivotPosition;
     private Vector3 pivotVelocity;
     private Camera cachedCamera;
+    private float defaultFieldOfView;
+    private float healSprayerAimViewBlend;
 
     private void Start()
     {
-        ApplySavedLookSensitivity();
         cachedCamera = GetComponent<Camera>();
 
         Vector3 euler = transform.eulerAngles;
@@ -53,6 +63,9 @@ public class CameraController : MonoBehaviour
         pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
 
         currentDistance = distance;
+
+        if (cachedCamera != null)
+            defaultFieldOfView = cachedCamera.fieldOfView;
 
         // 여기만 추가
         if (followTarget == null)
@@ -68,11 +81,6 @@ public class CameraController : MonoBehaviour
         RefreshTrackedCanvasCameras();
     }
 
-    private void OnEnable()
-    {
-        ApplySavedLookSensitivity();
-    }
-
     private void LateUpdate()
     {
         if (followTarget == null)
@@ -80,6 +88,7 @@ public class CameraController : MonoBehaviour
 
         UpdateLookAngles();
         UpdateCameraTransform();
+        UpdateHealSprayerAimFieldOfView();
         UpdateTrackedWorldSpaceUi();
     }
 
@@ -147,7 +156,39 @@ public class CameraController : MonoBehaviour
         currentDistance = Mathf.Lerp(currentDistance, targetDistance, lerpFactor);
 
         Vector3 cameraPosition = currentPivotPosition + cameraDirection * currentDistance;
+
+        if (enableHealSprayerAimZoom)
+        {
+            PlayerItemRunner runner = followTarget.GetComponentInParent<PlayerItemRunner>();
+            bool aimHeal = runner != null && runner.IsAimingHealSprayer();
+            float aimTarget = aimHeal ? 1f : 0f;
+            float bs = 1f - Mathf.Exp(-healSprayerAimViewOffsetSpeed * Time.unscaledDeltaTime);
+            healSprayerAimViewBlend = Mathf.Lerp(healSprayerAimViewBlend, aimTarget, bs);
+
+            if (healSprayerAimViewBlend > 0.0001f)
+                cameraPosition += rotation * healSprayerAimViewOffsetLocal * healSprayerAimViewBlend;
+        }
+        else
+        {
+            healSprayerAimViewBlend = 0f;
+        }
+
         transform.SetPositionAndRotation(cameraPosition, rotation);
+    }
+
+    private void UpdateHealSprayerAimFieldOfView()
+    {
+        if (!enableHealSprayerAimZoom || cachedCamera == null)
+            return;
+
+        PlayerItemRunner runner = followTarget.GetComponentInParent<PlayerItemRunner>();
+
+        float targetFov = (runner != null && runner.IsAimingHealSprayer())
+            ? healSprayerAimFieldOfView
+            : defaultFieldOfView;
+
+        float t = 1f - Mathf.Exp(-fieldOfViewZoomSpeed * Time.unscaledDeltaTime);
+        cachedCamera.fieldOfView = Mathf.Lerp(cachedCamera.fieldOfView, targetFov, t);
     }
 
     private void UpdateTrackedWorldSpaceUi()
@@ -209,17 +250,5 @@ public class CameraController : MonoBehaviour
     public void SetFollowTarget(Transform newTarget)
     {
         followTarget = newTarget;
-    }
-
-    public void SetLookSensitivity(float newYawSpeed, float newPitchSpeed)
-    {
-        yawSpeed = Mathf.Max(0f, newYawSpeed);
-        pitchSpeed = Mathf.Max(0f, newPitchSpeed);
-    }
-
-    private void ApplySavedLookSensitivity()
-    {
-        yawSpeed = CameraLookSensitivitySettings.LoadYawSpeed();
-        pitchSpeed = CameraLookSensitivitySettings.LoadPitchSpeed();
     }
 }
