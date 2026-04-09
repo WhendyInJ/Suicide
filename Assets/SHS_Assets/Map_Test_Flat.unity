@@ -2257,6 +2257,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -23.900047
       objectReference: {fileID: 0}
+    - target: {fileID: 6445628567203019364, guid: a74ce8afc34d2e042acdacf1a89086f4, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7398482926843351870, guid: a74ce8afc34d2e042acdacf1a89086f4, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -2276,6 +2280,10 @@ PrefabInstance:
     - target: {fileID: 9017123638128707494, guid: a74ce8afc34d2e042acdacf1a89086f4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -23.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 9017123638128707494, guid: a74ce8afc34d2e042acdacf1a89086f4, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4545,10 +4553,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1200}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -6669,6 +6677,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -23.900047
       objectReference: {fileID: 0}
+    - target: {fileID: 6445628567203019364, guid: a74ce8afc34d2e042acdacf1a89086f4, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7398482926843351870, guid: a74ce8afc34d2e042acdacf1a89086f4, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -6688,6 +6700,10 @@ PrefabInstance:
     - target: {fileID: 9017123638128707494, guid: a74ce8afc34d2e042acdacf1a89086f4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -23.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 9017123638128707494, guid: a74ce8afc34d2e042acdacf1a89086f4, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7496,6 +7512,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3980975036614840890, guid: a74ce8afc34d2e042acdacf1a89086f4, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6445628567203019364, guid: a74ce8afc34d2e042acdacf1a89086f4, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9017123638128707494, guid: a74ce8afc34d2e042acdacf1a89086f4, type: 3}
+      propertyPath: m_ConstrainProportionsScale
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -8479,6 +8503,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -23.900047
       objectReference: {fileID: 0}
+    - target: {fileID: 6445628567203019364, guid: a74ce8afc34d2e042acdacf1a89086f4, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7398482926843351870, guid: a74ce8afc34d2e042acdacf1a89086f4, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -8498,6 +8526,10 @@ PrefabInstance:
     - target: {fileID: 9017123638128707494, guid: a74ce8afc34d2e042acdacf1a89086f4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -23.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 9017123638128707494, guid: a74ce8afc34d2e042acdacf1a89086f4, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9944,6 +9976,11 @@ MonoBehaviour:
   minPitch: -30
   maxPitch: 70
   invertY: 0
+  enableHealSprayerAimZoom: 1
+  healSprayerAimFieldOfView: 44
+  fieldOfViewZoomSpeed: 14
+  healSprayerAimViewOffsetLocal: {x: 0.22, y: -0.16, z: 0}
+  healSprayerAimViewOffsetSpeed: 14
   obstructionMask:
     serializedVersion: 2
     m_Bits: 4294967295
