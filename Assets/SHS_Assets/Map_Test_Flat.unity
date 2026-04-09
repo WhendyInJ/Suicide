@@ -10416,11 +10416,13 @@ PrefabInstance:
       addedObject: {fileID: 1403176819}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b43a3841a44cd4342914d65f28717e15, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1403176818}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b43a3841a44cd4342914d65f28717e15, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1403176817}
   m_SourcePrefab: {fileID: 100100000, guid: b43a3841a44cd4342914d65f28717e15, type: 3}
+--- !u!4 &1246297789 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b43a3841a44cd4342914d65f28717e15, type: 3}
+  m_PrefabInstance: {fileID: 1246297788}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1254147690
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11695,7 +11697,7 @@ PrefabInstance:
     - target: {fileID: 4093569644519577458, guid: 76cdf740d01175e438c69801a4617b26, type: 3}
       propertyPath: 'triggerTargets.Array.data[0]'
       value: 
-      objectReference: {fileID: 1403176818}
+      objectReference: {fileID: 1403176817}
     - target: {fileID: 4348632891448756249, guid: 76cdf740d01175e438c69801a4617b26, type: 3}
       propertyPath: m_SizeDelta.x
       value: 1
@@ -11944,20 +11946,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ddfdfd5771785c45b259e09c386ba1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InstantKillOnContact
-  killPriorityRegistry: {fileID: 1403176818}
---- !u!114 &1403176818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1403176816}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c59faab86204ce04c9c0e741b71cb065, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HoldInteractionKillPriorityRegistry
-  lastCompletingPlayerViewId: -1
+  startReady: 1
+  stateSyncKeyOverride: 
+  moveTarget: {fileID: 1246297789}
+  activeTargetWorldY: -0.5900011
+  targetMoveSpeed: 12
+  activeStateObjects: []
+  cycleState: 0
+  pendingTriggeringPlayerViewId: -1
+  selectedTargetPlayerViewId: -1
 --- !u!65 &1403176819
 BoxCollider:
   m_ObjectHideFlags: 0
