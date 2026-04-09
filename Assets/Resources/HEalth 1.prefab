@@ -148,7 +148,7 @@ GameObject:
   - component: {fileID: 3510142074300349206}
   - component: {fileID: 3800182094511505428}
   m_Layer: 5
-  m_Name: HEalth
+  m_Name: HEalth 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
