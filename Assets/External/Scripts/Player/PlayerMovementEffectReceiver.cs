@@ -54,7 +54,8 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
         float stopDistance = 0.1f,
         int priority = 100,
         bool faceDirection = true,
-        bool allowVerticalMovement = false)
+        bool allowVerticalMovement = false,
+        bool showControlRestrictedEffect = true)
     {
         if (PhotonNetwork.InRoom && photonView.Owner != null)
         {
@@ -68,7 +69,8 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
                 stopDistance,
                 priority,
                 faceDirection,
-                allowVerticalMovement);
+                allowVerticalMovement,
+                showControlRestrictedEffect);
         }
         else
         {
@@ -80,13 +82,15 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
                 stopDistance,
                 priority,
                 faceDirection,
-                allowVerticalMovement);
+                allowVerticalMovement,
+                showControlRestrictedEffect);
         }
     }
 
     public void RequestMovementLock(
         float duration,
-        int priority = 300)
+        int priority = 300,
+        bool showControlRestrictedEffect = true)
     {
         RequestEffect(
             MovementEffectType.MovementLock,
@@ -95,7 +99,9 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
             duration,
             0f,
             priority,
-            false);
+            false,
+            false,
+            showControlRestrictedEffect);
     }
 
     public void RequestPullToPoint(
@@ -105,7 +111,8 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
         float stopDistance = 0.1f,
         int priority = 150,
         bool faceDirection = true,
-        bool allowVerticalMovement = false)
+        bool allowVerticalMovement = false,
+        bool showControlRestrictedEffect = true)
     {
         RequestEffect(
             MovementEffectType.PullToPoint,
@@ -115,7 +122,8 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
             stopDistance,
             priority,
             faceDirection,
-            allowVerticalMovement);
+            allowVerticalMovement,
+            showControlRestrictedEffect);
     }
 
     public void RequestStun(
@@ -167,7 +175,8 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
         float stopDistance,
         int priority,
         bool faceDirection,
-        bool allowVerticalMovement)
+        bool allowVerticalMovement,
+        bool showControlRestrictedEffect)
     {
         if (PhotonNetwork.InRoom && !photonView.IsMine)
             return;
@@ -183,7 +192,8 @@ public class PlayerMovementEffectReceiver : MonoBehaviourPun
             stopDistance,
             priority,
             faceDirection,
-            allowVerticalMovement);
+            allowVerticalMovement,
+            showControlRestrictedEffect);
     }
 
     [PunRPC]

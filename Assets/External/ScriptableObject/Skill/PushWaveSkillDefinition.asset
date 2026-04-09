@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PushWaveSkillDefinition
   skillId: 1
   displayName: PushWave
-  cooldown: 2
+  cooldown: 1.25
   targetMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -22,7 +22,7 @@ MonoBehaviour:
   range: 2
   width: 2
   height: 1
-  forwardOffset: 0.8
+  forwardOffset: 0
   horizontalImpulse: 10
   upwardImpulse: 3
   controlReleaseMode: 1
@@ -30,4 +30,4 @@ MonoBehaviour:
   pushFromCasterCenter: 1
   facePushDirection: 1
   clearTargetMovementCommands: 1
-  networkEffectPrefab: {fileID: 3240045606009096287, guid: 4f3e3db9e7c5d614a85883d1b500743c, type: 3}
+  networkEffectPrefab: {fileID: 2461018392225065491, guid: e92d61e5c2d7af745a5a67e70195b87c, type: 3}

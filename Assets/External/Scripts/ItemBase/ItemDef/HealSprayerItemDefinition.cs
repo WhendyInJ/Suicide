@@ -24,6 +24,8 @@ public class HealSprayerItemDefinition : ItemDefinition
     public QueryTriggerInteraction TriggerInteraction => triggerInteraction;
     public GameObject HealEffectPrefab => healEffectPrefab;
 
+    public override bool UseHandHeldItemAnchor => true;
+
     public override bool TryBuildAimPreview(
         in ItemAimPreviewContext context,
         out ItemAimPreviewRequest request)

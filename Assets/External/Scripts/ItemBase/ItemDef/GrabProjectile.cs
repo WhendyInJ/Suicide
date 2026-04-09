@@ -141,7 +141,7 @@ public class GrabProjectile : MonoBehaviourPun
             return false;
 
         Vector3 castDirection = segment / distance;
-        return TryFindNearestHit(
+        return TryFindNearestResolvableHit(
             start,
             castDirection,
             distance,
@@ -149,6 +149,7 @@ public class GrabProjectile : MonoBehaviourPun
             hitMask,
             triggerInteraction,
             ownerRoot,
+            structureMask,
             hitBuffer,
             out bestHit);
     }
@@ -189,7 +190,8 @@ public class GrabProjectile : MonoBehaviourPun
                 selfStopDistance,
                 selfPullPriority,
                 true,
-                true);
+                true,
+                false);
 
             DestroyProjectile();
             return;
@@ -213,6 +215,7 @@ public class GrabProjectile : MonoBehaviourPun
                 targetMaxPullDuration,
                 targetStopDistance,
                 targetPullPriority,
+                true,
                 true,
                 true);
         }
@@ -250,7 +253,7 @@ public class GrabProjectile : MonoBehaviourPun
         float castRadius = GetCastRadius(projectilePrefab);
         Vector3 castDirection = direction.normalized;
 
-        if (!TryFindNearestHit(
+        if (!TryFindNearestResolvableHit(
                 start,
                 castDirection,
                 maxRange,
@@ -258,6 +261,7 @@ public class GrabProjectile : MonoBehaviourPun
                 hitMask,
                 triggerInteraction,
                 ownerRoot,
+                structureMask,
                 SharedPredictionHitBuffer,
                 out RaycastHit hit))
         {
@@ -302,7 +306,7 @@ public class GrabProjectile : MonoBehaviourPun
         return radius;
     }
 
-    private static bool TryFindNearestHit(
+    private static bool TryFindNearestResolvableHit(
         Vector3 start,
         Vector3 castDirection,
         float distance,
@@ -310,6 +314,7 @@ public class GrabProjectile : MonoBehaviourPun
         LayerMask hitMask,
         QueryTriggerInteraction triggerInteraction,
         Transform ownerRoot,
+        LayerMask structureMask,
         RaycastHit[] buffer,
         out RaycastHit bestHit)
     {
@@ -344,6 +349,12 @@ public class GrabProjectile : MonoBehaviourPun
             if (ShouldIgnoreCollider(hit.collider, ownerRoot))
                 continue;
 
+            bool isStructure = IsStructureHit(hit.collider, structureMask);
+            bool isPlayerTarget = TryGetTargetReceiver(hit.collider, ownerRoot, out _);
+
+            if (!isStructure && !isPlayerTarget)
+                continue;
+
             if (hit.distance < nearestDistance)
             {
                 nearestDistance = hit.distance;
@@ -372,6 +383,24 @@ public class GrabProjectile : MonoBehaviourPun
             return false;
 
         return (structureMask.value & (1 << collider.gameObject.layer)) != 0;
+    }
+
+    private static bool TryGetTargetReceiver(
+        Collider collider,
+        Transform ownerRoot,
+        out PlayerMovementEffectReceiver targetReceiver)
+    {
+        targetReceiver = collider != null
+            ? collider.GetComponentInParent<PlayerMovementEffectReceiver>()
+            : null;
+
+        if (targetReceiver == null)
+            return false;
+
+        if (ownerRoot != null && targetReceiver.transform.root == ownerRoot.root)
+            return false;
+
+        return true;
     }
 
     private static Vector3 CalculateTargetPullPoint(

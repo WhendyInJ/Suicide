@@ -655,6 +655,58 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6467622335486633023, guid: 0e25f21c4b0e7a340a8003860f6596b5, type: 3}
   m_PrefabInstance: {fileID: 681290905}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &907873500
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 907873502}
+  - component: {fileID: 907873501}
+  m_Layer: 0
+  m_Name: WaterShield(Clone)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &907873501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 907873500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cce16e37289a5c848b032b5d23f27bc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _SafetyDestroy: 6
+  _DestoyDelay: 2
+  _RadiusFactor: 1
+  _HitEffectPrefab: {fileID: 1040493265510430018, guid: ed0f4721ac7dc654a8f726765dcf1e50, type: 3}
+  _Anim: {fileID: 0}
+  _SpawnAnimation: {fileID: 7400000, guid: da824001892eda540b155ac099f39f39, type: 2}
+  _DespawnAnimation: {fileID: 7400000, guid: 2793d3c5fe1347144b460a43410bd2bd, type: 2}
+  _WaterAdditionalParticles: {fileID: 0}
+--- !u!4 &907873502
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 907873500}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 3.139, y: 3.139, z: 3.139}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1007965374
 GameObject:
   m_ObjectHideFlags: 0
@@ -2616,7 +2668,7 @@ Transform:
   m_GameObject: {fileID: 1522089706}
   serializedVersion: 2
   m_LocalRotation: {x: 0.103760794, y: -0.8837205, z: 0.23404658, w: 0.39178312}
-  m_LocalPosition: {x: 13.184162, y: 7.9222317, z: 10.29046}
+  m_LocalPosition: {x: 3.25, y: 7.24, z: 2.84}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3247,6 +3299,71 @@ MonoBehaviour:
   _Character: {fileID: 345553586}
   _CurrentData: WaterAoeBody
   _ActivateButton: {fileID: 1702322170}
+--- !u!1001 &1661805263088844085
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -6740266850914163970, guid: 8b3b0b528a39eb04590ab3a482976820, type: 3}
+      propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027739054955367945, guid: 8b3b0b528a39eb04590ab3a482976820, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.11164
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027739054955367945, guid: 8b3b0b528a39eb04590ab3a482976820, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.31262
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027739054955367945, guid: 8b3b0b528a39eb04590ab3a482976820, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.03378
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027739054955367945, guid: 8b3b0b528a39eb04590ab3a482976820, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027739054955367945, guid: 8b3b0b528a39eb04590ab3a482976820, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027739054955367945, guid: 8b3b0b528a39eb04590ab3a482976820, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027739054955367945, guid: 8b3b0b528a39eb04590ab3a482976820, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027739054955367945, guid: 8b3b0b528a39eb04590ab3a482976820, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027739054955367945, guid: 8b3b0b528a39eb04590ab3a482976820, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027739054955367945, guid: 8b3b0b528a39eb04590ab3a482976820, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4305310454095919200, guid: 8b3b0b528a39eb04590ab3a482976820, type: 3}
+      propertyPath: _WaterAdditionalParticles
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7125063408404980536, guid: 8b3b0b528a39eb04590ab3a482976820, type: 3}
+      propertyPath: m_Name
+      value: WaterShield
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8b3b0b528a39eb04590ab3a482976820, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -3267,3 +3384,5 @@ SceneRoots:
   - {fileID: 1007965375}
   - {fileID: 2063479928}
   - {fileID: 67551764}
+  - {fileID: 907873502}
+  - {fileID: 1661805263088844085}

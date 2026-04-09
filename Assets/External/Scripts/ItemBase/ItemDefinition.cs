@@ -26,6 +26,11 @@ public abstract class ItemDefinition : ScriptableObject
     public ItemAimSettings AimSettings => aimSettings;
     public HeldItemVisualData HeldVisual => heldVisual;
 
+    /// <summary>
+    /// When true, <see cref="PlayerItemRunner"/> parents held visuals under Hand Held Item Anchor (falls back to Held Item Anchor if unset).
+    /// </summary>
+    public virtual bool UseHandHeldItemAnchor => false;
+
     public virtual bool TryBuildAimPreview(
         in ItemAimPreviewContext context,
         out ItemAimPreviewRequest request)
