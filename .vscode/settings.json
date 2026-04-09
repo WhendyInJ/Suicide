@@ -67,7 +67,7 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "Suicide.slnx",
+    "dotnet.defaultSolution": "Suicide.sln",
     "dotrush.roslyn.projectOrSolutionFiles": [
         "c:\\Users\\jungle\\Documents\\GitHub\\Suicide\\Suicide.sln",
         "c:\\Users\\jungle\\Documents\\GitHub\\Suicide\\suicide.slnx",

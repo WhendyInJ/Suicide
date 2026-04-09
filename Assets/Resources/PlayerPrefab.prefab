@@ -5535,6 +5535,7 @@ MonoBehaviour:
   effectSpawnPoint: {fileID: 5661977081806419882}
   aimCamera: {fileID: 0}
   heldItemAnchor: {fileID: 5661977081806419882}
+  handHeldItemAnchor: {fileID: 0}
   defaultAimDistance: 30
   trajectoryAimPreviewPrefab: {fileID: 1246619256393369892, guid: 2fe4dd4ad88c475d8417f6c98ed0ca49, type: 3}
   crosshairAimPreviewPrefab: {fileID: 8714857369844832137, guid: 142f75112062f374fa176a1d73a8e65f, type: 3}

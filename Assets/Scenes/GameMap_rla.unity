@@ -7740,6 +7740,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2086658018}
     m_Modifications:
+    - target: {fileID: 489040373485125794, guid: 3a1f575535ead5f438c2b94efa57531a, type: 3}
+      propertyPath: spawnEntries.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2530303325407039686, guid: 3a1f575535ead5f438c2b94efa57531a, type: 3}
       propertyPath: m_Name
       value: ItemSpawner (1)
@@ -8001,6 +8005,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2086658018}
     m_Modifications:
+    - target: {fileID: 489040373485125794, guid: 3a1f575535ead5f438c2b94efa57531a, type: 3}
+      propertyPath: spawnEntries.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2530303325407039686, guid: 3a1f575535ead5f438c2b94efa57531a, type: 3}
       propertyPath: m_Name
       value: ItemSpawner
@@ -12120,6 +12128,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2086658018}
     m_Modifications:
+    - target: {fileID: 489040373485125794, guid: 3a1f575535ead5f438c2b94efa57531a, type: 3}
+      propertyPath: spawnEntries.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2530303325407039686, guid: 3a1f575535ead5f438c2b94efa57531a, type: 3}
       propertyPath: m_Name
       value: ItemSpawner (3)
@@ -13401,6 +13413,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2086658018}
     m_Modifications:
+    - target: {fileID: 489040373485125794, guid: 3a1f575535ead5f438c2b94efa57531a, type: 3}
+      propertyPath: spawnEntries.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2530303325407039686, guid: 3a1f575535ead5f438c2b94efa57531a, type: 3}
       propertyPath: m_Name
       value: ItemSpawner (2)
