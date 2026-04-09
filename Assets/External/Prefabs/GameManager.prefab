@@ -76,6 +76,7 @@ MonoBehaviour:
   buttonTextColor: {r: 0, g: 0, b: 0, a: 1}
   panelSize: {x: 720, y: 360}
   sortingOrder: 5000
+  killPriorityRegistry: {fileID: 0}
 --- !u!114 &3524963811935514659
 MonoBehaviour:
   m_ObjectHideFlags: 0

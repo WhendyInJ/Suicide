@@ -8,6 +8,7 @@ public class LeverHoldInteraction : NetworkHoldInteractionBase
     [SerializeField] private Transform lever;
     [SerializeField] private Transform moveTarget;
     [SerializeField] private MonoBehaviour[] triggerTargets;
+    [SerializeField] private HoldInteractionKillPriorityRegistry killPriorityRegistry;
 
     [Header("Lever X Rotation")]
     [SerializeField] private float inactiveXRotation = -45f;
@@ -98,6 +99,13 @@ public class LeverHoldInteraction : NetworkHoldInteractionBase
 
     protected override void OnInteractionStoppedReplicated(int playerViewId, HoldInteractionStopReason stopReason, double stopServerTime)
     {
+        if (stopReason == HoldInteractionStopReason.Completed &&
+            killPriorityRegistry != null &&
+            playerViewId > 0)
+        {
+            killPriorityRegistry.SetCompletingPlayerViewId(playerViewId);
+        }
+
         if (stopReason == HoldInteractionStopReason.Completed)
         {
             isActivated = !isActivated;

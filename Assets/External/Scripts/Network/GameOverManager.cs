@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
@@ -13,9 +14,6 @@ public class GameOverManager : MonoBehaviourPunCallbacks
     [Header("Scene")]
     [SerializeField] private string titleSceneName = "Title";
 
-    [Header("Debug")]
-    [SerializeField] private bool enableDebugLogs = true;
-
     [Header("UI Text")]
     [SerializeField] private string winnerSuffix = " Wins!";
     [SerializeField] private string noWinnerMessage = "Game Over";
@@ -29,24 +27,19 @@ public class GameOverManager : MonoBehaviourPunCallbacks
     [SerializeField] private Vector2 panelSize = new Vector2(720f, 360f);
     [SerializeField] private int sortingOrder = 5000;
 
+    [Header("Simultaneous elimination")]
+    [Tooltip("When everyone dies the same frame (e.g. trap), winner = last player who completed the linked lever hold. Same asset as LeverHoldInteraction / InstantKillOnContact.")]
+    [SerializeField] private HoldInteractionKillPriorityRegistry killPriorityRegistry;
+
     private readonly HashSet<PlayerHealth> trackedHealths = new();
 
     private bool isGameEnded;
+    private bool gameOverResolveScheduled;
     private bool isLeavingRoom;
     private Canvas gameOverCanvas;
     private GameObject panelRoot;
     private TMP_Text winnerText;
     private Button returnButton;
-
-    private void Awake()
-    {
-        if (!enableDebugLogs)
-            return;
-
-        Debug.Log(
-            $"[GameOverManager:{name}] Awake | scene={gameObject.scene.name} | hasPhotonView={photonView != null} | viewId={(photonView != null ? photonView.ViewID : -1)} | inRoom={PhotonNetwork.InRoom}",
-            this);
-    }
 
     public override void OnEnable()
     {
@@ -85,18 +78,79 @@ public class GameOverManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
             return;
 
-        int defeatedActorNumber = playerHealth.OwnerActorNumber;
-        int winnerActorNumber = defeatedActorNumber;
-        string winnerName = ResolveWinnerName(winnerActorNumber);
+        if (gameOverResolveScheduled)
+            return;
 
-        if (enableDebugLogs)
+        gameOverResolveScheduled = true;
+        StartCoroutine(CoResolveGameOverDeferred());
+    }
+
+    private IEnumerator CoResolveGameOverDeferred()
+    {
+        yield return new WaitForEndOfFrame();
+        yield return null;
+
+        gameOverResolveScheduled = false;
+
+        if (isGameEnded)
+            yield break;
+
+        int aliveCount = 0;
+        PlayerHealth soleSurvivor = null;
+
+        foreach (PlayerHealth health in trackedHealths)
         {
-            Debug.Log(
-                $"[GameOverManager:{name}] HandleHealthChanged -> defeated={playerHealth.name} actor={defeatedActorNumber} winnerActor={winnerActorNumber} winnerName={winnerName} | localIsMaster={PhotonNetwork.IsMasterClient} | photonViewId={(photonView != null ? photonView.ViewID : -1)}",
-                this);
+            if (health == null || !health.IsAlive)
+                continue;
+
+            aliveCount++;
+            soleSurvivor = health;
         }
 
+        int winnerActorNumber = -1;
+        int defeatedActorNumber = FindAnyDefeatedActorNumber();
+
+        if (aliveCount == 1)
+        {
+            winnerActorNumber = soleSurvivor.OwnerActorNumber;
+        }
+        else if (aliveCount == 0)
+        {
+            if (killPriorityRegistry != null && killPriorityRegistry.LastCompletingPlayerViewId > 0)
+            {
+                PhotonView priorityView =
+                    PhotonView.Find(killPriorityRegistry.LastCompletingPlayerViewId);
+
+                if (priorityView != null && priorityView.Owner != null)
+                    winnerActorNumber = priorityView.Owner.ActorNumber;
+            }
+        }
+        else
+        {
+            yield break;
+        }
+
+        if (winnerActorNumber <= 0)
+        {
+            if (aliveCount == 0)
+                BroadcastGameOver(-1, defeatedActorNumber, string.Empty);
+
+            yield break;
+        }
+
+        string winnerName = ResolveWinnerName(winnerActorNumber);
         BroadcastGameOver(winnerActorNumber, defeatedActorNumber, winnerName);
+    }
+
+    private int FindAnyDefeatedActorNumber()
+    {
+        foreach (PlayerHealth health in trackedHealths)
+        {
+            if (health != null && health.IsDead)
+                return health.OwnerActorNumber;
+        }
+
+        return -1;
     }
 
     private string ResolveWinnerName(int winnerActorNumber)
@@ -127,20 +181,14 @@ public class GameOverManager : MonoBehaviourPunCallbacks
         {
             if (photonView == null || photonView.ViewID == 0)
             {
-                Debug.LogWarning(
-                    $"[GameOverManager:{name}] Cannot send {nameof(RPC_AnnounceGameOver)} because PhotonView is invalid. " +
-                    $"viewId={(photonView != null ? photonView.ViewID : -1)} | scene={gameObject.scene.name} | activeInHierarchy={gameObject.activeInHierarchy} | " +
-                    $"winnerActor={winnerActorNumber} | defeatedActor={defeatedActorNumber} | inRoom={PhotonNetwork.InRoom} | isMaster={PhotonNetwork.IsMasterClient}. " +
-                    "This usually means the component was added at runtime or the scene object PhotonView is not registered.",
+                Debug.LogError(
+                    $"[{nameof(GameOverManager)}:{name}] Cannot RPC — PhotonView missing or invalid (ViewID 0). " +
+                    "On scene GameObjects, set PhotonView Scene View Id to a non-zero unique value in the scene (PUN). " +
+                    "Falling back to local game-over only on this client.",
                     this);
-                return;
-            }
 
-            if (enableDebugLogs)
-            {
-                Debug.Log(
-                    $"[GameOverManager:{name}] Broadcasting {nameof(RPC_AnnounceGameOver)} via viewId={photonView.ViewID} | winnerActor={winnerActorNumber} | defeatedActor={defeatedActorNumber} | winnerName={winnerName}",
-                    this);
+                RPC_AnnounceGameOver(winnerActorNumber, defeatedActorNumber, winnerName ?? string.Empty);
+                return;
             }
 
             photonView.RPC(
@@ -160,13 +208,6 @@ public class GameOverManager : MonoBehaviourPunCallbacks
     {
         if (isGameEnded)
             return;
-
-        if (enableDebugLogs)
-        {
-            Debug.Log(
-                $"[GameOverManager:{name}] RPC_AnnounceGameOver received | localActor={(PhotonNetwork.LocalPlayer != null ? PhotonNetwork.LocalPlayer.ActorNumber : -1)} | winnerActor={winnerActorNumber} | defeatedActor={defeatedActorNumber} | winnerName={winnerName}",
-                this);
-        }
 
         isGameEnded = true;
         Time.timeScale = 0f;
