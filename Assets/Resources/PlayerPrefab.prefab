@@ -5424,7 +5424,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInputSource
   lockCursorOnStart: 1
   lookSensitivity: 1
-  primarySkillKey: 102
   secondarySkillKey: 103
   selectItemSlot1Key: 49
   selectItemSlot2Key: 50
@@ -5460,6 +5459,7 @@ MonoBehaviour:
   effectSpawnPoint: {fileID: 5661977081806419882}
   selfMovementReceiver: {fileID: 3464620825903959518}
   inputSource: {fileID: 2265392746849489109}
+  itemInventory: {fileID: 0}
   skillBindings:
   - slot: 0
     definition: {fileID: 11400000, guid: aae2b67f7b781ce4f9acd0c15acc6c94, type: 2}

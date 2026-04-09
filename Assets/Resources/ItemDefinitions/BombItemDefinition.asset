@@ -30,6 +30,7 @@ MonoBehaviour:
     localPosition: {x: 0, y: 0, z: 0.2}
     localEulerAngles: {x: 0, y: 0, z: 0}
     localScale: {x: 0.5, y: 0.5, z: 0.5}
+  trajectoryPreviewPrefab: {fileID: 0}
   projectilePrefab: {fileID: 8121857072590590964, guid: ff84ac7d606067d4ca47af6b6f44a823, type: 3}
   trajectoryType: 1
   launchSpeed: 12
@@ -44,4 +45,4 @@ MonoBehaviour:
     m_Bits: 4294967295
   stunDuration: 2
   stunPriority: 100
-  explosionEffectPrefab: {fileID: 9032970908079671593, guid: 2ec4771b7b9338e449c61e0d2e3020d8, type: 3}
+  explosionEffectPrefab: {fileID: 7125063408404980536, guid: 8b3b0b528a39eb04590ab3a482976820, type: 3}

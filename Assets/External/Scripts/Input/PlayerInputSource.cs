@@ -12,7 +12,6 @@ public class PlayerInputSource : MonoBehaviour
     [SerializeField] private float lookSensitivity = 1f;
 
     [Header("Basic Skill Keys")]
-    [SerializeField] private KeyCode primarySkillKey = KeyCode.F;
     [SerializeField] private KeyCode secondarySkillKey = KeyCode.G;
 
     [Header("Inventory Keys")]
@@ -128,7 +127,7 @@ public class PlayerInputSource : MonoBehaviour
 
     private void ReadSkillInput()
     {
-        PrimarySkillPressedThisFrame = Input.GetKeyDown(primarySkillKey);
+        PrimarySkillPressedThisFrame = Input.GetMouseButtonDown(0);
         SecondarySkillPressedThisFrame = Input.GetKeyDown(secondarySkillKey);
     }
 

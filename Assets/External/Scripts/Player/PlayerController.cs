@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviour
         public float StopDistance;
         public bool FaceDirection;
         public bool AllowVerticalMovement;
+        public bool ShowControlRestrictedEffect;
         public MovementCommandType Type;
         public Vector3 TargetPoint;
         public Transform FollowTarget;
@@ -1109,7 +1110,8 @@ public class PlayerController : MonoBehaviour
         float stopDistance = 0.1f,
         int priority = 150,
         bool faceDirection = true,
-        bool allowVerticalMovement = false)
+        bool allowVerticalMovement = false,
+        bool showControlRestrictedEffect = false)
     {
         if (speed <= 0f || duration <= 0f)
             return -1;
@@ -1124,12 +1126,14 @@ public class PlayerController : MonoBehaviour
             Priority = priority,
             FaceDirection = faceDirection,
             AllowVerticalMovement = allowVerticalMovement,
+            ShowControlRestrictedEffect = showControlRestrictedEffect,
         });
     }
 
     private int AddMovementLockInternal(
         float duration,
-        int priority = 300)
+        int priority = 300,
+        bool showControlRestrictedEffect = false)
     {
         if (duration <= 0f)
             return -1;
@@ -1140,6 +1144,7 @@ public class PlayerController : MonoBehaviour
             RemainingTime = duration,
             Priority = priority,
             FaceDirection = false,
+            ShowControlRestrictedEffect = showControlRestrictedEffect,
         });
     }
 
@@ -1278,7 +1283,8 @@ public class PlayerController : MonoBehaviour
         float stopDistance = 0.1f,
         int priority = 100,
         bool faceDirection = true,
-        bool allowVerticalMovement = false)
+        bool allowVerticalMovement = false,
+        bool showControlRestrictedEffect = true)
     {
         switch (effectType)
         {
@@ -1290,12 +1296,14 @@ public class PlayerController : MonoBehaviour
                     stopDistance,
                     priority,
                     faceDirection,
-                    allowVerticalMovement);
+                    allowVerticalMovement,
+                    showControlRestrictedEffect);
 
             case MovementEffectType.MovementLock:
                 return AddMovementLockInternal(
                     duration,
-                    priority);
+                    priority,
+                    showControlRestrictedEffect);
 
             default:
                 return -1;
@@ -1309,7 +1317,8 @@ public class PlayerController : MonoBehaviour
         float stopDistance = 0.1f,
         int priority = 150,
         bool faceDirection = true,
-        bool allowVerticalMovement = false)
+        bool allowVerticalMovement = false,
+        bool showControlRestrictedEffect = false)
     {
         return ApplyEffect(
             MovementEffectType.PullToPoint,
@@ -1319,12 +1328,14 @@ public class PlayerController : MonoBehaviour
             stopDistance,
             priority,
             faceDirection,
-            allowVerticalMovement);
+            allowVerticalMovement,
+            showControlRestrictedEffect);
     }
 
     public int ApplyMovementLock(
         float duration,
-        int priority = 300)
+        int priority = 300,
+        bool showControlRestrictedEffect = false)
     {
         return ApplyEffect(
             MovementEffectType.MovementLock,
@@ -1333,7 +1344,9 @@ public class PlayerController : MonoBehaviour
             duration,
             0f,
             priority,
-            false);
+            false,
+            false,
+            showControlRestrictedEffect);
     }
 
     public int ApplyFollowTransformLocal(
@@ -1343,7 +1356,8 @@ public class PlayerController : MonoBehaviour
         float duration,
         float stopDistance = 0.1f,
         int priority = 200,
-        bool faceDirection = true)
+        bool faceDirection = true,
+        bool showControlRestrictedEffect = false)
     {
         if (followTarget == null || speed <= 0f || duration <= 0f)
             return -1;
@@ -1358,6 +1372,7 @@ public class PlayerController : MonoBehaviour
             StopDistance = Mathf.Max(0f, stopDistance),
             Priority = priority,
             FaceDirection = faceDirection,
+            ShowControlRestrictedEffect = showControlRestrictedEffect,
         });
     }
 
@@ -1399,6 +1414,9 @@ public class PlayerController : MonoBehaviour
 
     private void SyncControlRestrictedEffectState()
     {
+        if (PhotonNetwork.InRoom && !HasLocalAuthority)
+            return;
+
         bool shouldShow = HasControlRestrictedState();
 
         if (appliedControlRestrictedEffectState == shouldShow)
@@ -1420,7 +1438,8 @@ public class PlayerController : MonoBehaviour
         if (activeInputBlocks.Count > 0)
             return true;
 
-        return GetHighestPriorityCommand() != null;
+        RuntimeMovementCommand activeCommand = GetHighestPriorityCommand();
+        return activeCommand != null && activeCommand.ShowControlRestrictedEffect;
     }
 
     private void ApplyControlRestrictedEffectState(bool visible)
