@@ -71,7 +71,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private PlayerInputSource inputSource;
     [SerializeField] private PlayerGroundSensor groundSensor;
-    [SerializeField] private GameObject controlRestrictedEffect;
+    [Tooltip("Used to lock body yaw to camera while aiming heal sprayer (FPS-style). Auto-filled if empty.")]
+    [SerializeField] private PlayerItemRunner itemRunner;
 
     [Header("Base Move")]
     [SerializeField, Min(0f)] private float maxMoveSpeed = 6f;
@@ -181,7 +182,6 @@ public class PlayerController : MonoBehaviour
     private int nextInputBlockId = 1;
 
     private ImpulseControlState impulseControl;
-    private bool appliedControlRestrictedEffectState;
 
     private void Reset()
     {
@@ -220,10 +220,12 @@ public class PlayerController : MonoBehaviour
         if (cameraTransform == null && useCameraMainIfMissing && Camera.main != null)
             cameraTransform = Camera.main.transform;
 
+        if (itemRunner == null)
+            itemRunner = GetComponent<PlayerItemRunner>();
+
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationY;
-        ApplyControlRestrictedEffectState(false);
     }
 
     private void OnValidate()
@@ -235,7 +237,6 @@ public class PlayerController : MonoBehaviour
     {
         CleanupExpiredInputBlocks();
         ReadInput();
-        SyncControlRestrictedEffectState();
     }
 
     private void FixedUpdate()
@@ -252,7 +253,6 @@ public class PlayerController : MonoBehaviour
         RefreshJumpState();
         TickMovementCommands(Time.fixedDeltaTime);
         TickImpulseControl(Time.fixedDeltaTime);
-        SyncControlRestrictedEffectState();
 
         RuntimeMovementCommand activeCommand = GetHighestPriorityCommand();
         TryConsumeJumpRequest(activeCommand);
@@ -273,7 +273,11 @@ public class PlayerController : MonoBehaviour
 
         UpdateBaseMovement();
         TryStepClimb();
-        UpdateBaseRotation();
+
+        if (ShouldLockFacingToCameraForHealSprayerAim())
+            UpdateFacingToCameraHorizontal();
+        else
+            UpdateBaseRotation();
     }
 
     private void ReadInput()
@@ -363,6 +367,29 @@ public class PlayerController : MonoBehaviour
             return;
 
         RotateToward(desiredMoveDirection);
+    }
+
+    private bool ShouldLockFacingToCameraForHealSprayerAim()
+    {
+        return itemRunner != null && itemRunner.IsAimingHealSprayer();
+    }
+
+    private void UpdateFacingToCameraHorizontal()
+    {
+        Transform cam = cameraTransform;
+        if (cam == null && useCameraMainIfMissing && Camera.main != null)
+            cam = Camera.main.transform;
+
+        if (cam == null)
+            return;
+
+        Vector3 forward = cam.forward;
+        forward.y = 0f;
+
+        if (forward.sqrMagnitude < 0.0001f)
+            return;
+
+        RotateToward(forward.normalized);
     }
 
     private void TryStepClimb()
@@ -1395,48 +1422,5 @@ public class PlayerController : MonoBehaviour
     public void SetMoveSpeed(float newMoveSpeed)
     {
         maxMoveSpeed = Mathf.Max(0f, newMoveSpeed);
-    }
-
-    private void SyncControlRestrictedEffectState()
-    {
-        bool shouldShow = HasControlRestrictedState();
-
-        if (appliedControlRestrictedEffectState == shouldShow)
-            return;
-
-        ApplyControlRestrictedEffectState(shouldShow);
-
-        if (PhotonNetwork.InRoom && HasLocalAuthority && photonView != null)
-        {
-            photonView.RPC(nameof(RPC_SetControlRestrictedEffectState), RpcTarget.Others, shouldShow);
-        }
-    }
-
-    private bool HasControlRestrictedState()
-    {
-        if (impulseControl.IsActive)
-            return true;
-
-        if (activeInputBlocks.Count > 0)
-            return true;
-
-        return GetHighestPriorityCommand() != null;
-    }
-
-    private void ApplyControlRestrictedEffectState(bool visible)
-    {
-        appliedControlRestrictedEffectState = visible;
-
-        if (controlRestrictedEffect != null && controlRestrictedEffect.activeSelf != visible)
-            controlRestrictedEffect.SetActive(visible);
-    }
-
-    [PunRPC]
-    private void RPC_SetControlRestrictedEffectState(bool visible)
-    {
-        if (HasLocalAuthority)
-            return;
-
-        ApplyControlRestrictedEffectState(visible);
     }
 }

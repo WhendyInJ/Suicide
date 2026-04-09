@@ -22,7 +22,11 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
     [SerializeField] private Camera aimCamera;
 
     [Header("Held Visual")]
+    [Tooltip("Used when Hand Held Item Anchor is not assigned.")]
     [SerializeField] private Transform heldItemAnchor;
+
+    [Tooltip("Hand parent for items that opt in (e.g. Heal Sprayer). Bomb/Grab use Held Item Anchor only.")]
+    [SerializeField] private Transform handHeldItemAnchor;
 
     [Header("Aim")]
     [SerializeField, Min(0.1f)] private float defaultAimDistance = 30f;
@@ -36,6 +40,20 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
     public bool IsAimingItem => isAimingItem;
     public bool IsPrimaryItemInUse => isPrimaryItemInUse;
     public bool IsLocallyOwned => HasLocalAuthority;
+
+    /// <summary>
+    /// True while secondary (e.g. right-click) aim is active and the selected item is a heal sprayer.
+    /// </summary>
+    public bool IsAimingHealSprayer()
+    {
+        if (!isAimingItem || inventory == null)
+            return false;
+
+        if (!inventory.TryGetSelectedItem(out ItemDefinition definition, out _))
+            return false;
+
+        return definition is HealSprayerItemDefinition;
+    }
 
     public event System.Action<bool> OnAimStateChanged;
 
@@ -643,12 +661,6 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         if (PhotonNetwork.InRoom && !HasLocalAuthority)
             return;
 
-        if (heldItemAnchor == null)
-        {
-            ClearHeldItemVisual();
-            return;
-        }
-
         if (inventory == null || !inventory.TryGetSelectedItem(out ItemDefinition definition, out _))
         {
             ClearHeldItemVisual();
@@ -657,6 +669,12 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
 
         HeldItemVisualData heldVisual = definition.HeldVisual;
         if (!heldVisual.HasPrefab)
+        {
+            ClearHeldItemVisual();
+            return;
+        }
+
+        if (ResolveHeldItemAnchor(definition) == null)
         {
             ClearHeldItemVisual();
             return;
@@ -673,9 +691,11 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
 
         ClearHeldItemVisual();
 
-        currentHeldVisualInstance = Instantiate(heldVisual.Prefab, heldItemAnchor);
+        Transform attachAnchor = ResolveHeldItemAnchor(definition);
+        currentHeldVisualInstance = Instantiate(heldVisual.Prefab, attachAnchor);
         ApplyHeldVisualTransform(
             currentHeldVisualInstance,
+            definition,
             heldVisual.LocalPosition,
             heldVisual.LocalEulerAngles,
             heldVisual.LocalScale);
@@ -699,10 +719,11 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
 
         ClearHeldItemVisual();
 
+        Transform attachAnchor = ResolveHeldItemAnchor(definition);
         GameObject spawned = PhotonNetwork.Instantiate(
             heldVisual.Prefab.name,
-            heldItemAnchor.position,
-            heldItemAnchor.rotation);
+            attachAnchor.position,
+            attachAnchor.rotation);
 
         if (spawned == null)
             return;
@@ -721,6 +742,7 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
 
         ApplyHeldVisualTransform(
             spawned,
+            definition,
             heldVisual.LocalPosition,
             heldVisual.LocalEulerAngles,
             heldVisual.LocalScale);
@@ -877,6 +899,7 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
 
         ApplyHeldVisualTransform(
             currentHeldVisualInstance,
+            currentHeldDefinition,
             localPosition,
             localEulerAngles,
             localScale);
@@ -898,16 +921,31 @@ public class PlayerItemRunner : PhotonOwnedBehaviour, IItemExecutionBridge
         heldVisual.Bind(this, healDefinition);
     }
 
+    private static Transform ResolveHeldItemAnchor(ItemDefinition definition, Transform heldAnchor, Transform handAnchor)
+    {
+        if (definition != null && definition.UseHandHeldItemAnchor)
+            return handAnchor != null ? handAnchor : heldAnchor;
+
+        return heldAnchor;
+    }
+
+    private Transform ResolveHeldItemAnchor(ItemDefinition definition)
+    {
+        return ResolveHeldItemAnchor(definition, heldItemAnchor, handHeldItemAnchor);
+    }
+
     private void ApplyHeldVisualTransform(
         GameObject heldInstance,
+        ItemDefinition definition,
         Vector3 localPosition,
         Vector3 localEulerAngles,
         Vector3 localScale)
     {
-        if (heldInstance == null || heldItemAnchor == null)
+        Transform anchor = ResolveHeldItemAnchor(definition);
+        if (heldInstance == null || anchor == null)
             return;
 
-        heldInstance.transform.SetParent(heldItemAnchor, false);
+        heldInstance.transform.SetParent(anchor, false);
         heldInstance.transform.localPosition = localPosition;
         heldInstance.transform.localRotation = Quaternion.Euler(localEulerAngles);
         heldInstance.transform.localScale = localScale == Vector3.zero ? Vector3.one : localScale;

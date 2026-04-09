@@ -77,6 +77,9 @@ MonoBehaviour:
   - itemDefinition: {fileID: 11400000, guid: a07ef1bdb84189244b5c723e051bc41c, type: 2}
     amount: 1
     weight: 0
+  - itemDefinition: {fileID: 11400000, guid: 0ca74bf783f973d498db5cd4fce8a059, type: 2}
+    amount: 1
+    weight: 0
   spawnOnStart: 1
   enableRespawn: 1
   respawnDelay: 10
