@@ -87,7 +87,7 @@ public class SpikePlatformGroupController : MonoBehaviourPunCallbacks, IInteract
         }
     }
 
-    public void TriggerFromInteraction(NetworkHoldInteractionBase source)
+    public void TriggerFromInteraction(NetworkHoldInteractionBase source, int triggeringPlayerViewId)
     {
         RequestToggleState();
     }

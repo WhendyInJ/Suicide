@@ -9,6 +9,8 @@ using UnityEngine.Events;
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
     private const string HostNameRoomPropertyKey = "hostName";
+    private const int MinNicknameLength = 2;
+    private const int MaxNicknameLength = 12;
 
     [Header("Connection")]
     [SerializeField] private string gameVersion = "1";
@@ -69,6 +71,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
 
         SyncNicknameInputField();
+        ConfigureNicknameInputField();
         SyncSensitivityUiFromSavedValues();
         RegisterUiListenersIfNeeded();
         RefreshViewState();
@@ -92,7 +95,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.InRoom)
             return;
 
-        ApplyNicknameFromInput();
+        if (!ApplyNicknameFromInput())
+            return;
 
         if (PhotonNetwork.IsConnectedAndReady)
         {
@@ -610,22 +614,20 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
     }
 
-    private void ApplyNicknameFromInput()
+    private bool ApplyNicknameFromInput()
     {
-        string requestedNickname = nicknameInputField != null
-            ? nicknameInputField.text
-            : string.Empty;
+        if (!TryGetValidatedNickname(out string validatedNickname))
+        {
+            UpdateStatus($"Nickname must be {MinNicknameLength}-{MaxNicknameLength} characters.");
+            SyncNicknameInputField();
+            RefreshButtonState();
+            return false;
+        }
 
-        if (!string.IsNullOrWhiteSpace(requestedNickname))
-        {
-            PhotonNetwork.NickName = requestedNickname.Trim();
-        }
-        else if (string.IsNullOrWhiteSpace(PhotonNetwork.NickName))
-        {
-            PhotonNetwork.NickName = $"Player_{Random.Range(1000, 9999)}";
-        }
+        PhotonNetwork.NickName = validatedNickname;
 
         SyncNicknameInputField();
+        return true;
     }
 
     private void SyncNicknameInputField()
@@ -634,6 +636,28 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             return;
 
         nicknameInputField.text = PhotonNetwork.NickName;
+    }
+
+    private void ConfigureNicknameInputField()
+    {
+        if (nicknameInputField == null)
+            return;
+
+        nicknameInputField.characterLimit = MaxNicknameLength;
+    }
+
+    private bool TryGetValidatedNickname(out string validatedNickname)
+    {
+        string rawNickname = nicknameInputField != null
+            ? nicknameInputField.text
+            : PhotonNetwork.NickName;
+
+        validatedNickname = string.IsNullOrWhiteSpace(rawNickname)
+            ? string.Empty
+            : rawNickname.Trim();
+
+        int nicknameLength = validatedNickname.Length;
+        return nicknameLength >= MinNicknameLength && nicknameLength <= MaxNicknameLength;
     }
 
     private static string ResolveHostName(RoomInfo roomInfo)
