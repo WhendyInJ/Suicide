@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
@@ -27,14 +26,9 @@ public class GameOverManager : MonoBehaviourPunCallbacks
     [SerializeField] private Vector2 panelSize = new Vector2(720f, 360f);
     [SerializeField] private int sortingOrder = 5000;
 
-    [Header("Simultaneous elimination")]
-    [Tooltip("When everyone dies the same frame (e.g. trap), winner = last player who completed the linked lever hold. Same asset as LeverHoldInteraction / InstantKillOnContact.")]
-    [SerializeField] private HoldInteractionKillPriorityRegistry killPriorityRegistry;
-
     private readonly HashSet<PlayerHealth> trackedHealths = new();
 
     private bool isGameEnded;
-    private bool gameOverResolveScheduled;
     private bool isLeavingRoom;
     private Canvas gameOverCanvas;
     private GameObject panelRoot;
@@ -78,79 +72,11 @@ public class GameOverManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
             return;
 
-        if (gameOverResolveScheduled)
-            return;
-
-        gameOverResolveScheduled = true;
-        StartCoroutine(CoResolveGameOverDeferred());
-    }
-
-    private IEnumerator CoResolveGameOverDeferred()
-    {
-        yield return new WaitForEndOfFrame();
-        yield return null;
-
-        gameOverResolveScheduled = false;
-
-        if (isGameEnded)
-            yield break;
-
-        int aliveCount = 0;
-        PlayerHealth soleSurvivor = null;
-
-        foreach (PlayerHealth health in trackedHealths)
-        {
-            if (health == null || !health.IsAlive)
-                continue;
-
-            aliveCount++;
-            soleSurvivor = health;
-        }
-
-        int winnerActorNumber = -1;
-        int defeatedActorNumber = FindAnyDefeatedActorNumber();
-
-        if (aliveCount == 1)
-        {
-            winnerActorNumber = soleSurvivor.OwnerActorNumber;
-        }
-        else if (aliveCount == 0)
-        {
-            if (killPriorityRegistry != null && killPriorityRegistry.LastCompletingPlayerViewId > 0)
-            {
-                PhotonView priorityView =
-                    PhotonView.Find(killPriorityRegistry.LastCompletingPlayerViewId);
-
-                if (priorityView != null && priorityView.Owner != null)
-                    winnerActorNumber = priorityView.Owner.ActorNumber;
-            }
-        }
-        else
-        {
-            yield break;
-        }
-
-        if (winnerActorNumber <= 0)
-        {
-            if (aliveCount == 0)
-                BroadcastGameOver(-1, defeatedActorNumber, string.Empty);
-
-            yield break;
-        }
-
+        int defeatedActorNumber = playerHealth.OwnerActorNumber;
+        int winnerActorNumber = defeatedActorNumber;
         string winnerName = ResolveWinnerName(winnerActorNumber);
+
         BroadcastGameOver(winnerActorNumber, defeatedActorNumber, winnerName);
-    }
-
-    private int FindAnyDefeatedActorNumber()
-    {
-        foreach (PlayerHealth health in trackedHealths)
-        {
-            if (health != null && health.IsDead)
-                return health.OwnerActorNumber;
-        }
-
-        return -1;
     }
 
     private string ResolveWinnerName(int winnerActorNumber)

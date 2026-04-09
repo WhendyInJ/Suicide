@@ -1992,10 +1992,6 @@ PrefabInstance:
       propertyPath: 'spawnPoints.Array.data[3]'
       value: 
       objectReference: {fileID: 1987485971}
-    - target: {fileID: 7253780400180989379, guid: 55f2ef8aa44fc9d489390ca64c94525a, type: 3}
-      propertyPath: killPriorityRegistry
-      value: 
-      objectReference: {fileID: 1277457365}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5348,10 +5344,6 @@ PrefabInstance:
       propertyPath: holdDuration
       value: 8
       objectReference: {fileID: 0}
-    - target: {fileID: 4093569644519577458, guid: 76cdf740d01175e438c69801a4617b26, type: 3}
-      propertyPath: killPriorityRegistry
-      value: 
-      objectReference: {fileID: 1277457365}
     - target: {fileID: 4226717647290287022, guid: 76cdf740d01175e438c69801a4617b26, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.7071068
@@ -7902,19 +7894,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.816021, y: 0.4591198, z: 1.750596}
   m_Center: {x: -0.00072034204, y: -1.4002442, z: -0.02949985}
---- !u!114 &1277457365
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1277457359}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c59faab86204ce04c9c0e741b71cb065, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HoldInteractionKillPriorityRegistry
-  lastCompletingPlayerViewId: -1
 --- !u!114 &1277457366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7927,7 +7906,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ddfdfd5771785c45b259e09c386ba1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InstantKillOnContact
-  killPriorityRegistry: {fileID: 1277457365}
 --- !u!1 &1282492435
 GameObject:
   m_ObjectHideFlags: 0
@@ -11821,9 +11799,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b43a3841a44cd4342914d65f28717e15, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1277457364}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b43a3841a44cd4342914d65f28717e15, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1277457365}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b43a3841a44cd4342914d65f28717e15, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1277457366}
