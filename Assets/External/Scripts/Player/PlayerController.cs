@@ -71,6 +71,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private PlayerInputSource inputSource;
     [SerializeField] private PlayerGroundSensor groundSensor;
+    [Tooltip("Used to lock body yaw to camera while aiming heal sprayer (FPS-style). Auto-filled if empty.")]
+    [SerializeField] private PlayerItemRunner itemRunner;
 
     [Header("Base Move")]
     [SerializeField, Min(0f)] private float maxMoveSpeed = 6f;
@@ -218,6 +220,9 @@ public class PlayerController : MonoBehaviour
         if (cameraTransform == null && useCameraMainIfMissing && Camera.main != null)
             cameraTransform = Camera.main.transform;
 
+        if (itemRunner == null)
+            itemRunner = GetComponent<PlayerItemRunner>();
+
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationY;
@@ -268,7 +273,11 @@ public class PlayerController : MonoBehaviour
 
         UpdateBaseMovement();
         TryStepClimb();
-        UpdateBaseRotation();
+
+        if (ShouldLockFacingToCameraForHealSprayerAim())
+            UpdateFacingToCameraHorizontal();
+        else
+            UpdateBaseRotation();
     }
 
     private void ReadInput()
@@ -358,6 +367,29 @@ public class PlayerController : MonoBehaviour
             return;
 
         RotateToward(desiredMoveDirection);
+    }
+
+    private bool ShouldLockFacingToCameraForHealSprayerAim()
+    {
+        return itemRunner != null && itemRunner.IsAimingHealSprayer();
+    }
+
+    private void UpdateFacingToCameraHorizontal()
+    {
+        Transform cam = cameraTransform;
+        if (cam == null && useCameraMainIfMissing && Camera.main != null)
+            cam = Camera.main.transform;
+
+        if (cam == null)
+            return;
+
+        Vector3 forward = cam.forward;
+        forward.y = 0f;
+
+        if (forward.sqrMagnitude < 0.0001f)
+            return;
+
+        RotateToward(forward.normalized);
     }
 
     private void TryStepClimb()
