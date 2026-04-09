@@ -108,7 +108,7 @@ public class ButtonHoldInteraction : NetworkHoldInteractionBase
             isCompletionAnimating = true;
             animationStartTime = stopServerTime;
             animationFromProgress = 1f;
-            TriggerAssignedTargets();
+            TriggerAssignedTargets(playerViewId);
 
             return;
         }
@@ -138,25 +138,25 @@ public class ButtonHoldInteraction : NetworkHoldInteractionBase
         }
     }
 
-    private void TriggerAssignedTargets()
+    private void TriggerAssignedTargets(int triggeringPlayerViewId)
     {
         if (!CanExecuteAuthoritativeTrigger)
             return;
 
         HashSet<MonoBehaviour> invokedTargets = null;
 
-        InvokeTriggerTarget(controlledGroup, ref invokedTargets);
+        InvokeTriggerTarget(controlledGroup, triggeringPlayerViewId, ref invokedTargets);
 
         if (triggerTargets == null)
             return;
 
         for (int i = 0; i < triggerTargets.Length; i++)
         {
-            InvokeTriggerTarget(triggerTargets[i], ref invokedTargets);
+            InvokeTriggerTarget(triggerTargets[i], triggeringPlayerViewId, ref invokedTargets);
         }
     }
 
-    private void InvokeTriggerTarget(MonoBehaviour target, ref HashSet<MonoBehaviour> invokedTargets)
+    private void InvokeTriggerTarget(MonoBehaviour target, int triggeringPlayerViewId, ref HashSet<MonoBehaviour> invokedTargets)
     {
         if (target == null)
             return;
@@ -167,7 +167,7 @@ public class ButtonHoldInteraction : NetworkHoldInteractionBase
 
         if (target is IInteractionTriggerTarget triggerTarget)
         {
-            triggerTarget.TriggerFromInteraction(this);
+            triggerTarget.TriggerFromInteraction(this, triggeringPlayerViewId);
             return;
         }
 

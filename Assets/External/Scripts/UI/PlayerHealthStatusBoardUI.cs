@@ -6,34 +6,33 @@ using UnityEngine;
 
 public class PlayerHealthStatusBoardUI : MonoBehaviourPunCallbacks
 {
-    private sealed class EntryBinding
-    {
-        public PlayerHealth Health;
-        public PlayerHealthStatusEntryUI EntryUI;
-    }
-
     [Header("References")]
     [SerializeField] private RectTransform contentRoot;
-    [SerializeField] private PlayerHealthStatusEntryUI entryPrefab;
+    [SerializeField] private List<PlayerHealthStatusEntryUI> entrySlots = new();
     [SerializeField] private bool includeInactiveHealthObjects = false;
 
     [Header("Fallback UI")]
     [SerializeField] private TMP_Text emptyStateText;
     [SerializeField] private string emptyStateMessage = "No Players";
 
-    private readonly Dictionary<PlayerHealth, EntryBinding> bindingsByHealth = new();
+    private readonly HashSet<PlayerHealth> registeredHealths = new();
     private readonly List<PlayerHealth> sortedHealthBuffer = new();
 
     private void Reset()
     {
         if (contentRoot == null)
             contentRoot = transform as RectTransform;
+
+        CacheEntrySlotsFromChildrenIfNeeded();
     }
 
     private void Awake()
     {
         if (contentRoot == null)
             contentRoot = transform as RectTransform;
+
+        CacheEntrySlotsFromChildrenIfNeeded();
+        ApplyEmptyStateToAllSlots();
     }
 
     public override void OnEnable()
@@ -57,17 +56,17 @@ public class PlayerHealthStatusBoardUI : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        RefreshDisplayOrder();
+        RefreshBoard();
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        RefreshDisplayOrder();
+        RefreshBoard();
     }
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
-        RefreshAllEntryTexts();
+        RefreshBoard();
     }
 
     private void HandlePlayerHealthRegistered(PlayerHealth playerHealth)
@@ -75,8 +74,10 @@ public class PlayerHealthStatusBoardUI : MonoBehaviourPunCallbacks
         if (playerHealth == null)
             return;
 
-        EnsureEntryBound(playerHealth);
-        RefreshDisplayOrder();
+        if (registeredHealths.Add(playerHealth))
+            playerHealth.HealthChanged += HandleHealthChanged;
+
+        RefreshBoard();
     }
 
     private void HandlePlayerHealthUnregistered(PlayerHealth playerHealth)
@@ -84,8 +85,10 @@ public class PlayerHealthStatusBoardUI : MonoBehaviourPunCallbacks
         if (playerHealth == null)
             return;
 
-        UnbindEntry(playerHealth);
-        RefreshDisplayOrder();
+        if (registeredHealths.Remove(playerHealth))
+            playerHealth.HealthChanged -= HandleHealthChanged;
+
+        RefreshBoard();
     }
 
     private void RebuildAllEntries()
@@ -98,66 +101,26 @@ public class PlayerHealthStatusBoardUI : MonoBehaviourPunCallbacks
 
         for (int i = 0; i < healthObjects.Length; i++)
         {
-            EnsureEntryBound(healthObjects[i]);
+            PlayerHealth playerHealth = healthObjects[i];
+            if (playerHealth == null || !registeredHealths.Add(playerHealth))
+                continue;
+
+            playerHealth.HealthChanged += HandleHealthChanged;
         }
 
-        RefreshDisplayOrder();
-    }
-
-    private void EnsureEntryBound(PlayerHealth playerHealth)
-    {
-        if (playerHealth == null || bindingsByHealth.ContainsKey(playerHealth))
-            return;
-
-        if (contentRoot == null || entryPrefab == null)
-            return;
-
-        PlayerHealthStatusEntryUI entryUI = Instantiate(entryPrefab, contentRoot);
-        entryUI.name = $"{entryPrefab.name}_{ResolvePlayerName(playerHealth)}";
-
-        EntryBinding binding = new EntryBinding
-        {
-            Health = playerHealth,
-            EntryUI = entryUI
-        };
-
-        bindingsByHealth.Add(playerHealth, binding);
-        playerHealth.HealthChanged += HandleHealthChanged;
-
-        RefreshEntry(binding);
-    }
-
-    private void UnbindEntry(PlayerHealth playerHealth)
-    {
-        if (playerHealth == null)
-            return;
-
-        if (!bindingsByHealth.TryGetValue(playerHealth, out EntryBinding binding))
-            return;
-
-        playerHealth.HealthChanged -= HandleHealthChanged;
-        bindingsByHealth.Remove(playerHealth);
-
-        if (binding.EntryUI != null)
-            Destroy(binding.EntryUI.gameObject);
+        RefreshBoard();
     }
 
     private void UnbindAllEntries()
     {
-        foreach (KeyValuePair<PlayerHealth, EntryBinding> pair in bindingsByHealth)
+        foreach (PlayerHealth playerHealth in registeredHealths)
         {
-            if (pair.Key != null)
-            {
-                pair.Key.HealthChanged -= HandleHealthChanged;
-            }
-
-            if (pair.Value != null && pair.Value.EntryUI != null)
-            {
-                Destroy(pair.Value.EntryUI.gameObject);
-            }
+            if (playerHealth != null)
+                playerHealth.HealthChanged -= HandleHealthChanged;
         }
 
-        bindingsByHealth.Clear();
+        registeredHealths.Clear();
+        ApplyEmptyStateToAllSlots();
     }
 
     private void HandleHealthChanged(PlayerHealth playerHealth, HealthChangedEventArgs args)
@@ -165,56 +128,43 @@ public class PlayerHealthStatusBoardUI : MonoBehaviourPunCallbacks
         if (playerHealth == null)
             return;
 
-        if (!bindingsByHealth.TryGetValue(playerHealth, out EntryBinding binding))
-            return;
-
-        RefreshEntry(binding);
+        RefreshBoard();
     }
 
-    private void RefreshEntry(EntryBinding binding)
-    {
-        if (binding == null || binding.Health == null || binding.EntryUI == null)
-            return;
-
-        binding.EntryUI.SetData(
-            ResolvePlayerName(binding.Health),
-            binding.Health.CurrentHealth);
-    }
-
-    private void RefreshAllEntryTexts()
-    {
-        foreach (KeyValuePair<PlayerHealth, EntryBinding> pair in bindingsByHealth)
-        {
-            RefreshEntry(pair.Value);
-        }
-    }
-
-    private void RefreshDisplayOrder()
+    private void RefreshBoard()
     {
         sortedHealthBuffer.Clear();
 
-        foreach (KeyValuePair<PlayerHealth, EntryBinding> pair in bindingsByHealth)
+        foreach (PlayerHealth playerHealth in registeredHealths)
         {
-            if (pair.Key != null)
-            {
-                sortedHealthBuffer.Add(pair.Key);
-            }
+            if (playerHealth != null)
+                sortedHealthBuffer.Add(playerHealth);
         }
 
         sortedHealthBuffer.Sort(CompareHealthEntries);
 
-        for (int i = 0; i < sortedHealthBuffer.Count; i++)
+        int slotCount = entrySlots != null ? entrySlots.Count : 0;
+
+        for (int i = 0; i < slotCount; i++)
         {
-            PlayerHealth playerHealth = sortedHealthBuffer[i];
-            if (!bindingsByHealth.TryGetValue(playerHealth, out EntryBinding binding))
+            PlayerHealthStatusEntryUI entrySlot = entrySlots[i];
+            if (entrySlot == null)
                 continue;
 
-            if (binding.EntryUI != null)
+            bool hasAssignedPlayer = i < sortedHealthBuffer.Count;
+            entrySlot.gameObject.SetActive(hasAssignedPlayer);
+
+            if (!hasAssignedPlayer)
             {
-                binding.EntryUI.transform.SetSiblingIndex(i);
+                entrySlot.SetData(string.Empty, 0f);
+                continue;
             }
 
-            RefreshEntry(binding);
+            PlayerHealth playerHealth = sortedHealthBuffer[i];
+            entrySlot.transform.SetSiblingIndex(i);
+            entrySlot.SetData(
+                ResolvePlayerName(playerHealth),
+                playerHealth.CurrentHealth);
         }
 
         if (emptyStateText != null)
@@ -225,6 +175,42 @@ public class PlayerHealthStatusBoardUI : MonoBehaviourPunCallbacks
             {
                 emptyStateText.text = emptyStateMessage;
             }
+        }
+    }
+
+    private void CacheEntrySlotsFromChildrenIfNeeded()
+    {
+        if (entrySlots != null && entrySlots.Count > 0)
+            return;
+
+        entrySlots = new List<PlayerHealthStatusEntryUI>();
+        if (contentRoot == null)
+            return;
+
+        PlayerHealthStatusEntryUI[] discoveredSlots = contentRoot.GetComponentsInChildren<PlayerHealthStatusEntryUI>(true);
+        for (int i = 0; i < discoveredSlots.Length; i++)
+        {
+            PlayerHealthStatusEntryUI entrySlot = discoveredSlots[i];
+            if (entrySlot == null)
+                continue;
+
+            entrySlots.Add(entrySlot);
+        }
+    }
+
+    private void ApplyEmptyStateToAllSlots()
+    {
+        if (entrySlots == null)
+            return;
+
+        for (int i = 0; i < entrySlots.Count; i++)
+        {
+            PlayerHealthStatusEntryUI entrySlot = entrySlots[i];
+            if (entrySlot == null)
+                continue;
+
+            entrySlot.SetData(string.Empty, 0f);
+            entrySlot.gameObject.SetActive(false);
         }
     }
 

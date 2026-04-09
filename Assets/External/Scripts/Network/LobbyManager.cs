@@ -4,10 +4,13 @@ using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
     private const string HostNameRoomPropertyKey = "hostName";
+    private const int MinNicknameLength = 2;
+    private const int MaxNicknameLength = 12;
 
     [Header("Connection")]
     [SerializeField] private string gameVersion = "1";
@@ -40,6 +43,15 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] private string joiningRoomStatusMessage = "Joining Room...";
     [SerializeField] private string creatingRoomStatusMessage = "Creating Room...";
 
+    [Header("Camera Sensitivity")]
+    [SerializeField] private Slider yawSpeedSlider;
+    [SerializeField] private Slider pitchSpeedSlider;
+    [SerializeField] private TMP_Text yawSpeedValueText;
+    [SerializeField] private TMP_Text pitchSpeedValueText;
+    [SerializeField, Range(0f, 10f)] private float defaultYawSensitivity = CameraLookSensitivitySettings.DefaultDisplaySensitivity;
+    [SerializeField, Range(0f, 10f)] private float defaultPitchSensitivity = CameraLookSensitivitySettings.DefaultDisplaySensitivity;
+    [SerializeField] private string sensitivityValueFormat = "F1";
+
     private readonly Dictionary<string, RoomInfo> roomInfoByName = new();
     private readonly Dictionary<string, LobbyRoomListEntryUI> entryByRoomName = new();
     private readonly Dictionary<int, LobbyRoomPlayerEntryUI> roomPlayerEntryByActorNumber = new();
@@ -59,6 +71,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
 
         SyncNicknameInputField();
+        ConfigureNicknameInputField();
+        SyncSensitivityUiFromSavedValues();
         RegisterUiListenersIfNeeded();
         RefreshViewState();
         RefreshButtonState();
@@ -68,6 +82,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     private void Start()
     {
         EnsureLobbyCursorVisible();
+        ApplyCurrentSensitivityToSceneCameras();
     }
 
     private void OnDestroy()
@@ -80,7 +95,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.InRoom)
             return;
 
-        ApplyNicknameFromInput();
+        if (!ApplyNicknameFromInput())
+            return;
 
         if (PhotonNetwork.IsConnectedAndReady)
         {
@@ -598,22 +614,20 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
     }
 
-    private void ApplyNicknameFromInput()
+    private bool ApplyNicknameFromInput()
     {
-        string requestedNickname = nicknameInputField != null
-            ? nicknameInputField.text
-            : string.Empty;
+        if (!TryGetValidatedNickname(out string validatedNickname))
+        {
+            UpdateStatus($"Nickname must be {MinNicknameLength}-{MaxNicknameLength} characters.");
+            SyncNicknameInputField();
+            RefreshButtonState();
+            return false;
+        }
 
-        if (!string.IsNullOrWhiteSpace(requestedNickname))
-        {
-            PhotonNetwork.NickName = requestedNickname.Trim();
-        }
-        else if (string.IsNullOrWhiteSpace(PhotonNetwork.NickName))
-        {
-            PhotonNetwork.NickName = $"Player_{Random.Range(1000, 9999)}";
-        }
+        PhotonNetwork.NickName = validatedNickname;
 
         SyncNicknameInputField();
+        return true;
     }
 
     private void SyncNicknameInputField()
@@ -622,6 +636,28 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             return;
 
         nicknameInputField.text = PhotonNetwork.NickName;
+    }
+
+    private void ConfigureNicknameInputField()
+    {
+        if (nicknameInputField == null)
+            return;
+
+        nicknameInputField.characterLimit = MaxNicknameLength;
+    }
+
+    private bool TryGetValidatedNickname(out string validatedNickname)
+    {
+        string rawNickname = nicknameInputField != null
+            ? nicknameInputField.text
+            : PhotonNetwork.NickName;
+
+        validatedNickname = string.IsNullOrWhiteSpace(rawNickname)
+            ? string.Empty
+            : rawNickname.Trim();
+
+        int nicknameLength = validatedNickname.Length;
+        return nicknameLength >= MinNicknameLength && nicknameLength <= MaxNicknameLength;
     }
 
     private static string ResolveHostName(RoomInfo roomInfo)
@@ -651,6 +687,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         RegisterButton(refreshButton, RefreshRooms);
         RegisterButton(roomStartButton, StartRoomGame);
         RegisterButton(roomQuitButton, LeaveCurrentRoom);
+        RegisterSlider(yawSpeedSlider, HandleYawSpeedSliderChanged);
+        RegisterSlider(pitchSpeedSlider, HandlePitchSpeedSliderChanged);
 
         uiListenersRegistered = true;
     }
@@ -666,6 +704,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         UnregisterButton(refreshButton, RefreshRooms);
         UnregisterButton(roomStartButton, StartRoomGame);
         UnregisterButton(roomQuitButton, LeaveCurrentRoom);
+        UnregisterSlider(yawSpeedSlider, HandleYawSpeedSliderChanged);
+        UnregisterSlider(pitchSpeedSlider, HandlePitchSpeedSliderChanged);
 
         uiListenersRegistered = false;
     }
@@ -686,9 +726,100 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         button.onClick.RemoveListener(action);
     }
 
+    private void RegisterSlider(Slider slider, UnityAction<float> action)
+    {
+        if (slider == null)
+            return;
+
+        slider.onValueChanged.AddListener(action);
+    }
+
+    private void UnregisterSlider(Slider slider, UnityAction<float> action)
+    {
+        if (slider == null)
+            return;
+
+        slider.onValueChanged.RemoveListener(action);
+    }
+
     private void EnsureLobbyCursorVisible()
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+    }
+
+    private void SyncSensitivityUiFromSavedValues()
+    {
+        float yawSensitivity = CameraLookSensitivitySettings.LoadYawDisplayValue(defaultYawSensitivity);
+        float pitchSensitivity = CameraLookSensitivitySettings.LoadPitchDisplayValue(defaultPitchSensitivity);
+
+        if (yawSpeedSlider != null)
+        {
+            yawSpeedSlider.minValue = 0f;
+            yawSpeedSlider.maxValue = CameraLookSensitivitySettings.MaxDisplaySensitivity;
+            yawSpeedSlider.SetValueWithoutNotify(yawSensitivity);
+        }
+
+        if (pitchSpeedSlider != null)
+        {
+            pitchSpeedSlider.minValue = 0f;
+            pitchSpeedSlider.maxValue = CameraLookSensitivitySettings.MaxDisplaySensitivity;
+            pitchSpeedSlider.SetValueWithoutNotify(pitchSensitivity);
+        }
+
+        UpdateSensitivityValueTexts(yawSensitivity, pitchSensitivity);
+    }
+
+    private void HandleYawSpeedSliderChanged(float yawSensitivity)
+    {
+        float pitchSensitivity = pitchSpeedSlider != null
+            ? pitchSpeedSlider.value
+            : CameraLookSensitivitySettings.LoadPitchDisplayValue(defaultPitchSensitivity);
+
+        SaveSensitivitySettings(yawSensitivity, pitchSensitivity);
+    }
+
+    private void HandlePitchSpeedSliderChanged(float pitchSensitivity)
+    {
+        float yawSensitivity = yawSpeedSlider != null
+            ? yawSpeedSlider.value
+            : CameraLookSensitivitySettings.LoadYawDisplayValue(defaultYawSensitivity);
+
+        SaveSensitivitySettings(yawSensitivity, pitchSensitivity);
+    }
+
+    private void SaveSensitivitySettings(float yawSensitivity, float pitchSensitivity)
+    {
+        CameraLookSensitivitySettings.SaveDisplayValues(yawSensitivity, pitchSensitivity);
+        UpdateSensitivityValueTexts(yawSensitivity, pitchSensitivity);
+        ApplyCurrentSensitivityToSceneCameras();
+    }
+
+    private void UpdateSensitivityValueTexts(float yawSensitivity, float pitchSensitivity)
+    {
+        if (yawSpeedValueText != null)
+            yawSpeedValueText.text = Mathf.Clamp(yawSensitivity, 0f, CameraLookSensitivitySettings.MaxDisplaySensitivity).ToString(sensitivityValueFormat);
+
+        if (pitchSpeedValueText != null)
+            pitchSpeedValueText.text = Mathf.Clamp(pitchSensitivity, 0f, CameraLookSensitivitySettings.MaxDisplaySensitivity).ToString(sensitivityValueFormat);
+    }
+
+    private void ApplyCurrentSensitivityToSceneCameras()
+    {
+        float yawSpeed = CameraLookSensitivitySettings.LoadYawSpeed(defaultYawSensitivity);
+        float pitchSpeed = CameraLookSensitivitySettings.LoadPitchSpeed(defaultPitchSensitivity);
+
+        CameraController[] cameraControllers = FindObjectsByType<CameraController>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+
+        for (int i = 0; i < cameraControllers.Length; i++)
+        {
+            CameraController cameraController = cameraControllers[i];
+            if (cameraController == null)
+                continue;
+
+            cameraController.SetLookSensitivity(yawSpeed, pitchSpeed);
+        }
     }
 }
