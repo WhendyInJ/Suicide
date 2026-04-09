@@ -75,8 +75,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98f73880588969842a3750dc3bf107ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealthStatusBoardUI
-  contentRoot: {fileID: 409783359612087838}
-  entryPrefab: {fileID: 3800182094511505428, guid: a74ce8afc34d2e042acdacf1a89086f4, type: 3}
+  contentRoot: {fileID: 3510142074300349206, guid: 49c5ec0bc9a4ff746b22f6f709fccc87, type: 3}
+  entryPrefab: {fileID: 3800182094511505428, guid: 49c5ec0bc9a4ff746b22f6f709fccc87, type: 3}
   includeInactiveHealthObjects: 0
   emptyStateText: {fileID: 0}
   emptyStateMessage: No Players
