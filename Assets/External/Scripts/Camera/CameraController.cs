@@ -56,6 +56,7 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         cachedCamera = GetComponent<Camera>();
+        ApplyStoredLookSensitivity();
 
         Vector3 euler = transform.eulerAngles;
         yaw = euler.y;
@@ -250,5 +251,18 @@ public class CameraController : MonoBehaviour
     public void SetFollowTarget(Transform newTarget)
     {
         followTarget = newTarget;
+    }
+
+    public void SetLookSensitivity(float newYawSpeed, float newPitchSpeed)
+    {
+        yawSpeed = Mathf.Max(0f, newYawSpeed);
+        pitchSpeed = Mathf.Max(0f, newPitchSpeed);
+    }
+
+    private void ApplyStoredLookSensitivity()
+    {
+        SetLookSensitivity(
+            CameraLookSensitivitySettings.LoadYawSpeed(),
+            CameraLookSensitivitySettings.LoadPitchSpeed());
     }
 }
