@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviour
         public float StopDistance;
         public bool FaceDirection;
         public bool AllowVerticalMovement;
+        public bool ShowControlRestrictedEffect;
         public MovementCommandType Type;
         public Vector3 TargetPoint;
         public Transform FollowTarget;
@@ -71,8 +72,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private PlayerInputSource inputSource;
     [SerializeField] private PlayerGroundSensor groundSensor;
-    [Tooltip("Used to lock body yaw to camera while aiming heal sprayer (FPS-style). Auto-filled if empty.")]
-    [SerializeField] private PlayerItemRunner itemRunner;
+    [SerializeField] private GameObject controlRestrictedEffect;
 
     [Header("Base Move")]
     [SerializeField, Min(0f)] private float maxMoveSpeed = 6f;
@@ -182,6 +182,7 @@ public class PlayerController : MonoBehaviour
     private int nextInputBlockId = 1;
 
     private ImpulseControlState impulseControl;
+    private bool appliedControlRestrictedEffectState;
 
     private void Reset()
     {
@@ -220,12 +221,10 @@ public class PlayerController : MonoBehaviour
         if (cameraTransform == null && useCameraMainIfMissing && Camera.main != null)
             cameraTransform = Camera.main.transform;
 
-        if (itemRunner == null)
-            itemRunner = GetComponent<PlayerItemRunner>();
-
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationY;
+        ApplyControlRestrictedEffectState(false);
     }
 
     private void OnValidate()
@@ -237,6 +236,7 @@ public class PlayerController : MonoBehaviour
     {
         CleanupExpiredInputBlocks();
         ReadInput();
+        SyncControlRestrictedEffectState();
     }
 
     private void FixedUpdate()
@@ -253,6 +253,7 @@ public class PlayerController : MonoBehaviour
         RefreshJumpState();
         TickMovementCommands(Time.fixedDeltaTime);
         TickImpulseControl(Time.fixedDeltaTime);
+        SyncControlRestrictedEffectState();
 
         RuntimeMovementCommand activeCommand = GetHighestPriorityCommand();
         TryConsumeJumpRequest(activeCommand);
@@ -273,11 +274,7 @@ public class PlayerController : MonoBehaviour
 
         UpdateBaseMovement();
         TryStepClimb();
-
-        if (ShouldLockFacingToCameraForHealSprayerAim())
-            UpdateFacingToCameraHorizontal();
-        else
-            UpdateBaseRotation();
+        UpdateBaseRotation();
     }
 
     private void ReadInput()
@@ -367,29 +364,6 @@ public class PlayerController : MonoBehaviour
             return;
 
         RotateToward(desiredMoveDirection);
-    }
-
-    private bool ShouldLockFacingToCameraForHealSprayerAim()
-    {
-        return itemRunner != null && itemRunner.IsAimingHealSprayer();
-    }
-
-    private void UpdateFacingToCameraHorizontal()
-    {
-        Transform cam = cameraTransform;
-        if (cam == null && useCameraMainIfMissing && Camera.main != null)
-            cam = Camera.main.transform;
-
-        if (cam == null)
-            return;
-
-        Vector3 forward = cam.forward;
-        forward.y = 0f;
-
-        if (forward.sqrMagnitude < 0.0001f)
-            return;
-
-        RotateToward(forward.normalized);
     }
 
     private void TryStepClimb()
@@ -1136,7 +1110,8 @@ public class PlayerController : MonoBehaviour
         float stopDistance = 0.1f,
         int priority = 150,
         bool faceDirection = true,
-        bool allowVerticalMovement = false)
+        bool allowVerticalMovement = false,
+        bool showControlRestrictedEffect = false)
     {
         if (speed <= 0f || duration <= 0f)
             return -1;
@@ -1151,12 +1126,14 @@ public class PlayerController : MonoBehaviour
             Priority = priority,
             FaceDirection = faceDirection,
             AllowVerticalMovement = allowVerticalMovement,
+            ShowControlRestrictedEffect = showControlRestrictedEffect,
         });
     }
 
     private int AddMovementLockInternal(
         float duration,
-        int priority = 300)
+        int priority = 300,
+        bool showControlRestrictedEffect = false)
     {
         if (duration <= 0f)
             return -1;
@@ -1167,6 +1144,7 @@ public class PlayerController : MonoBehaviour
             RemainingTime = duration,
             Priority = priority,
             FaceDirection = false,
+            ShowControlRestrictedEffect = showControlRestrictedEffect,
         });
     }
 
@@ -1305,7 +1283,8 @@ public class PlayerController : MonoBehaviour
         float stopDistance = 0.1f,
         int priority = 100,
         bool faceDirection = true,
-        bool allowVerticalMovement = false)
+        bool allowVerticalMovement = false,
+        bool showControlRestrictedEffect = true)
     {
         switch (effectType)
         {
@@ -1317,12 +1296,14 @@ public class PlayerController : MonoBehaviour
                     stopDistance,
                     priority,
                     faceDirection,
-                    allowVerticalMovement);
+                    allowVerticalMovement,
+                    showControlRestrictedEffect);
 
             case MovementEffectType.MovementLock:
                 return AddMovementLockInternal(
                     duration,
-                    priority);
+                    priority,
+                    showControlRestrictedEffect);
 
             default:
                 return -1;
@@ -1336,7 +1317,8 @@ public class PlayerController : MonoBehaviour
         float stopDistance = 0.1f,
         int priority = 150,
         bool faceDirection = true,
-        bool allowVerticalMovement = false)
+        bool allowVerticalMovement = false,
+        bool showControlRestrictedEffect = false)
     {
         return ApplyEffect(
             MovementEffectType.PullToPoint,
@@ -1346,12 +1328,14 @@ public class PlayerController : MonoBehaviour
             stopDistance,
             priority,
             faceDirection,
-            allowVerticalMovement);
+            allowVerticalMovement,
+            showControlRestrictedEffect);
     }
 
     public int ApplyMovementLock(
         float duration,
-        int priority = 300)
+        int priority = 300,
+        bool showControlRestrictedEffect = false)
     {
         return ApplyEffect(
             MovementEffectType.MovementLock,
@@ -1360,7 +1344,9 @@ public class PlayerController : MonoBehaviour
             duration,
             0f,
             priority,
-            false);
+            false,
+            false,
+            showControlRestrictedEffect);
     }
 
     public int ApplyFollowTransformLocal(
@@ -1370,7 +1356,8 @@ public class PlayerController : MonoBehaviour
         float duration,
         float stopDistance = 0.1f,
         int priority = 200,
-        bool faceDirection = true)
+        bool faceDirection = true,
+        bool showControlRestrictedEffect = false)
     {
         if (followTarget == null || speed <= 0f || duration <= 0f)
             return -1;
@@ -1385,6 +1372,7 @@ public class PlayerController : MonoBehaviour
             StopDistance = Mathf.Max(0f, stopDistance),
             Priority = priority,
             FaceDirection = faceDirection,
+            ShowControlRestrictedEffect = showControlRestrictedEffect,
         });
     }
 
@@ -1422,5 +1410,52 @@ public class PlayerController : MonoBehaviour
     public void SetMoveSpeed(float newMoveSpeed)
     {
         maxMoveSpeed = Mathf.Max(0f, newMoveSpeed);
+    }
+
+    private void SyncControlRestrictedEffectState()
+    {
+        if (PhotonNetwork.InRoom && !HasLocalAuthority)
+            return;
+
+        bool shouldShow = HasControlRestrictedState();
+
+        if (appliedControlRestrictedEffectState == shouldShow)
+            return;
+
+        ApplyControlRestrictedEffectState(shouldShow);
+
+        if (PhotonNetwork.InRoom && HasLocalAuthority && photonView != null)
+        {
+            photonView.RPC(nameof(RPC_SetControlRestrictedEffectState), RpcTarget.Others, shouldShow);
+        }
+    }
+
+    private bool HasControlRestrictedState()
+    {
+        if (impulseControl.IsActive)
+            return true;
+
+        if (activeInputBlocks.Count > 0)
+            return true;
+
+        RuntimeMovementCommand activeCommand = GetHighestPriorityCommand();
+        return activeCommand != null && activeCommand.ShowControlRestrictedEffect;
+    }
+
+    private void ApplyControlRestrictedEffectState(bool visible)
+    {
+        appliedControlRestrictedEffectState = visible;
+
+        if (controlRestrictedEffect != null && controlRestrictedEffect.activeSelf != visible)
+            controlRestrictedEffect.SetActive(visible);
+    }
+
+    [PunRPC]
+    private void RPC_SetControlRestrictedEffectState(bool visible)
+    {
+        if (HasLocalAuthority)
+            return;
+
+        ApplyControlRestrictedEffectState(visible);
     }
 }

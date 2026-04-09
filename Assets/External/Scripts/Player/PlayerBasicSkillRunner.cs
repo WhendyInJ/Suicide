@@ -15,6 +15,7 @@ public class PlayerBasicSkillRunner : PhotonOwnedBehaviour, ISkillExecutionBridg
     [SerializeField] private Transform effectSpawnPoint;
     [SerializeField] private PlayerMovementEffectReceiver selfMovementReceiver;
     [SerializeField] private PlayerInputSource inputSource;
+    [SerializeField] private PlayerItemInventory itemInventory;
 
     [Header("Basic Skills")]
     [SerializeField] private BasicSkillBinding[] skillBindings;
@@ -33,6 +34,9 @@ public class PlayerBasicSkillRunner : PhotonOwnedBehaviour, ISkillExecutionBridg
 
         if (inputSource == null)
             inputSource = GetComponent<PlayerInputSource>();
+
+        if (itemInventory == null)
+            itemInventory = GetComponent<PlayerItemInventory>();
 
         BuildRuntimes();
     }
@@ -59,6 +63,9 @@ public class PlayerBasicSkillRunner : PhotonOwnedBehaviour, ISkillExecutionBridg
             if (entry.Binding == null || entry.Runtime == null)
                 continue;
 
+            if (ShouldBlockSkillActivation(entry.Binding.slot))
+                continue;
+
             if (inputSource.GetSkillPressedThisFrame(entry.Binding.slot))
             {
                 entry.Runtime.TryActivate();
@@ -83,6 +90,9 @@ public class PlayerBasicSkillRunner : PhotonOwnedBehaviour, ISkillExecutionBridg
 
             if (entry.Binding == null || entry.Runtime == null)
                 continue;
+
+            if (ShouldBlockSkillActivation(entry.Binding.slot))
+                return false;
 
             if (entry.Binding.slot == slot)
                 return entry.Runtime.TryActivate();
@@ -179,6 +189,14 @@ public class PlayerBasicSkillRunner : PhotonOwnedBehaviour, ISkillExecutionBridg
                 DrawPushWaveGizmo(origin, pushWave);
             }
         }
+    }
+
+    private bool ShouldBlockSkillActivation(BasicSkillSlotType slot)
+    {
+        if (slot != BasicSkillSlotType.Primary)
+            return false;
+
+        return itemInventory != null && itemInventory.HasSelection;
     }
 
     private void DrawPushWaveGizmo(Transform origin, PushWaveSkillDefinition definition)
